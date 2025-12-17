@@ -31,6 +31,7 @@ public class MeshCreateController : MonoBehaviour
     {
         
     }
+
     public void OnCreateTCJiao()
     {
         GameObject obj = SimplePool.Spawn(TCJiao, Vector3.zero, Quaternion.identity);
@@ -71,14 +72,14 @@ public class MeshCreateController : MonoBehaviour
     public void OnCreateOneFinger()
     {
         Sound.PlaySound("Sound/Mod/yiyangz");
-        GameObject obj  =Instantiate(yiyangzhi);
+        GameObject obj = Instantiate(yiyangzhi);
         obj.transform.SetParent(Camera.main.transform, false);
-        obj.transform.localPosition = new Vector3(0,0,1);
+        obj.transform.localPosition = new Vector3(0, 0, 1);
         obj.transform.localRotation = Quaternion.identity;
-        Invoke("OnReadyCreateFinger",1);
+        Invoke("OnReadyCreateFinger", 1);
     }
 
-    void OnReadyCreateFinger()
+    public void OnReadyCreateFinger()
     {
         GameObject obj = SimplePool.Spawn(oneFinger, Vector3.zero, Quaternion.identity);
         obj.transform.SetParent(fingerPos);

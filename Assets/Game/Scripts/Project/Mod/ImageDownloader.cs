@@ -22,30 +22,27 @@ public class ImageDownloader : MonoBehaviour
             return;
         }
     }
-    public void OnRoleStar(DataInfo dataInfo)
+    public void OnRoleStar(string user, string avatar)
     {
         if (userSprites == null || userSprites.Count <= 0) 
         {
-            StartCoroutine(DownloadImageCoroutine(dataInfo));
+            StartCoroutine(DownloadImageCoroutine(user, avatar));
         }
         else
         {
-            if (userSprites.ContainsKey(dataInfo.user))
+            if (userSprites.ContainsKey(user))
             {
-                Sprite useSprite = userSprites[dataInfo.userAvatar];
-                OnCreateRoleStar(dataInfo, useSprite);
+                Sprite useSprite = userSprites[avatar];
+                OnCreateRoleStar(useSprite);
             }
             else 
             {
-                StartCoroutine(DownloadImageCoroutine(dataInfo)); 
+                StartCoroutine(DownloadImageCoroutine(user, avatar)); 
             }
         }
     }
-    public void OnCreateRoleStar(DataInfo dataInfo,Sprite sprite)
+    public void OnCreateRoleStar(Sprite sprite)
     {
-        int allDuck = dataInfo.count * dataInfo.time;
-        for (int i = 0; i < allDuck; i++)
-        {
             int x = Random.Range(-5, 5);
             int y = Random.Range(-5, 5);
             Vector3 starCPos = new Vector3(createPos4.position.x + x, createPos4.position.y + y);
@@ -53,13 +50,11 @@ public class ImageDownloader : MonoBehaviour
             star.transform.SetParent(this.transform);
             RoleStar star1 = star.GetComponent<RoleStar>();
             star1.StartMove(sprite);
-        }
-        allDuck = 0;
     }
-    IEnumerator DownloadImageCoroutine(DataInfo dataInfo)
+    IEnumerator DownloadImageCoroutine(string user, string avatar)
     {
-        // string url = dataInfo.userAvatar;
-        string url = "https://p26.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_c82fb87ae4b005b32e9af941ce39ec38.jpeg?from=3067671334";
+        string url = avatar;
+        //string url = "https://p26.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_c82fb87ae4b005b32e9af941ce39ec38.jpeg?from=3067671334";
         using (UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(url))
         {
             // ∑¢ÀÕ«Î«Û
@@ -82,13 +77,13 @@ public class ImageDownloader : MonoBehaviour
                 );
                 if (newSprite != null) {
 
-                    if (userSprites.ContainsKey(dataInfo.user))
+                    if (userSprites.ContainsKey(user))
                     {
-                        userSprites.Add(dataInfo.user, newSprite);
+                        userSprites.Add(user, newSprite);
                    
                     }
                 }
-                OnCreateRoleStar(dataInfo, newSprite);
+                OnCreateRoleStar(newSprite);
             }
         }
     }

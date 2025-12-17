@@ -11,6 +11,9 @@ public class GameController : MonoBehaviour
     public List<GameObject> savePos = new List<GameObject>();
     public bool isAutomatic = false;
     public GameObject systemPanel;
+    public GameObject prankPanel;
+
+    private bool isPrankPanel;
     private void Awake()
     {
         if (Instance == null)
@@ -46,6 +49,26 @@ public class GameController : MonoBehaviour
                 isSystemPanel = true;
                 systemPanel.SetActive(true);
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            ChangePrank();
+        }
+    }
+
+    public void ChangePrank()
+    {
+        isPrankPanel = !isPrankPanel;
+        if (isPrankPanel)
+        {
+            prankPanel.SetActive(true);
+            BarrageController.Instance.ChangePrankType(0);
+        }
+        else
+        {
+            BarrageController.Instance.SaveDataToJson();
+            prankPanel.SetActive(false);
         }
     }
 

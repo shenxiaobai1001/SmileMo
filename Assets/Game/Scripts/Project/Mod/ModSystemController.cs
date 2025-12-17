@@ -47,9 +47,9 @@ public class ModSystemController : MonoBehaviour
     public bool reverseCamera = false;
     float reverseCameraTime = 0;
 
-    public void OnSetRerverseCamera(DataInfo dataInfo)
+    public void OnSetRerverseCamera()
     {
-        reverseCameraTime = dataInfo.count * dataInfo.time;
+        reverseCameraTime = 2;
         if (!reverseCamera)
         {
             reverseCamera = true;
@@ -71,9 +71,9 @@ public class ModSystemController : MonoBehaviour
     float ProtecketTime = 0;
     public GameObject shieldIPrefab;
     GameObject shieldIObj;
-    public void OnSetPlayerProtecket(DataInfo dataInfo)
+    public void OnSetPlayerProtecket(int giftCount, int times, float delay)
     {
-        ProtecketTime = dataInfo.count *5;
+        ProtecketTime = giftCount * times * 5;
       //  Sound.PlaySound("Sound/Mod/Freeze");
         if (!Protecket)
         {
@@ -98,9 +98,9 @@ public class ModSystemController : MonoBehaviour
     public GameObject ShakespeareRight;
     public void OnShakespeare()
     {
-        int value = Random.Range(0,2);
+        int value = Random.Range(0, 2);
         GameObject createObj = value == 0 ? ShakespeareLeft : ShakespeareRight;
-        GameObject obj= SimplePool.Spawn(createObj, transform.position, Quaternion.identity);
+        GameObject obj = SimplePool.Spawn(createObj, transform.position, Quaternion.identity);
         Sound.PlaySound("Sound/Mod/ssby");
         obj.transform.parent = transform;
     }
@@ -116,8 +116,8 @@ public class ModSystemController : MonoBehaviour
     public void OnBigBetaBack()
     {
         Sound.PlaySound("Sound/Mod/dbt");
-        GameObject obj =SimplePool.Spawn(bigBeta,transform.position,Quaternion.identity);
-        obj.transform.parent = transform;   
+        GameObject obj = SimplePool.Spawn(bigBeta, transform.position, Quaternion.identity);
+        obj.transform.parent = transform;
         PlayerModController.Instance.OnBigBetaForward(false);
     }
     public GameObject tansfarPre;

@@ -38,7 +38,7 @@ public class UISystem : MonoBehaviour
         {
             GameController.Instance.isSystemPanel = false;
         }
-   gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
     void OnBackStartScence()
     {

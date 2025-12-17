@@ -459,9 +459,9 @@ public class PlayerModController : MonoBehaviour
     public GameObject Tomato;
     bool canTomto = false;
     float tomateTime = 0;
-    public void OnClickToCreateTomaTo(DataInfo data)
+    public void OnClickToCreateTomaTo()
     {
-        tomateTime += data.count * data.time;
+        tomateTime += 10;
         if (!canTomto)
         {
             Sound.PlaySound("Sound/Mod/gaiya");
@@ -488,9 +488,9 @@ public class PlayerModController : MonoBehaviour
     #region ÒþÉí
     bool invisibility = false;
     float visibilityTime = 0;
-    public void OnInvisibility(DataInfo dataInfo)
+    public void OnInvisibility()
     {
-        visibilityTime += dataInfo.count * dataInfo.time; ;
+        visibilityTime = 1;
         if (!invisibility) {
             invisibility = true;
             spriteTrans.gameObject.SetActive(false);
@@ -512,9 +512,9 @@ public class PlayerModController : MonoBehaviour
 
     bool fastSpeed = false;
     float fastSpeedTime = 0;
-    public void OnFastSpeed(DataInfo dataInfo)
+    public void OnFastSpeed()
     {
-        fastSpeedTime += dataInfo.count * 3;
+        fastSpeedTime +=5;
         PlayerData.Instance.moveSpeed += 5;
         PlayerData.Instance.fmoveSpeed += 5;
         if (!fastSpeed)
@@ -523,9 +523,9 @@ public class PlayerModController : MonoBehaviour
             StartCoroutine(OnCheckFastSpeed());
         }
     }
-    public void OnMainSpeed(DataInfo dataInfo)
+    public void OnMainSpeed()
     {
-        fastSpeedTime += dataInfo.count * 3;
+        fastSpeedTime += 5;
         PlayerData.Instance.moveSpeed -= 5;
         PlayerData.Instance.fmoveSpeed -= 5;
         if (PlayerData.Instance.moveSpeed < 0)

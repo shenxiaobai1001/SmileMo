@@ -48,9 +48,9 @@ public class CallManager : MonoBehaviour
     int greenCount = 9;
     int boxIndex = 0;
     int videoType = 0;
-    public void OnCreateVideoPlayer(DataInfo dataInfo,int type)
+    public void OnCreateVideoPlayer(string callName ,int type)
     {
-        string title = dataInfo.call == "美女盲盒" ? box : dj;
+        string title = callName == "美女盲盒" ? box : dj;
         int allCount = type == 1 ? normalCount : greenCount;
         boxIndex = Random.Range(1, allCount + 1);
         string path = $"{title}/{boxIndex}";
@@ -62,7 +62,7 @@ public class CallManager : MonoBehaviour
         videoType= type;
     }
     Queue<int> onCreate=new Queue<int>();
-    public void OnCreateDuckVideoPlayer(DataInfo dataInfo)
+    public void OnCreateDuckVideoPlayer()
     {
         boxIndex = 0;
         int index = Random.Range(0, 82);
@@ -174,9 +174,8 @@ public class CallManager : MonoBehaviour
             ItemManager.Instance.OnCreateFlyItem(getduck);
         }
     }
-    public void OnCreateCall(DataInfo dataInfo)
+    public void OnCreateCall()
     {
-        int allCount = dataInfo.count * dataInfo.time;
 
         int index = Random.Range(0, smallCalls.Count);
         GameObject tksobj = smallCalls[index];
@@ -205,12 +204,9 @@ public class CallManager : MonoBehaviour
                 break;
         }
 
-        for (int i = 0; i < allCount; i++)
-        {
-            GameObject obj = SimplePool.Spawn(tksobj, PlayerController.Instance.transform.position, Quaternion.identity);
-            obj.transform.SetParent(transform);
-            obj.SetActive(true);
-        }
+        GameObject obj = SimplePool.Spawn(tksobj, PlayerController.Instance.transform.position, Quaternion.identity);
+        obj.transform.SetParent(transform);
+        obj.SetActive(true);
     }
     Tween tweenCamera;
     Tween tweenPlayer;

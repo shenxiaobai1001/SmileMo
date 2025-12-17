@@ -1,0 +1,20 @@
+{
+    "NormalConfigs": [
+        {
+            "CallName": "砸鸭子",
+            "Type": "礼物",
+            "Message": "1",
+            "Tip": "2",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "砸鸭子",
+            "Type": "",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        }
+    ]
+}

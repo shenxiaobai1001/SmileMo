@@ -1,0 +1,13 @@
+{
+    "BoxConfigs": [
+        {
+            "BoxName": "",
+            "Type": "",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0,
+            "Calls": []
+        }
+    ]
+}
