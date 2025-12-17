@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class ModSystemController : MonoBehaviour
 {
@@ -46,15 +47,26 @@ public class ModSystemController : MonoBehaviour
 
     public bool reverseCamera = false;
     float reverseCameraTime = 0;
-
+    public GameObject videoPlayer;
     public void OnSetRerverseCamera()
     {
-        reverseCameraTime = 2;
+        string path = $"MOD/fanzhuan";
+        GameObject obj = SimplePool.Spawn(videoPlayer, PlayerController.Instance.transform.position, Quaternion.identity);
+        VideoManager videoManager = obj.GetComponent<VideoManager>();
+        obj.transform.SetParent(transform);
+        obj.SetActive(true);
+        videoManager.OnPlayVideo(2, path,false);
+
+        reverseCameraTime += 2;
         if (!reverseCamera)
         {
-            reverseCamera = true;
-            StartCoroutine(OnCheckReverseCamera());
+            Invoke("OnReadyRerverse",1.5f);
         }
+    }
+    void OnReadyRerverse()
+    {
+        reverseCamera = true;
+        StartCoroutine(OnCheckReverseCamera());
     }
     IEnumerator OnCheckReverseCamera()
     {

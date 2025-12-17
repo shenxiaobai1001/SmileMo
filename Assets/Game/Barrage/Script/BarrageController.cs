@@ -344,6 +344,9 @@ public class BarrageController : MonoBehaviour
                 case "±ù¶³":
                     ItemManager.Instance.OnSetPlayerFreeze();
                     break;
+                case "ÎÞµÐ»¤¶Ü":
+                    ModSystemController.Instance.OnSetPlayerProtecket(giftCount, times, delay);
+                    break;
                 case "×óÕýµÅ":
                     ItemManager.Instance.OnLeftLegKick();
                     break;

@@ -29,6 +29,11 @@ public class CallManager : MonoBehaviour
         EventManager.Instance.AddListener(Events.BeginSnakeMap, OnBeginSnakeMap);
         EventManager.Instance.AddListener(Events.OnVideoPlayEnd, OnBeginCreateDuck);
     }
+    private void OnDestroy()
+    {
+        EventManager.Instance.RemoveListener(Events.BeginSnakeMap, OnBeginSnakeMap);
+        EventManager.Instance.RemoveListener(Events.OnVideoPlayEnd, OnBeginCreateDuck);
+    }
     void OnInitWaitTime()
     {
         waiTime.Add(1, 3);

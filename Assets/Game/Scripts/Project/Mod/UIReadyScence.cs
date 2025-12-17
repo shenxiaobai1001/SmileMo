@@ -5,32 +5,35 @@ using UnityEngine.UI;
 
 public class UIReadyScence : MonoBehaviour
 {
-    public Button btn_start;
-    public Button btn_Close;
-    public Button btn_system;
+    public GameObject btn_start;
+    public GameObject btn_Close;
+    public GameObject btn_system;
     public GameObject systemPanel;
     private void Start()
     {
         Sound.PlayMusic("Bgm/bgm_SleepMode");
-        
-        btn_start.onClick.AddListener(OnClickStart);
-        btn_Close.onClick.AddListener(OnClickClose);
-        btn_system.onClick.AddListener(OnClickSystem);
+        Debug.Log("UIReadyScence");
+        Debug.Log("btn_start:" + (btn_start==null));
+        Debug.Log("btn_Close:"+( btn_Close == null));
+        Debug.Log("btn_system:"+ (btn_system == null));
+        if (btn_start) btn_start.Click(OnClickStart);
+        if (btn_Close) btn_Close.Click(OnClickClose);
+        if (btn_system) btn_system.Click(OnClickSystem);
         if (systemPanel) systemPanel.SetActive(false);
     }
 
-    void OnClickStart()
+    public void OnClickStart()
     {
         Debug.Log("µã»÷¿ªÊ¼");
         Loaded.OnLoadScence("Assets/Game/Scenes/InitScence");
     }
 
-    void OnClickClose()
+    public void OnClickClose()
     {
         Application.Quit();
     }
     bool systemShow = false;
-    void OnClickSystem()
+    public void OnClickSystem()
     {
         systemPanel.SetActive(true);
     }

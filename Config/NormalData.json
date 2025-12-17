@@ -9,8 +9,8 @@
             "Delay": 0.0
         },
         {
-            "CallName": "砸鸭子",
-            "Type": "",
+            "CallName": "视角反转",
+            "Type": "礼物",
             "Message": "",
             "Tip": "",
             "Count": 1,
