@@ -210,8 +210,32 @@ public class Box : MonoBehaviour
                 if (child.gameObject.name == "Dropdown1") barrageBoxSetting.Type = child.gameObject.GetComponent<Dropdown>().options[child.gameObject.GetComponent<Dropdown>().value].text;
                 if (child.gameObject.name == "InputField2") barrageBoxSetting.Message = child.gameObject.GetComponent<InputField>().text;
                 if (child.gameObject.name == "InputField3") barrageBoxSetting.Tip = child.gameObject.GetComponent<InputField>().text;
-                if (child.gameObject.name == "InputField4") barrageBoxSetting.Count = int.Parse(child.gameObject.GetComponent<InputField>().text);
-                if (child.gameObject.name == "InputField5") barrageBoxSetting.Delay = int.Parse(child.gameObject.GetComponent<InputField>().text);
+                if (child.gameObject.name == "InputField4")
+                {
+                    string text = child.gameObject.GetComponent<InputField>().text;
+                    if (int.TryParse(text, out int value))
+                    {
+                        barrageBoxSetting.Count = value;
+                    }
+                    else
+                    {
+                        barrageBoxSetting.Count = 1;
+                        Debug.Log("解析倍率失败，使用默认值.");
+                    }
+                }
+                if (child.gameObject.name == "InputField5")
+                {
+                    string text = child.gameObject.GetComponent<InputField>().text;
+                    if (float.TryParse(text, out float value))
+                    {
+                        barrageBoxSetting.Delay = value;
+                    }
+                    else
+                    {
+                        barrageBoxSetting.Delay = 0;
+                        Debug.Log("解析延迟失败，使用默认值.");
+                    }
+                }
             }
         }
     }

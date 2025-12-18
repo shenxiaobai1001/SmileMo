@@ -41,8 +41,33 @@ public class Normal : MonoBehaviour
                 if (child.gameObject.name == "Dropdown2") barrageNormalSetting.Type = child.gameObject.GetComponent<Dropdown>().options[child.gameObject.GetComponent<Dropdown>().value].text;
                 if (child.gameObject.name == "InputField1") barrageNormalSetting.Message = child.gameObject.GetComponent<InputField>().text;
                 if (child.gameObject.name == "InputField2") barrageNormalSetting.Tip = child.gameObject.GetComponent<InputField>().text;
-                if (child.gameObject.name == "InputField3") barrageNormalSetting.Count = int.Parse(child.gameObject.GetComponent<InputField>().text);
-                if (child.gameObject.name == "InputField4") barrageNormalSetting.Delay = int.Parse(child.gameObject.GetComponent<InputField>().text);
+                if (child.gameObject.name == "InputField3")
+                {
+                    string text = child.gameObject.GetComponent<InputField>().text;
+                    if (int.TryParse(text, out int value))
+                    {
+                        barrageNormalSetting.Count = value;
+                    }
+                    else
+                    {
+                        barrageNormalSetting.Count = 1;
+                        Debug.Log("解析倍率失败，使用默认值.");
+                    }
+
+                }
+                if (child.gameObject.name == "InputField4")
+                {
+                    string text = child.gameObject.GetComponent<InputField>().text;
+                    if(float.TryParse(text, out float value))
+                    {
+                        barrageNormalSetting.Delay = value;
+                    }
+                    else
+                    {
+                        barrageNormalSetting.Delay = 0;
+                        Debug.Log("解析延迟失败，使用默认值.");
+                    }
+                }
             }
         }
     }
@@ -58,7 +83,7 @@ public class Normal : MonoBehaviour
         InputField inputField1 = transform.GetChild(7).gameObject.GetComponent<InputField>();
         int times = int.Parse(inputField1.text);
         InputField inputField2 = transform.GetChild(9).gameObject.GetComponent<InputField>();
-        float delay = int.Parse(inputField2.text);
+        float delay = float.Parse(inputField2.text);
 
         BarrageController.Instance.StartCoroutine(BarrageController.Instance.CallFunction("测试用户", "", callName, 1, times, delay));
     }
