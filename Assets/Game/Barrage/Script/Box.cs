@@ -211,7 +211,7 @@ public class Box : MonoBehaviour
                 if (child.gameObject.name == "InputField2") barrageBoxSetting.Message = child.gameObject.GetComponent<InputField>().text;
                 if (child.gameObject.name == "InputField3") barrageBoxSetting.Tip = child.gameObject.GetComponent<InputField>().text;
                 if (child.gameObject.name == "InputField4") barrageBoxSetting.Count = int.Parse(child.gameObject.GetComponent<InputField>().text);
-                if (child.gameObject.name == "InputField5") barrageBoxSetting.Delay = int.Parse(child.gameObject.GetComponent<InputField>().text);
+                if (child.gameObject.name == "InputField5") barrageBoxSetting.Delay = float.Parse(child.gameObject.GetComponent<InputField>().text);
             }
         }
     }

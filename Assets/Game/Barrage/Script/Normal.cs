@@ -42,7 +42,7 @@ public class Normal : MonoBehaviour
                 if (child.gameObject.name == "InputField1") barrageNormalSetting.Message = child.gameObject.GetComponent<InputField>().text;
                 if (child.gameObject.name == "InputField2") barrageNormalSetting.Tip = child.gameObject.GetComponent<InputField>().text;
                 if (child.gameObject.name == "InputField3") barrageNormalSetting.Count = int.Parse(child.gameObject.GetComponent<InputField>().text);
-                if (child.gameObject.name == "InputField4") barrageNormalSetting.Delay = int.Parse(child.gameObject.GetComponent<InputField>().text);
+                if (child.gameObject.name == "InputField4") barrageNormalSetting.Delay = float.Parse(child.gameObject.GetComponent<InputField>().text);
             }
         }
     }
@@ -58,7 +58,7 @@ public class Normal : MonoBehaviour
         InputField inputField1 = transform.GetChild(7).gameObject.GetComponent<InputField>();
         int times = int.Parse(inputField1.text);
         InputField inputField2 = transform.GetChild(9).gameObject.GetComponent<InputField>();
-        float delay = int.Parse(inputField2.text);
+        float delay = float.Parse(inputField2.text);
 
         BarrageController.Instance.StartCoroutine(BarrageController.Instance.CallFunction("≤‚ ‘”√ªß", "", callName, 1, times, delay));
     }
