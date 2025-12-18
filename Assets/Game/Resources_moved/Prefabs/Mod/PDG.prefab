@@ -95,7 +95,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5ce15cdac20754791dbfac2bb7e426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 80
+  moveSpeed: 120
   rigidbody: {fileID: 857197453471704884}
   destroyHeight: -20
 --- !u!1 &6771684168025277930
