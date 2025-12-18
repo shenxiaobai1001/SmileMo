@@ -14,7 +14,8 @@ public class GameObjFllow : MonoBehaviour
     {
         if (target == null)
         {
-            target = PlayerController.Instance.transform;
+            if (PlayerController.Instance != null)
+                target = PlayerController.Instance.transform;
             Debug.LogWarning("跟随目标未设置!");
             return;
         }
@@ -33,5 +34,9 @@ public class GameObjFllow : MonoBehaviour
             // 直接跟随
             transform.position = targetPosition;
         }
+    }
+    private void OnDestroy()
+    {
+        target = null;
     }
 }

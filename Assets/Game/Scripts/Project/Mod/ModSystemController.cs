@@ -85,7 +85,7 @@ public class ModSystemController : MonoBehaviour
     GameObject shieldIObj;
     public void OnSetPlayerProtecket(int giftCount, int times, float delay)
     {
-        ProtecketTime = giftCount * times * 5;
+        ProtecketTime += giftCount * times * 5;
       //  Sound.PlaySound("Sound/Mod/Freeze");
         if (!Protecket)
         {

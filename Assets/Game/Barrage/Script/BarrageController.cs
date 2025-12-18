@@ -383,9 +383,9 @@ public class BarrageController : MonoBehaviour
                 case "Boom":
                     ItemManager.Instance.OnBoomGrandma();
                     break;
-                case "随机传送":
-                    ModSystemController.Instance.OnRandromPlayerPos();
-                    break;
+             //   case "随机传送":
+                   // ModSystemController.Instance.OnRandromPlayerPos();
+                   // break;
                 case "呸":
                     ItemManager.Instance.OnCreateBlackHand();
                     break;

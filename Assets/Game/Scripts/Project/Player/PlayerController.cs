@@ -118,6 +118,8 @@ public class PlayerController : MonoBehaviour
         playerCheckRight.isGround = false;
         gameObject.SetActive(true);
         isHit = false;
+        int gameLevel = GameController.Instance.gameLevel;
+        OnSetStickCheck(gameLevel != 1 && gameLevel != 2 && gameLevel != 3 && gameLevel != 5);
     }
 
     void OnClickState()
@@ -1498,6 +1500,29 @@ public class PlayerController : MonoBehaviour
         pLState = PLState.VecHit;
         pCteateHit.OnCreateHitEffect(1);
         boostImageContro.StartRecovery();
+    }
+    public void OnChangeHitState()
+    {
+        PFunc.Log("½øÈë±»¹¥»÷×´Ì¬");
+        if (isHit)
+            return;
+        isHit = true;
+        if (animator)
+        {
+            animator.SetBool("Run", false);
+            animator.SetBool("FastRun", false);
+            animator.SetBool("BrakeF", false);
+            animator.SetBool("Drop", false);
+            animator.SetBool("Jump", false);
+            animator.SetBool("Brake", false);
+            animator.SetBool("Stick", false);
+            animator.SetBool("StickF", false);
+            animator.SetBool("Boost", false);
+            animator.SetBool("DamageOver", false);
+            animator.SetTrigger("Demage");
+        }
+        pLState = PLState.VecHit;
+        pCteateHit.OnCreateHitEffect(1);
     }
     public void HandleDownHitCollision()
     {

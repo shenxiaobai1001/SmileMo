@@ -54,6 +54,10 @@ public class UIInit : MonoBehaviour
     string level7 = "Bgm/bgm_hybrid";
     IEnumerator OnInitMusic()
     {
+        if (Sound.musicBGM!=null&& Sound.musicBGM.Count>0)
+        {
+            yield break;
+        }
         List<string> list = new List<string>();
         list.Add(level1); list.Add(level2); list.Add(level4); list.Add(level5); list.Add(level6); list.Add(level7);
         for (int i = 0; i < list.Count; i++)
@@ -62,6 +66,7 @@ public class UIInit : MonoBehaviour
             var clipau = Loaded.Load<AudioClip>(path);
             if (clipau!=null)
             {
+                
                 Sound.musicBGM.Add(path, clipau);
             }
             yield return null;

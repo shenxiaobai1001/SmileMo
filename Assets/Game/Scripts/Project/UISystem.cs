@@ -46,6 +46,7 @@ public class UISystem : MonoBehaviour
     }
     void OnRestGame()
     {
+
         Loaded.OnLoadScence("Assets/Game/Scenes/InitScence");
     }
 

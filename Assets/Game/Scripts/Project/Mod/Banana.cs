@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class Banana : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public PolygonCollider2D polygonCollider2D;
 
-    // Update is called once per frame
-    void Update()
+    private void OnEnable()
     {
-        
+        if (polygonCollider2D) polygonCollider2D.enabled = false;
+        Invoke("OnShowCollider",0.25f);
+    }
+    void OnShowCollider()
+    {
+       if(polygonCollider2D) polygonCollider2D.enabled = true;
+    }
+    private void OnDestroy()
+    {
+            if (IsInvoking("OnShowCollider"))
+        {
+            CancelInvoke("OnShowCollider");
+        }
     }
 }

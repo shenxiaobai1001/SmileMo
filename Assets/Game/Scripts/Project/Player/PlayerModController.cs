@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerModController : MonoBehaviour
@@ -100,22 +101,23 @@ public class PlayerModController : MonoBehaviour
         while (backTime > 0)
         {
             bool protect = ModSystemController.Instance.Protecket;
-            // 如果处于保护状态，等待直到保护结束
-            while (protect)
-            {
-                yield return new WaitForSeconds(0.1f);  // 每隔0.1秒检查一次
-                protect = ModSystemController.Instance.Protecket;
-
-                // 如果保护状态下toMove变为false，则完全退出
-                if (!toMove) yield break;
+            if (protect) { 
+                isPassivityMove--;
+                isHitPlayerBack = false;
+                if (isPassivityMove <= 0)
+                {
+                    backTime = 0;
+                    OnChangeState(true);
+                }
+                yield break;
             }
-            if (transform.position.y < 5)
+            if (transform.position.y < playerY)
             {
                 transform.Translate(Vector2.up * 8 * Time.deltaTime);
             }
-            else if (transform.position.y >= 5)
+            else if (transform.position.y >= playerY)
             {
-                transform.position = new Vector3(transform.position.x, 5);
+                transform.position = new Vector3(transform.position.x, playerY);
             }
             transform.Translate(new Vector2(-1,1) * 16 * Time.deltaTime);
             backTime -= Time.deltaTime;
@@ -125,6 +127,7 @@ public class PlayerModController : MonoBehaviour
         isHitPlayerBack = false;
         if (isPassivityMove <= 0)
         {
+            isPassivityMove = 0;
             backTime = 0;
             OnChangeState(true);
         }
@@ -133,13 +136,15 @@ public class PlayerModController : MonoBehaviour
     {
         bool protect = ModSystemController.Instance.Protecket;
         if (protect) return;
-        backTime += 0.102f;
+        backTime += 0.055f;
         GameObject boom = SimplePool.Spawn(Boomeff, transform.position, Quaternion.identity);
         boom.transform.SetParent(createPos.transform);
         boom.SetActive(true);
-        OnChangeState(false);
+        if(!isKinematic)
+         OnChangeState(false);
         if (!isHitPlayerBack)
         {
+            PlayerController.Instance.OnChangeHitState();
             isPassivityMove++;
             isHitPlayerBack = true;
             StartCoroutine(OnHitPlayerBack());
@@ -149,11 +154,12 @@ public class PlayerModController : MonoBehaviour
     {
         bool protect = ModSystemController.Instance.Protecket;
         if (protect) return;
-        ForwardTime += 0.102f;
+        ForwardTime += 0.055f;
         GameObject boom = SimplePool.Spawn(Boomeff, transform.position, Quaternion.identity);
         boom.transform.SetParent(createPos.transform);
         boom.SetActive(true);
-        OnChangeState(false);
+        if (!isKinematic)
+            OnChangeState(false);
         if (!isHitPlayerForward)
         {
             isPassivityMove++;
@@ -169,21 +175,24 @@ public class PlayerModController : MonoBehaviour
         {
             bool protect = ModSystemController.Instance.Protecket;
             // 如果处于保护状态，等待直到保护结束
-            while (protect)
+            if (protect)
             {
-                yield return new WaitForSeconds(0.1f);  // 每隔0.1秒检查一次
-                protect = ModSystemController.Instance.Protecket;
-
-                // 如果保护状态下toMove变为false，则完全退出
-                if (!toMove) yield break;
+                isPassivityMove--;
+                isHitPlayerForward = false;
+                if (isPassivityMove <= 0)
+                {
+                    ForwardTime = 0;
+                    OnChangeState(true);
+                }
+                yield break;
             }
-            if (transform.position.y < 5)
+            if (transform.position.y < playerY)
             {
                 transform.Translate(Vector2.up * 8 * Time.deltaTime);
             }
-            else if (transform.position.y >= 5)
+            else if (transform.position.y >= playerY)
             {
-                transform.position = new Vector3(transform.position.x, 5);
+                transform.position = new Vector3(transform.position.x, playerY);
             }
             transform.Translate(new Vector2(1,1) * 16 * Time.deltaTime);
             ForwardTime -= Time.deltaTime;
@@ -210,13 +219,15 @@ public class PlayerModController : MonoBehaviour
             boomobj.SetActive(true);
         }
     }
-
+    bool isKinematic = false;
     void OnChangeState(bool open)
     {
         box.enabled = open;
         Center.SetActive(open);
         playerController.isHit = !open;
         rigidbody.isKinematic = !open;
+        isKinematic = !open;
+        PlayerController.Instance.OnRest();
     }
 
     bool isCloaking = false;
@@ -250,7 +261,6 @@ public class PlayerModController : MonoBehaviour
             if (!isMove)
             {
                 isPassivityMove++;
-                if (rigidbody) rigidbody.isKinematic = true;
                 isMove = true;
                 StartCoroutine(OnModMove());
             }
@@ -272,7 +282,6 @@ public class PlayerModController : MonoBehaviour
             if (!isMove)
             {
                 isPassivityMove++;
-                if (rigidbody) rigidbody.isKinematic = true;
                 isMove = true;
                 StartCoroutine(OnModMove());
             }
@@ -294,7 +303,6 @@ public class PlayerModController : MonoBehaviour
             if (!isMove)
             {
                 isPassivityMove++;
-                if (rigidbody) rigidbody.isKinematic = true;
                 isMove = true;
                 StartCoroutine(OnModMove());
             }
@@ -322,23 +330,38 @@ public class PlayerModController : MonoBehaviour
         {
             moveType = MoveType.None;
         }
-        toMove = qlCount > 0 || tcCount > 0|| fingerCount > 0;
+        toMove = qlCount > 0 || tcCount > 0 || fingerCount > 0;
+    }
+
+    float playerY
+    {
+        get {             
+            int value = 0;
+            if (GameController.Instance!=null)
+                value= GameController.Instance.gameLevel == 7 ? 190 : 5;
+            else
+            {
+                value = 5;
+            }
+            return value;
+        }
     }
     IEnumerator OnModMove()
     {
+        PFunc.Log("OnModMove开始", isPassivityMove, toMove, moveType);
         while (toMove)
         {
             bool protect = ModSystemController.Instance.Protecket;
             // 如果处于保护状态，等待直到保护结束
             while (protect)
             {
+                if (isKinematic)
+                    OnChangeState(true);
                 yield return new WaitForSeconds(0.1f);  // 每隔0.1秒检查一次
                 protect = ModSystemController.Instance.Protecket;
-
-                // 如果保护状态下toMove变为false，则完全退出
-                if (!toMove) yield break;
             }
-
+            if (!isKinematic)
+                OnChangeState(false);
             switch (moveType)
             {
                 case MoveType.None:
@@ -352,27 +375,43 @@ public class PlayerModController : MonoBehaviour
                     yield return null;
                     break;
                 case MoveType.TC:
-                    transform.position += new Vector3(-1, 0.3f) * 20 * Time.deltaTime;
+                    if (transform.position.y >= playerY)
+                    {
+                        transform.position = new Vector3(transform.position.x, playerY);
+                    }
+                    transform.Translate(new Vector3(-1, 0.1f) * 20 * Time.deltaTime);
                     startPos = transform.position;
                     yield return null;
                     break;
                 case MoveType.Finger:
-                    transform.position += new Vector3(-1, 0.1f) * 30 * Time.deltaTime;
+                    if (transform.position.y >= playerY)
+                    {
+                        transform.position = new Vector3(transform.position.x, playerY);
+                    }
+                    transform.Translate(new Vector3(-1, 0.1f) * 30 * Time.deltaTime);
                     startPos = transform.position;
                     yield return null;
                     break;
                 case MoveType.QL:
-                    transform.position += new Vector3(1, 0.3f) * 20 * Time.deltaTime;
+                    if (transform.position.y >= playerY)
+                    {
+                        transform.position = new Vector3(transform.position.x, playerY);
+                    }
+                    transform.Translate(new Vector3(1, 0.1f) * 20 * Time.deltaTime);
                     startPos = transform.position;
                     yield return null;
                     break;
             }
         }
+       
         isPassivityMove--;
-        if (rigidbody) rigidbody.isKinematic = false;
         isMove = false;
-        if(isPassivityMove<=0)
+        PFunc.Log("3麒麟臂结束", isPassivityMove);
+        if (isPassivityMove<=0)
+        {
+            isPassivityMove = 0;
             OnChangeState(true);
+        }
     }
     enum MoveType
     {
@@ -418,7 +457,7 @@ public class PlayerModController : MonoBehaviour
     {
         while (BigBetaTime > 0)
         {
-            if (transform.position.y < 5)
+            if (transform.position.y < playerY)
             {
                 transform.Translate(Vector2.up * 8 * Time.deltaTime);
             }
@@ -438,7 +477,7 @@ public class PlayerModController : MonoBehaviour
     {
         while (BigBetaBackTime > 0)
         {
-            if (transform.position.y < 5)
+            if (transform.position.y < playerY)
             {
                 transform.Translate(Vector2.up * 8 * Time.deltaTime);
             }

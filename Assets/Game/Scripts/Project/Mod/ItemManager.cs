@@ -64,7 +64,7 @@ public class ItemManager : MonoBehaviour
             allReadyCreateDuck--;
             allCreateDuck++;
 
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.05f);
         }
         isCreateDuck= false;
         allReadyCreateDuck = 0;
@@ -135,7 +135,7 @@ public class ItemManager : MonoBehaviour
     {
         bool protect = ModSystemController.Instance.Protecket;
         if (protect) return;
-         FreezeTime = 1;
+         FreezeTime += 1;
         Sound.PlaySound("Sound/Mod/Freeze");
         if (!Freeze)
         {

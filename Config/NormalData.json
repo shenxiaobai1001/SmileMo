@@ -9,7 +9,23 @@
             "Delay": 0.0
         },
         {
-            "CallName": "无敌护盾",
+            "CallName": "麒麟臂",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "天残脚",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "扔香蕉",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
