@@ -33,6 +33,7 @@ public class OneFingerZen : MonoBehaviour
         GameObject bb = SimplePool.Spawn(boom, boomPos.transform.position, Quaternion.identity);
         bb.transform.parent = ItemManager.Instance.transform;
         bb.SetActive(true);
+        Camera.main.DOShakePosition(0.1f, new Vector3(0, 1f, 0), 0, 0f, false);
         time += 0.15f;
         if (time > allTime)
         {

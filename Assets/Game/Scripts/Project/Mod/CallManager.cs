@@ -158,7 +158,6 @@ public class CallManager : MonoBehaviour
         else 
             duckPath = Random.Range(1, 24);
         string path = $"{title}/{duckPath}";
-        PFunc.Log("Ñ¼×ÓÊÓÆµÂ·¾¶", path, duckPath);
         GameObject obj = SimplePool.Spawn(videoPlayer, PlayerController.Instance.transform.position, Quaternion.identity);
         VideoManager videoManager = obj.GetComponent<VideoManager>();
         obj.transform.SetParent(transform);

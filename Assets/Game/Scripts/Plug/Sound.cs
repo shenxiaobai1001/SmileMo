@@ -10,7 +10,7 @@ public class Sound
 
     /// <summary>声音大小-音效</summary>
     public static float VolumeSound = 1;
-    public static int VideoVolume = 1;
+    public static float VideoVolume = 1;
 
     static GameObject MusicManager;
 
@@ -37,7 +37,8 @@ public class Sound
     {
         VolumeMusic = musicValue;
         VolumeSound = soundValue;
-        if(MusicManager) MusicManager.GetComponent<AudioSource>().volume = VolumeMusic;
+        VideoVolume = soundValue;
+        if (MusicManager) MusicManager.GetComponent<AudioSource>().volume = VolumeMusic;
     }
     /// <summary>获得音乐大小</summary>
     public static float GetVolumeMusic()

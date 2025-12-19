@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +15,8 @@ public class UISystem : MonoBehaviour
     public Slider sl_music;
     public Slider sl_sound;
 
+    public TMP_InputField inputField;
+
     private void Start()
     {
         btn_close.Click(OnClose);
@@ -21,6 +25,7 @@ public class UISystem : MonoBehaviour
         btn_closeGame.Click(OnCloseGame);
         sl_music.onValueChanged.AddListener(OnMusicValue);
         sl_sound.onValueChanged.AddListener(OnSoundValue);
+        inputField.onEndEdit.AddListener(OnInputEndEdit);
     }
 
     void OnMusicValue(float valuie)
@@ -53,5 +58,13 @@ public class UISystem : MonoBehaviour
     void OnCloseGame()
     {
         Application.Quit();
+    }
+    void OnInputEndEdit(string value)
+    {
+        if (value == string.Empty) return;
+
+        int maxhp=int.Parse(value);
+        SystemController.Instance.maxAirWallHp = maxhp;
+        SystemController.Instance.airWallHp = maxhp;
     }
 }

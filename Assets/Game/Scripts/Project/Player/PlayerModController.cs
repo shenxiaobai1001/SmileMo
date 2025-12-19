@@ -32,23 +32,23 @@ public class PlayerModController : MonoBehaviour
     }
     private void Start()
     {
-
         EventManager.Instance.AddListener(Events.OnQLMove, OnModMoveQL);
         EventManager.Instance.AddListener(Events.OnTCMove, OnModMoveTC);
         EventManager.Instance.AddListener(Events.OneFingerMove, OnModMoveFinger);
         StartCoroutine(OnCheckGround());
     }
 
+    bool isGMControl = false;
     private void Update()
     {
-
         if (Input.GetKeyDown(KeyCode.L))
         {
+            isGMControl = true;
             rigidbody.isKinematic = true;
         }
         if (Input.GetKeyDown(KeyCode.P))
         {
-            transform.position = new Vector3(transform.position.x, 5);
+            transform.position = new Vector3(transform.position.x+5, 0);
         }
         if (Input.GetKey(KeyCode.L))
         {
@@ -56,6 +56,7 @@ public class PlayerModController : MonoBehaviour
         }
         if (Input.GetKeyUp(KeyCode.L))
         {
+            isGMControl = false;
             if (isPassivityMove <= 0)
             {
                 rigidbody.isKinematic = false;
@@ -79,10 +80,17 @@ public class PlayerModController : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.1f);
             if (transform.position.y < -4)
             {
                 transform.position = new Vector3(transform.position.x, 0);
+            }
+            if(!isGMControl)
+            {
+                if (transform.position.y >= playerY)
+                {
+                    transform.position = new Vector3(transform.position.x, playerY);
+                }
             }
         }
     }
@@ -115,10 +123,6 @@ public class PlayerModController : MonoBehaviour
             {
                 transform.Translate(Vector2.up * 8 * Time.deltaTime);
             }
-            else if (transform.position.y >= playerY)
-            {
-                transform.position = new Vector3(transform.position.x, playerY);
-            }
             transform.Translate(new Vector2(-1,1) * 16 * Time.deltaTime);
             backTime -= Time.deltaTime;
             yield return null;
@@ -149,6 +153,10 @@ public class PlayerModController : MonoBehaviour
             isHitPlayerBack = true;
             StartCoroutine(OnHitPlayerBack());
         }
+        if (ItemManager.Instance.isHang)
+        {
+            OnCancelHangSelf();
+        }
     }
     public void OnRightHitPlayer()
     {
@@ -165,6 +173,10 @@ public class PlayerModController : MonoBehaviour
             isPassivityMove++;
             isHitPlayerForward = true;
             StartCoroutine(OnHitPlayerForward());
+        }
+        if (ItemManager.Instance.isHang)
+        {
+            OnCancelHangSelf();
         }
     }
 
@@ -190,10 +202,6 @@ public class PlayerModController : MonoBehaviour
             {
                 transform.Translate(Vector2.up * 8 * Time.deltaTime);
             }
-            else if (transform.position.y >= playerY)
-            {
-                transform.position = new Vector3(transform.position.x, playerY);
-            }
             transform.Translate(new Vector2(1,1) * 16 * Time.deltaTime);
             ForwardTime -= Time.deltaTime;
             yield return null;
@@ -211,13 +219,17 @@ public class PlayerModController : MonoBehaviour
     {
         bool protect = ModSystemController.Instance.Protecket;
         if (protect) return;
-        rigidbody.AddForce(force, ForceMode2D.Impulse);
+        if (ItemManager.Instance.isHang)
+        {
+            OnCancelHangSelf();
+        }
         if (boom)
         {
             GameObject boomobj = SimplePool.Spawn(BoomPre, transform.position, Quaternion.identity);
             boomobj.transform.SetParent(createPos.transform);
             boomobj.SetActive(true);
         }
+        rigidbody.AddForce(force, ForceMode2D.Impulse);
     }
     bool isKinematic = false;
     void OnChangeState(bool open)
@@ -265,6 +277,10 @@ public class PlayerModController : MonoBehaviour
                 StartCoroutine(OnModMove());
             }
         }
+        if (ItemManager.Instance.isHang)
+        {
+            OnCancelHangSelf();
+        }
     }
     void OnModMoveFinger(object msg)
     {
@@ -286,6 +302,10 @@ public class PlayerModController : MonoBehaviour
                 StartCoroutine(OnModMove());
             }
         }
+        if (ItemManager.Instance.isHang)
+        {
+            OnCancelHangSelf();
+        }
     }
     void OnModMoveQL(object msg)
     {
@@ -306,6 +326,10 @@ public class PlayerModController : MonoBehaviour
                 isMove = true;
                 StartCoroutine(OnModMove());
             }
+        }
+        if (ItemManager.Instance.isHang)
+        {
+            OnCancelHangSelf();
         }
     }
     void OnCheckMoveType()
@@ -375,28 +399,16 @@ public class PlayerModController : MonoBehaviour
                     yield return null;
                     break;
                 case MoveType.TC:
-                    if (transform.position.y >= playerY)
-                    {
-                        transform.position = new Vector3(transform.position.x, playerY);
-                    }
                     transform.Translate(new Vector3(-1, 0.1f) * 20 * Time.deltaTime);
                     startPos = transform.position;
                     yield return null;
                     break;
                 case MoveType.Finger:
-                    if (transform.position.y >= playerY)
-                    {
-                        transform.position = new Vector3(transform.position.x, playerY);
-                    }
                     transform.Translate(new Vector3(-1, 0.1f) * 30 * Time.deltaTime);
                     startPos = transform.position;
                     yield return null;
                     break;
                 case MoveType.QL:
-                    if (transform.position.y >= playerY)
-                    {
-                        transform.position = new Vector3(transform.position.x, playerY);
-                    }
                     transform.Translate(new Vector3(1, 0.1f) * 20 * Time.deltaTime);
                     startPos = transform.position;
                     yield return null;
@@ -450,6 +462,11 @@ public class PlayerModController : MonoBehaviour
                 isBigBetaBack = true;
                 StartCoroutine(BigBetaBack());
             }
+        }
+
+        if (ItemManager.Instance.isHang) 
+        { 
+            OnCancelHangSelf();
         }
     }
 
@@ -564,7 +581,7 @@ public class PlayerModController : MonoBehaviour
     }
     public void OnMainSpeed()
     {
-        fastSpeedTime += 5;
+        fastSpeedTime = 5;
         PlayerData.Instance.moveSpeed -= 5;
         PlayerData.Instance.fmoveSpeed -= 5;
         if (PlayerData.Instance.moveSpeed < 0)
@@ -592,6 +609,31 @@ public class PlayerModController : MonoBehaviour
         PlayerData.Instance.fmoveSpeed = 12.4f;
         fastSpeed = false;
         fastSpeedTime = 0;
+    }
+    public  void OnHangSelf()
+    {
+        playerController.OnRest();
+        playerController.isHit = true;
+        spriteTrans.gameObject.SetActive(false);
+        isPassivityMove++;
+        OnChangeState(false);
+    }
+    public void OnCancelHangSelf()
+    {
+        playerController.isHit = true;
+        spriteTrans.gameObject.SetActive(true);
+        isPassivityMove--;
+        if (isPassivityMove<=0)
+        {
+            isPassivityMove = 0;
+            OnChangeState(true);
+        }
+       
+        Vector3 vector = HangSelf.Instance.lastPoint.transform.position;
+        if (vector != Vector3.zero) {
+            playerController.transform.position = vector;
+        }
+        HangSelf.Instance.OnBreakeHang();
     }
 
     private void OnDestroy()

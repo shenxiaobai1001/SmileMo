@@ -459,6 +459,9 @@ public class BarrageController : MonoBehaviour
                 case "动感DJ":
                     CallManager.Instance.OnCreateVideoPlayer("动感DJ", 2);
                     break;
+                case "上吊":
+                    ItemManager.Instance.OnCreateHangSelf();
+                    break;
             }
 
             yield return new WaitForSeconds(delay);

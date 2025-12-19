@@ -17,7 +17,7 @@ public class VideoManager : MonoBehaviour
         mainPlayer.Events.AddListener(OnVideoEvent);         // 订阅播放器本身提供的事件
         mCanvas.renderMode = RenderMode.ScreenSpaceCamera;
         mCanvas.worldCamera = Camera.main;
-        mCanvas.sortingLayerName = "Video";  // Sorting Layer 名称
+        mCanvas.sortingLayerName = "Effect";  // Sorting Layer 名称
         mCanvas.sortingOrder = 0;         // Order in Layer
 
     }
@@ -59,6 +59,7 @@ public class VideoManager : MonoBehaviour
     {
         Sound.PauseOrPlayVolumeMusic(true);
         mainPlayer.Play();
+        mainPlayer.Control.SetVolume(Sound.VideoVolume);
         if (snakeScene)
         {
             EventManager.Instance.SendMessage(Events.BeginSnakeMap, true);
@@ -82,7 +83,6 @@ public class VideoManager : MonoBehaviour
         string videoData = await OnGetPlayBytes(pathTitle);
         if (mainPlayer)
         {
-            mainPlayer.Control.SetVolume(Sound.VideoVolume);
             mainPlayer.gameObject.SetActive(true);
             mainPlayer.OpenMedia(MediaPathType.AbsolutePathOrURL, videoData, false);
         }

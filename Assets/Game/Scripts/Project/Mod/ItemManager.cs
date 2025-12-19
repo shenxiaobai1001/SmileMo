@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
 
@@ -68,7 +69,6 @@ public class ItemManager : MonoBehaviour
         }
         isCreateDuck= false;
         allReadyCreateDuck = 0;
-        allCreateDuck = 0;
         UIDuck.Instance.OnSetCenter(false);
     }
 
@@ -135,7 +135,7 @@ public class ItemManager : MonoBehaviour
     {
         bool protect = ModSystemController.Instance.Protecket;
         if (protect) return;
-         FreezeTime += 1;
+         FreezeTime = 1;
         Sound.PlaySound("Sound/Mod/Freeze");
         if (!Freeze)
         {
@@ -370,5 +370,18 @@ public class ItemManager : MonoBehaviour
         GameObject obj = SimplePool.Spawn(goback, PlayerController.Instance.transform.position, Quaternion.identity);
         obj.transform.SetParent(transform);
         obj.SetActive(true);
+    }
+
+    public GameObject HangSelf;
+    public bool isHang = false;
+    public void OnCreateHangSelf()
+    {
+        Vector3 vectorPlayer = PlayerController.Instance.transform.position;
+        Vector3 createPos = new Vector3(vectorPlayer.x, 0);
+        GameObject obj = SimplePool.Spawn(HangSelf, createPos, Quaternion.identity);
+        obj.transform.SetParent(transform);
+        Sound.PlaySound("Sound/Mod/hangself");
+        isHang = true;
+        PlayerModController.Instance.OnHangSelf();
     }
 }

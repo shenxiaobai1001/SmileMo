@@ -1,12 +1,28 @@
 {
     "NormalConfigs": [
         {
-            "CallName": "左边砸平底锅",
+            "CallName": "一阳指",
             "Type": "礼物",
             "Message": "1",
             "Tip": "2",
-            "Count": 2,
-            "Delay": 0.10000000149011612
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "大巴掌",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "右边砸平底锅",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
         }
     ]
 }

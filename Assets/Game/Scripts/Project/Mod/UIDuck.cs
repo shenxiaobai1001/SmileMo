@@ -36,7 +36,7 @@ public class UIDuck : MonoBehaviour
     {
         if (tx_null) tx_null.text= $"{ItemManager.Instance.allReadyCreateDuck}";
         if (tx_get) tx_get.text = $"{ItemManager.Instance.allCreateDuck}";
-        if (tan) tan.transform.DOScale(1.1f, 0.05f).SetLoops(2, LoopType.Yoyo).OnComplete(() =>
+        if (tan) tan.transform.DOScale(1.1f, 0.025f).SetLoops(2, LoopType.Yoyo).OnComplete(() =>
         {
             tan.transform.localScale = Vector3.one;
         });
