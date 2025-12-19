@@ -77,13 +77,9 @@ public class Normal : MonoBehaviour
     /// </summary>
     public void TestCall()
     {
-        Dropdown dropdown = transform.GetChild(1).gameObject.GetComponent<Dropdown>();
-        string callName = dropdown.options[dropdown.value].text;
-
-        InputField inputField1 = transform.GetChild(7).gameObject.GetComponent<InputField>();
-        int times = int.Parse(inputField1.text);
-        InputField inputField2 = transform.GetChild(9).gameObject.GetComponent<InputField>();
-        float delay = float.Parse(inputField2.text);
+        string callName = BarrageController.Instance.barrageNormalSetting[transform.GetSiblingIndex()].CallName;
+        int times = BarrageController.Instance.barrageNormalSetting[transform.GetSiblingIndex()].Count;
+        float delay = BarrageController.Instance.barrageNormalSetting[transform.GetSiblingIndex()].Delay;
 
         BarrageController.Instance.StartCoroutine(BarrageController.Instance.CallFunction("≤‚ ‘”√ªß", "", callName, 1, times, delay));
     }
