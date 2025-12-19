@@ -1,13 +1,3 @@
 {
-    "BoxConfigs": [
-        {
-            "BoxName": "",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0,
-            "Calls": []
-        }
-    ]
+    "BoxConfigs": []
 }

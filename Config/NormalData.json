@@ -1,12 +1,12 @@
 {
     "NormalConfigs": [
         {
-            "CallName": "左边砸平底锅",
+            "CallName": "天残脚",
             "Type": "礼物",
             "Message": "1",
             "Tip": "2",
-            "Count": 2,
-            "Delay": 0.10000000149011612
+            "Count": 1,
+            "Delay": 1.600000023841858
         }
     ]
 }
