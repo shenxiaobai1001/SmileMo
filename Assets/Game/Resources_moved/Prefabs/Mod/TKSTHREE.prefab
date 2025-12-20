@@ -85,7 +85,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &7588145901580114299
@@ -122,7 +122,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   watiTime: 1
-  vector: {x: 10, y: 5, z: 0}
+  vector: 1
+  kickTime: 0.2
+  boomType: 0
   boom: 0
   continuous: 0
   continuousTime: 0
@@ -138,7 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88bf07b5a8c9acc47902087d7eb446c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  invokeTime: 2
+  invokeTime: 1.5
   toPool: 1
 --- !u!114 &168006562401817490
 MonoBehaviour:
@@ -153,6 +155,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  offset: {x: -3.3, y: -0.8, z: 0}
+  offset: {x: -4, y: -0.8, z: 0}
   followSpeed: 5
   smoothFollow: 0

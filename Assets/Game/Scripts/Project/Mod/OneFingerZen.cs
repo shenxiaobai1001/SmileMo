@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static PlayerModController;
 
 public class OneFingerZen : MonoBehaviour
 {
@@ -11,43 +12,49 @@ public class OneFingerZen : MonoBehaviour
     Vector3 startPos;
     float allTime = 2.5f;
     float time = 0;
+    float boomTime = 0;
     void Awake()
     {
         startPos = new Vector3(20, 0);
     }
     public void OnReadyStarMove()
     {
+        boomTime = 0;
         time = 0;
         transform.localPosition = startPos;
         transform.DOLocalMove(Vector3.zero, 0.5f).OnComplete(() => { OnBeginCreateBoom(); });
     }
     void OnBeginCreateBoom()
     {
-        EventManager.Instance.SendMessage(Events.OneFingerMove, true);
-        InvokeRepeating("OnCreateBoom", 0, 0.15f);
+        PlayerModController.Instance.TriggerModMove(MoveDirection.Left, allTime, 0, MoveType.TC);
+        StartCoroutine(OnCreateBoom());
     }
-
-    void OnCreateBoom()
+    IEnumerator OnCreateBoom()
     {
-        Sound.PlaySound("Sound/Mod/Boom");
-        GameObject bb = SimplePool.Spawn(boom, boomPos.transform.position, Quaternion.identity);
-        bb.transform.parent = ItemManager.Instance.transform;
-        bb.SetActive(true);
-        Camera.main.DOShakePosition(0.1f, new Vector3(0, 1f, 0), 0, 0f, false);
-        time += 0.15f;
-        if (time > allTime)
+        while (time <= allTime)
         {
-            if (IsInvoking("OnBeginCreateBoom"))
+            time += Time.deltaTime;
+            boomTime += Time.deltaTime;
+            if (boomTime > 0.15f)
             {
-                CancelInvoke("OnBeginCreateBoom");
+                Sound.PlaySound("Sound/Mod/Boom");
+                GameObject bb = SimplePool.Spawn(boom, boomPos.transform.position, Quaternion.identity);
+                bb.transform.parent = ItemManager.Instance.transform;
+                Camera.main.DOShakePosition(0.1f, new Vector3(0, 1.2f, 0), 0, 0f, false);
+                bb.SetActive(true);
+                boomTime = 0;
             }
-            if (IsInvoking("OnCreateBoom"))
-            {
-                CancelInvoke("OnCreateBoom");
-            }
-            EventManager.Instance.SendMessage(Events.OneFingerMove, false);
-            SimplePool.Despawn(this.gameObject);
+            yield return null;
         }
+        if (IsInvoking("OnBeginCreateBoom"))
+        {
+            CancelInvoke("OnBeginCreateBoom");
+        }
+        if (IsInvoking("OnCreateBoom"))
+        {
+            CancelInvoke("OnCreateBoom");
+        }
+        SimplePool.Despawn(this.gameObject);
     }
     private void OnDestroy()
     {

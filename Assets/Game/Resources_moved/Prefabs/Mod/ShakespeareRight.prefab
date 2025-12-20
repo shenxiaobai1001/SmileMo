@@ -122,7 +122,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   watiTime: 1.5
-  vector: {x: 10, y: 5, z: 0}
+  vector: 1
+  kickTime: 0.2
+  boomType: 1
+  boom: 0
+  continuous: 0
+  continuousTime: 0
 --- !u!114 &7922681745650580643
 MonoBehaviour:
   m_ObjectHideFlags: 0

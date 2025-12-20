@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -35,7 +36,16 @@ public class Rednose : MonoBehaviour
     // 击中玩家后的处理
     private void OnHitPlayer()
     {
-        PlayerModController.Instance.OnKickPlayer(new Vector3(Random.Range(-3, 3), 10),true);
+        Camera.main.DOShakePosition(0.1f, new Vector3(0, 1.2f, 0), 0, 0f, false);
+        int value = Random.Range(0, 2);
+        if (value == 0)
+        {
+            PlayerModController.Instance.TriggerModMove(MoveDirection.Left, 0.3f, 2);
+        }
+        else {
+            PlayerModController.Instance.TriggerModMove(MoveDirection.Right, 0.3f, 2);
+        }
+        
         SimplePool.Despawn(gameObject);
         gameObject.SetActive(false);
     }

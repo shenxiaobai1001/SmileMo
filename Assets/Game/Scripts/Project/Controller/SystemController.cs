@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 public class SystemController : MonoBehaviour
 {
@@ -22,6 +23,11 @@ public class SystemController : MonoBehaviour
     public int maxAirWallHp;
     [HideInInspector]
     public int airWallHp;
+    public bool airWallContin = false;
+    private void Start()
+    {
+        OnGetData();
+    }
     public void OnGetData()
     {
         float VolumeMusic = 1;
@@ -35,5 +41,26 @@ public class SystemController : MonoBehaviour
         if (PlayerPrefs.HasKey("maxAirWallHp"))
             maxAirWallHp = PlayerPrefs.GetInt("maxAirWallHp");
         airWallHp = maxAirWallHp;
+
+        airWallContin = airWallHp > 0;
+        EventManager.Instance.SendMessage(Events.AirWallStateChange, airWallContin);
+    }
+
+    public void OnSetAirwallHp(int max,int now)
+    {
+        maxAirWallHp = max;
+        airWallHp = now;
+        airWallContin = airWallHp > 0;
+        PlayerPrefs.SetInt("maxAirWallHp", maxAirWallHp);
+    }
+    public void OnSetWallHp(int now)
+    {
+        if (airWallHp <= 0) return;
+        airWallHp -= now;
+        airWallContin = airWallHp > 0;
+        if (!airWallContin)
+        {
+            EventManager.Instance.SendMessage(Events.AirWallStateChange, false);
+        }
     }
 }

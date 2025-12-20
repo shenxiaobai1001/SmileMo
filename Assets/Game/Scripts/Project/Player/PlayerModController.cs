@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class PlayerModController : MonoBehaviour
 {
     public static PlayerModController Instance;
+
+    // 组件引用
     public PlayerController playerController;
     public Rigidbody2D rigidbody;
     public BoxCollider2D box;
@@ -15,8 +18,65 @@ public class PlayerModController : MonoBehaviour
     public GameObject BoomPre;
     public GameObject Boomeff;
     public Transform createPos;
+    public GameObject Tomato;
+    public GameObject videoPlayer;
 
-    string[] gaiYas=new string[7] {"bishi","chaodan","huotui","mifan","jidan","jirou","mifen"};
+
+    // 爆炸类型
+    public enum BoomType
+    {
+        None = 0,
+        BoomEffect = 1,
+        BoomPreEffect = 2
+    }
+
+    // 移动数据
+    private class MoveData
+    {
+        public MoveType type = MoveType.None;
+        public MoveDirection direction = MoveDirection.Left;
+        public float moveTime = 0f;
+        public float maxMoveTime = 0f;
+        public bool rotate = false;
+
+        public void Reset()
+        {
+            type = MoveType.None;
+            moveTime = 0f;
+            maxMoveTime = 0f;
+        }
+
+        public bool IsActive => moveTime > 0f;
+    }
+
+    // 移动数据存储
+    private MoveData currentMove = new MoveData();
+    private Dictionary<MoveType, float> storedMoveTimes = new Dictionary<MoveType, float>();
+
+    // 状态控制
+    private int isPassivityMove = 0;
+    private bool isGMControl = false;
+    private float playerY => GameController.Instance?.gameLevel == 7 ? 190 : 5;
+
+    // 音效数组
+    private string[] gaiYas = new string[7] { "bishi", "chaodan", "huotui", "mifan", "jidan", "jirou", "mifen" };
+
+    // 其他功能状态
+    private bool canTomto = false;
+    private float tomateTime = 0;
+    private float cloakingTime = 0;
+    private float visibilityTime = 0;
+    private float fastSpeedTime = 0;
+    private float BigBetaTime = 17;
+    private float BigBetaBackTime = 17;
+
+    private bool isBigBetaForward = false;
+    private bool isBigBetaBack = false;
+    private bool isCloaking = false;
+    private bool invisibility = false;
+    private bool fastSpeed = false;
+    private float lastNormalMoveTime = 0f;
+    private Coroutine modMoveCoroutine;
 
     private void Awake()
     {
@@ -29,16 +89,297 @@ public class PlayerModController : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-    }
-    private void Start()
-    {
-        EventManager.Instance.AddListener(Events.OnQLMove, OnModMoveQL);
-        EventManager.Instance.AddListener(Events.OnTCMove, OnModMoveTC);
-        EventManager.Instance.AddListener(Events.OneFingerMove, OnModMoveFinger);
-        StartCoroutine(OnCheckGround());
+
+        // 初始化移动时间字典
+        foreach (MoveType type in System.Enum.GetValues(typeof(MoveType)))
+        {
+            storedMoveTimes[type] = 0f;
+        }
     }
 
-    bool isGMControl = false;
+    private void Start()
+    {
+        // 移除所有移动相关的事件监听
+        StartCoroutine(OnCheckGround());
+
+        // 启动统一的移动协程
+        if (modMoveCoroutine != null)
+        {
+            StopCoroutine(modMoveCoroutine);
+        }
+        modMoveCoroutine = StartCoroutine(ModMoveContinue());
+    }
+
+    #region 统一的移动系统
+    /// <summary>
+    /// 统一的外部移动触发方法
+    /// </summary>
+    /// <param name="direction">移动方向（Left/Right）</param>
+    /// <param name="moveTime">移动时间（秒）</param>
+    /// <param name="boomType">爆炸特效类型（0=无特效，1=BoomEffect，其他=BoomPre）</param>
+    /// <param name="moveType">移动类型（Normal/TC/QL/DuiKang）</param>
+    public void TriggerModMove(MoveDirection direction, float moveTime, int boomType, MoveType moveType = MoveType.Normal, bool rotate = false)
+    {
+        // 检查保护状态
+        bool protect = ModSystemController.Instance.Protecket;
+        if (protect) return;
+
+        // 播放爆炸特效
+        PlayBoomEffect(boomType);
+
+        // 取消挂起状态
+        if (ItemManager.Instance != null && ItemManager.Instance.isHang)
+        {
+            OnCancelHangSelf();
+        }
+
+        // 处理不同移动类型的逻辑
+        switch (moveType)
+        {
+            case MoveType.Normal:
+                // Normal移动累加时间
+                storedMoveTimes[MoveType.Normal] += moveTime;
+                lastNormalMoveTime = Time.time;
+                break;
+
+            case MoveType.TC:
+                // TC移动重置时间
+                storedMoveTimes[MoveType.TC] = moveTime;
+                break;
+
+            case MoveType.QL:
+                // QL移动重置时间
+                storedMoveTimes[MoveType.QL] = moveTime;
+                break;
+
+            case MoveType.DuiKang:
+                // 对抗状态，双方都设置时间
+                storedMoveTimes[MoveType.TC] = moveTime;
+                storedMoveTimes[MoveType.QL] = moveTime;
+                break;
+        }
+
+        // 记录当前移动的方向
+        currentMove.direction = direction;
+        currentMove.rotate = rotate;
+    }
+
+    /// <summary> 播放爆炸特效 </summary>
+    private void PlayBoomEffect(int boomType)
+    {
+        if (boomType == 0) return;
+
+        GameObject boomPrefab = boomType == 1 ? Boomeff : BoomPre;
+        if (boomPrefab != null)
+        {
+            GameObject boom = SimplePool.Spawn(boomPrefab, transform.position, Quaternion.identity);
+            boom.transform.SetParent(createPos.transform);
+            boom.SetActive(true);
+        }
+    }
+    float alltime = 0;
+    /// <summary>统一的移动协程</summary>
+    private IEnumerator ModMoveContinue()
+    {
+        while (true)
+        {
+            // 检查是否有活动的移动
+            if (HasActiveMove())
+            {
+                // 开始移动
+                if (!currentMove.IsActive)
+                {
+                    StartMove();
+                }
+
+                // 确定当前移动类型
+                DetermineCurrentMove();
+
+                // 执行移动
+                if (currentMove.IsActive)
+                {        // 检查保护状态
+                    bool protect = ModSystemController.Instance.Protecket;
+                    if (!protect)
+                    {
+                        if (!isKinematic)
+                        {
+                            OnChangeState(false);
+                        }
+                        ExecuteMove();
+                    }
+                    else
+                    {
+                        if (isKinematic)
+                        {
+                            OnChangeState(true);
+                        }
+                    }
+                        // 减少所有移动时间
+                        ReduceAllMoveTimes(Time.deltaTime);
+                    alltime += Time.deltaTime;
+                    // 检查Normal移动是否超时
+                    if (Time.time - lastNormalMoveTime > 1f && currentMove.type == MoveType.Normal)
+                    {
+                        storedMoveTimes[MoveType.Normal] = 0f;
+                    }
+
+                    // 检查移动是否结束
+                    if (!HasActiveMove())
+                    {
+                        PFunc.Log("移动结束", alltime);
+                        EndMove();
+                    }
+                }
+            }
+
+            yield return null;
+        }
+    }
+
+    /// <summary> 检查是否有活动的移动 </summary>
+    private bool HasActiveMove()
+    {
+        foreach (var kvp in storedMoveTimes)
+        {
+            if (kvp.Value > 0f && kvp.Key != MoveType.None)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary> 确定当前应该执行的移动类型</summary>
+    private void DetermineCurrentMove()
+    {
+        // 检查是否进入对抗状态
+        if (storedMoveTimes[MoveType.TC] > 0f && storedMoveTimes[MoveType.QL] > 0f)
+        {
+            currentMove.type = MoveType.DuiKang;
+            currentMove.moveTime = Mathf.Min(storedMoveTimes[MoveType.TC], storedMoveTimes[MoveType.QL]);
+        }
+        // 检查TC移动
+        else if (storedMoveTimes[MoveType.TC] > 0f)
+        {
+            currentMove.type = MoveType.TC;
+            currentMove.direction = MoveDirection.Left; // TC固定向左
+            currentMove.moveTime = storedMoveTimes[MoveType.TC];
+        }
+        // 检查QL移动
+        else if (storedMoveTimes[MoveType.QL] > 0f)
+        {
+            currentMove.type = MoveType.QL;
+            currentMove.direction = MoveDirection.Right; // QL固定向右
+            currentMove.moveTime = storedMoveTimes[MoveType.QL];
+        }
+        // 检查Normal移动
+        else if (storedMoveTimes[MoveType.Normal] > 0f)
+        {
+            currentMove.type = MoveType.Normal;
+            // 方向已由外部设置
+            currentMove.moveTime = storedMoveTimes[MoveType.Normal];
+        }
+        else
+        {
+            currentMove.Reset();
+        }
+    }
+    float airMintime = 0.1f;
+    float airtime = 0;
+    /// <summary> 执行移动逻辑 </summary>
+    private void ExecuteMove()
+    {
+        if (!currentMove.IsActive) return;
+        if (SystemController.Instance.airWallContin)
+        {
+            if ((currentMove.type==MoveType.TC || currentMove.type == MoveType.Normal && currentMove.direction == MoveDirection.Left)
+                && transform.position.x <= -6)
+            {
+                airtime += Time.deltaTime;
+                if (airtime > airMintime)
+                {
+                    SystemController.Instance.OnSetWallHp(1);
+                    airtime = 0;
+                }
+                if (transform.position.x <= -6)
+                {
+                    transform.position = new Vector3(-6, transform.position.y);
+                }
+                return;
+            }
+        }
+
+        // 根据移动类型执行不同的移动逻辑
+        switch (currentMove.type)
+        {
+            case MoveType.DuiKang:
+                // 对抗状态，摄像机抖动，不移动
+                Camera.main.DOShakePosition(0.5f, new Vector3(2, 2, 2), 3, 50, true);
+                break;
+            case MoveType.TC:
+                MovePlayer(new Vector3(-1, 0f) * 20);
+                break;
+
+            case MoveType.QL:
+                MovePlayer(new Vector3(1, 0f) * 20);
+                break;
+            case MoveType.Normal:
+                float moveSpeed = 16f;
+                Vector3 moveDir = currentMove.direction == MoveDirection.Left ?
+                    new Vector3(-1, 0.3f) : new Vector3(1, 0.3f);
+                MovePlayer(moveDir * moveSpeed);
+                break;
+        }
+        if(currentMove.rotate)
+        {
+            spriteTrans.Rotate(new Vector3(0, 0, 360) * 10 * Time.deltaTime);
+        }
+    }
+
+    /// <summary> 移动玩家 </summary>
+    private void MovePlayer(Vector3 velocity)
+    {
+        if (transform.position.y < playerY)
+        {
+            transform.Translate(Vector2.up * 6 * Time.deltaTime);
+        }
+        transform.Translate(velocity * Time.deltaTime);
+    }
+
+    /// <summary> 开始移动 </summary>
+    private void StartMove()
+    {
+        if (!isKinematic)
+        {
+            OnChangeState(false);
+        }
+     
+    }
+
+    /// <summary> 结束移动</summary>
+    private void EndMove()
+    {
+        isPassivityMove = 0;
+        OnChangeState(true);
+    }
+
+    /// <summary> 减少所有移动时间</summary>
+    private void ReduceAllMoveTimes(float deltaTime)
+    {
+        foreach (var type in new List<MoveType>(storedMoveTimes.Keys))
+        {
+            if (storedMoveTimes[type] > 0f)
+            {
+                storedMoveTimes[type] -= deltaTime;
+                if (storedMoveTimes[type] < 0f) storedMoveTimes[type] = 0f;
+            }
+        }
+    }
+
+    #endregion
+
+    #region 原有非移动功能保持
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.L))
@@ -48,7 +389,7 @@ public class PlayerModController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.P))
         {
-            transform.position = new Vector3(transform.position.x+5, 0);
+            transform.position = new Vector3(transform.position.x + 5, 0);
         }
         if (Input.GetKey(KeyCode.L))
         {
@@ -70,12 +411,19 @@ public class PlayerModController : MonoBehaviour
                 obj.transform.parent = createPos;
                 obj.SetActive(true);
                 obj.GetComponent<Tomate>().OnStartMove();
-                int index=Random.Range(0, 7);
+                int index = Random.Range(0, 7);
                 Sound.PlaySound($"Sound/Mod/fanqie{gaiYas[index]}");
             }
         }
-
+        if (!isGMControl)
+        {
+            if (transform.position.y >= playerY)
+            {
+                transform.position = new Vector3(transform.position.x, playerY);
+            }
+        }
     }
+
     IEnumerator OnCheckGround()
     {
         while (true)
@@ -85,436 +433,31 @@ public class PlayerModController : MonoBehaviour
             {
                 transform.position = new Vector3(transform.position.x, 0);
             }
-            if(!isGMControl)
-            {
-                if (transform.position.y >= playerY)
-                {
-                    transform.position = new Vector3(transform.position.x, playerY);
-                }
-            }
         }
     }
 
-    bool isHitPlayerBack = false;
-    public float backTime = 0;
-    bool canAddHitTime = true;
-
-    bool isHitPlayerForward = false;
-    public float ForwardTime = 0;
-    bool canAddHitTime1 = true;
-
-    int isPassivityMove = 0;
-    IEnumerator OnHitPlayerBack()
-    {
-        while (backTime > 0)
-        {
-            bool protect = ModSystemController.Instance.Protecket;
-            if (protect) { 
-                isPassivityMove--;
-                isHitPlayerBack = false;
-                if (isPassivityMove <= 0)
-                {
-                    backTime = 0;
-                    OnChangeState(true);
-                }
-                yield break;
-            }
-            if (transform.position.y < playerY)
-            {
-                transform.Translate(Vector2.up * 8 * Time.deltaTime);
-            }
-            transform.Translate(new Vector2(-1,1) * 16 * Time.deltaTime);
-            backTime -= Time.deltaTime;
-            yield return null;
-        }
-        isPassivityMove--;
-        isHitPlayerBack = false;
-        if (isPassivityMove <= 0)
-        {
-            isPassivityMove = 0;
-            backTime = 0;
-            OnChangeState(true);
-        }
-    }
-    public void OnLeftHitPlayer()
-    {
-        bool protect = ModSystemController.Instance.Protecket;
-        if (protect) return;
-        backTime += 0.055f;
-        GameObject boom = SimplePool.Spawn(Boomeff, transform.position, Quaternion.identity);
-        boom.transform.SetParent(createPos.transform);
-        boom.SetActive(true);
-        if(!isKinematic)
-         OnChangeState(false);
-        if (!isHitPlayerBack)
-        {
-            PlayerController.Instance.OnChangeHitState();
-            isPassivityMove++;
-            isHitPlayerBack = true;
-            StartCoroutine(OnHitPlayerBack());
-        }
-        if (ItemManager.Instance.isHang)
-        {
-            OnCancelHangSelf();
-        }
-    }
-    public void OnRightHitPlayer()
-    {
-        bool protect = ModSystemController.Instance.Protecket;
-        if (protect) return;
-        ForwardTime += 0.055f;
-        GameObject boom = SimplePool.Spawn(Boomeff, transform.position, Quaternion.identity);
-        boom.transform.SetParent(createPos.transform);
-        boom.SetActive(true);
-        if (!isKinematic)
-            OnChangeState(false);
-        if (!isHitPlayerForward)
-        {
-            isPassivityMove++;
-            isHitPlayerForward = true;
-            StartCoroutine(OnHitPlayerForward());
-        }
-        if (ItemManager.Instance.isHang)
-        {
-            OnCancelHangSelf();
-        }
-    }
-
-
-    IEnumerator OnHitPlayerForward()
-    {
-        while (ForwardTime > 0)
-        {
-            bool protect = ModSystemController.Instance.Protecket;
-            // 如果处于保护状态，等待直到保护结束
-            if (protect)
-            {
-                isPassivityMove--;
-                isHitPlayerForward = false;
-                if (isPassivityMove <= 0)
-                {
-                    ForwardTime = 0;
-                    OnChangeState(true);
-                }
-                yield break;
-            }
-            if (transform.position.y < playerY)
-            {
-                transform.Translate(Vector2.up * 8 * Time.deltaTime);
-            }
-            transform.Translate(new Vector2(1,1) * 16 * Time.deltaTime);
-            ForwardTime -= Time.deltaTime;
-            yield return null;
-        }
-        isPassivityMove--;
-        isHitPlayerForward = false;
-        if (isPassivityMove <= 0)
-        {
-            backTime = 0;
-            OnChangeState(true);
-        }
-    }
-
-    public void OnKickPlayer(Vector3 force, bool boom = false)
-    {
-        bool protect = ModSystemController.Instance.Protecket;
-        if (protect) return;
-        if (ItemManager.Instance.isHang)
-        {
-            OnCancelHangSelf();
-        }
-        if (boom)
-        {
-            GameObject boomobj = SimplePool.Spawn(BoomPre, transform.position, Quaternion.identity);
-            boomobj.transform.SetParent(createPos.transform);
-            boomobj.SetActive(true);
-        }
-        rigidbody.AddForce(force, ForceMode2D.Impulse);
-    }
     bool isKinematic = false;
     void OnChangeState(bool open)
     {
         box.enabled = open;
         Center.SetActive(open);
-        playerController.isHit = !open;
+        if (playerController != null)
+        {
+            playerController.isHit = !open;
+        }
         rigidbody.isKinematic = !open;
         isKinematic = !open;
-        PlayerController.Instance.OnRest();
+        if (PlayerController.Instance != null)
+        {
+            PlayerController.Instance.OnRest();
+        }
     }
 
-    bool isCloaking = false;
-    public float cloakingTime = 0;
     public void OnCloaking(DataInfo dataInfo)
     {
         cloakingTime += dataInfo.count * dataInfo.time;
     }
 
-    #region 天残脚麒麟臂
-    MoveType moveType = MoveType.None;
-    bool isMove = false;
-    bool toMove = false;
-    Vector3 startPos = Vector3.zero;
-    int tcCount = 0;
-    int qlCount = 0;
-    int fingerCount = 0;
-    void OnModMoveTC(object msg)
-    {
-        bool show = (bool)msg;
-        startPos = transform.position;
-        if (show)
-            tcCount++;
-        else
-            tcCount--;
-
-        OnCheckMoveType();
-        if (toMove)
-        {
-            OnChangeState(false);
-            if (!isMove)
-            {
-                isPassivityMove++;
-                isMove = true;
-                StartCoroutine(OnModMove());
-            }
-        }
-        if (ItemManager.Instance.isHang)
-        {
-            OnCancelHangSelf();
-        }
-    }
-    void OnModMoveFinger(object msg)
-    {
-        bool show = (bool)msg;
-        startPos = transform.position;
-        if (show)
-            fingerCount++;
-        else
-            fingerCount--;
-
-        OnCheckMoveType();
-        if (toMove)
-        {
-            OnChangeState(false);
-            if (!isMove)
-            {
-                isPassivityMove++;
-                isMove = true;
-                StartCoroutine(OnModMove());
-            }
-        }
-        if (ItemManager.Instance.isHang)
-        {
-            OnCancelHangSelf();
-        }
-    }
-    void OnModMoveQL(object msg)
-    {
-        bool show = (bool)msg;
-        startPos = transform.position;
-        if (show)
-            qlCount++;
-        else
-            qlCount--;
-
-        OnCheckMoveType();
-        if (toMove)
-        {
-            OnChangeState(false);
-            if (!isMove)
-            {
-                isPassivityMove++;
-                isMove = true;
-                StartCoroutine(OnModMove());
-            }
-        }
-        if (ItemManager.Instance.isHang)
-        {
-            OnCancelHangSelf();
-        }
-    }
-    void OnCheckMoveType()
-    {
-        if (tcCount > 0 && qlCount <= 0)
-        {
-            moveType = MoveType.TC;
-        }
-        else if (tcCount <= 0 && qlCount > 0)
-        {
-            moveType = MoveType.QL;
-        }
-        else if (tcCount > 0 && qlCount > 0)
-        {
-            moveType = MoveType.DuiKang;
-        }
-        else if (fingerCount>0)
-        {
-            moveType = MoveType.Finger;
-        }
-        else
-        {
-            moveType = MoveType.None;
-        }
-        toMove = qlCount > 0 || tcCount > 0 || fingerCount > 0;
-    }
-
-    float playerY
-    {
-        get {             
-            int value = 0;
-            if (GameController.Instance!=null)
-                value= GameController.Instance.gameLevel == 7 ? 190 : 5;
-            else
-            {
-                value = 5;
-            }
-            return value;
-        }
-    }
-    IEnumerator OnModMove()
-    {
-        PFunc.Log("OnModMove开始", isPassivityMove, toMove, moveType);
-        while (toMove)
-        {
-            bool protect = ModSystemController.Instance.Protecket;
-            // 如果处于保护状态，等待直到保护结束
-            while (protect)
-            {
-                if (isKinematic)
-                    OnChangeState(true);
-                yield return new WaitForSeconds(0.1f);  // 每隔0.1秒检查一次
-                protect = ModSystemController.Instance.Protecket;
-            }
-            if (!isKinematic)
-                OnChangeState(false);
-            switch (moveType)
-            {
-                case MoveType.None:
-                    toMove = false;
-                    yield return null;
-                    break;
-                case MoveType.DuiKang:
-                    Camera.main.DOShakePosition(0.5f, new Vector3(2, 2, 2), 3, 50, true);
-                    yield return new WaitForSeconds(0.7f);
-                    transform.position = startPos;
-                    yield return null;
-                    break;
-                case MoveType.TC:
-                    transform.Translate(new Vector3(-1, 0.1f) * 20 * Time.deltaTime);
-                    startPos = transform.position;
-                    yield return null;
-                    break;
-                case MoveType.Finger:
-                    transform.Translate(new Vector3(-1, 0.1f) * 30 * Time.deltaTime);
-                    startPos = transform.position;
-                    yield return null;
-                    break;
-                case MoveType.QL:
-                    transform.Translate(new Vector3(1, 0.1f) * 20 * Time.deltaTime);
-                    startPos = transform.position;
-                    yield return null;
-                    break;
-            }
-        }
-       
-        isPassivityMove--;
-        isMove = false;
-        PFunc.Log("3麒麟臂结束", isPassivityMove);
-        if (isPassivityMove<=0)
-        {
-            isPassivityMove = 0;
-            OnChangeState(true);
-        }
-    }
-    enum MoveType
-    {
-        None,
-        DuiKang,
-        TC,
-        QL,
-        Finger,
-    }
-    #endregion
-
-    bool isBigBetaForward = false;
-    bool isBigBetaBack = false;
-    public float BigBetaTime = 17;
-    public float BigBetaBackTime = 17;
-    public void OnBigBetaForward(bool forward)
-    {
-        bool protect = ModSystemController.Instance.Protecket;
-        if (protect) return;
-        if (forward)
-        {
-            if (!isBigBetaForward)
-            {
-                isPassivityMove++;
-                OnChangeState(false);
-                isBigBetaForward = true;
-                StartCoroutine(BigBetaForward());
-            }
-        }
-        else 
-        {
-            if (!isBigBetaBack)
-            {
-                isPassivityMove++;
-                OnChangeState(false);
-                isBigBetaBack = true;
-                StartCoroutine(BigBetaBack());
-            }
-        }
-
-        if (ItemManager.Instance.isHang) 
-        { 
-            OnCancelHangSelf();
-        }
-    }
-
-    IEnumerator BigBetaForward()
-    {
-        while (BigBetaTime > 0)
-        {
-            if (transform.position.y < playerY)
-            {
-                transform.Translate(Vector2.up * 8 * Time.deltaTime);
-            }
-            transform.Translate(Vector2.right * 32 * Time.deltaTime);
-            spriteTrans.Rotate(new Vector3(0,0,360)*10* Time.deltaTime);
-            BigBetaTime -= Time.deltaTime;
-            yield return null;
-        }
-        isBigBetaForward = false;
-        BigBetaTime = 17;
-        isPassivityMove--;
-        spriteTrans.localEulerAngles = Vector3.zero;
-        if (isPassivityMove<=0)
-            OnChangeState(true);
-    }
-    IEnumerator BigBetaBack()
-    {
-        while (BigBetaBackTime > 0)
-        {
-            if (transform.position.y < playerY)
-            {
-                transform.Translate(Vector2.up * 8 * Time.deltaTime);
-            }
-            transform.Translate(Vector2.left * 32* Time.deltaTime);
-            spriteTrans.Rotate(new Vector3(0, 0, -360) * 10 * Time.deltaTime);
-            BigBetaBackTime -= Time.deltaTime;
-            yield return null;
-        }
-        spriteTrans.localEulerAngles = Vector3.zero;
-        isBigBetaBack = false;
-        BigBetaTime = 17;
-        isPassivityMove--;
-        if (isPassivityMove <= 0)
-            OnChangeState(true);
-    }
-
-
-    public GameObject Tomato;
-    bool canTomto = false;
-    float tomateTime = 0;
     public void OnClickToCreateTomaTo()
     {
         tomateTime += 10;
@@ -522,37 +465,50 @@ public class PlayerModController : MonoBehaviour
         {
             Sound.PlaySound("Sound/Mod/gaiya");
             EventManager.Instance.SendMessage(Events.GaiyaTomato);
-            Invoke("OnReadyTomato",3);
+            Invoke("OnReadyTomato", 3);
         }
     }
+
     void OnReadyTomato()
     {
         canTomto = true;
         StartCoroutine(onCheckTomato());
     }
+
     IEnumerator onCheckTomato()
     {
-        while (tomateTime>0)
+        while (tomateTime > 0)
         {
-            tomateTime-=Time.deltaTime;
+            tomateTime -= Time.deltaTime;
             yield return null;
         }
         EventManager.Instance.SendMessage(Events.GaiyaTomatoEnd);
         canTomto = false;
         tomateTime = 0;
     }
-    #region 隐身
-    bool invisibility = false;
-    float visibilityTime = 0;
+
     public void OnInvisibility()
     {
         visibilityTime = 1;
-        if (!invisibility) {
-            invisibility = true;
-            spriteTrans.gameObject.SetActive(false);
-            StartCoroutine(OnCheckVisibility());
+        string path = $"MOD/yinshen";
+        GameObject obj = SimplePool.Spawn(videoPlayer, PlayerController.Instance.transform.position, Quaternion.identity);
+        VideoManager videoManager = obj.GetComponent<VideoManager>();
+        obj.transform.SetParent(Camera.main.transform);
+        obj.SetActive(true);
+        videoManager.OnPlayVideo(2, path, false);
+        if (!invisibility)
+        {
+            Invoke("OnReadyVisibility", 1);
         }
     }
+
+    void OnReadyVisibility()
+    {
+        invisibility = true;
+        spriteTrans.gameObject.SetActive(false);
+        StartCoroutine(OnCheckVisibility());
+    }
+
     IEnumerator OnCheckVisibility()
     {
         while (visibilityTime > 0)
@@ -564,13 +520,10 @@ public class PlayerModController : MonoBehaviour
         invisibility = false;
         visibilityTime = 0;
     }
-    #endregion
 
-    bool fastSpeed = false;
-    float fastSpeedTime = 0;
     public void OnFastSpeed()
     {
-        fastSpeedTime +=5;
+        fastSpeedTime += 5;
         PlayerData.Instance.moveSpeed += 5;
         PlayerData.Instance.fmoveSpeed += 5;
         if (!fastSpeed)
@@ -579,6 +532,7 @@ public class PlayerModController : MonoBehaviour
             StartCoroutine(OnCheckFastSpeed());
         }
     }
+
     public void OnMainSpeed()
     {
         fastSpeedTime = 5;
@@ -598,6 +552,7 @@ public class PlayerModController : MonoBehaviour
             StartCoroutine(OnCheckFastSpeed());
         }
     }
+
     IEnumerator OnCheckFastSpeed()
     {
         while (fastSpeedTime > 0)
@@ -610,36 +565,42 @@ public class PlayerModController : MonoBehaviour
         fastSpeed = false;
         fastSpeedTime = 0;
     }
-    public  void OnHangSelf()
+
+    public void OnHangSelf()
     {
-        playerController.OnRest();
-        playerController.isHit = true;
+        if (playerController != null)
+        {
+            playerController.OnRest();
+            playerController.isHit = true;
+        }
         spriteTrans.gameObject.SetActive(false);
         isPassivityMove++;
         OnChangeState(false);
     }
+
     public void OnCancelHangSelf()
     {
-        playerController.isHit = true;
+        if (playerController != null)
+        {
+            playerController.isHit = true;
+        }
         spriteTrans.gameObject.SetActive(true);
         isPassivityMove--;
-        if (isPassivityMove<=0)
+        if (isPassivityMove <= 0)
         {
             isPassivityMove = 0;
             OnChangeState(true);
         }
-       
-        Vector3 vector = HangSelf.Instance.lastPoint.transform.position;
-        if (vector != Vector3.zero) {
-            playerController.transform.position = vector;
+
+        if (HangSelf.Instance != null && HangSelf.Instance.lastPoint != null)
+        {
+            Vector3 vector = HangSelf.Instance.lastPoint.transform.position;
+            if (vector != Vector3.zero)
+            {
+                transform.position = vector;
+            }
+            HangSelf.Instance.OnBreakeHang();
         }
-        HangSelf.Instance.OnBreakeHang();
     }
-
-    private void OnDestroy()
-    {
-        EventManager.Instance.RemoveListener(Events.OnTCMove, OnModMoveTC);
-        EventManager.Instance.RemoveListener(Events.OnQLMove, OnModMoveQL);
-    } 
-
+    #endregion
 }

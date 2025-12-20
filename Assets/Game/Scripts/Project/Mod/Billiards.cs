@@ -27,7 +27,7 @@ public class Billiards : MonoBehaviour
         sequence.Append(ganZi.transform.DOLocalMove(ganZiPos, 0.15f)); // 第二步：返回原位
         sequence.onComplete += () => {
             Sound.PlaySound($"Sound/Mod/taiqiu");
-            PlayerModController.Instance.OnKickPlayer(new Vector3(-30, 20));
+            PlayerModController.Instance.TriggerModMove(MoveDirection.Left, 1f, 2);
             GameObject obj = SimplePool.Spawn(boom, boomPos.transform.position,Quaternion.identity);
             obj.transform.SetParent(boomPos.transform);
             obj.SetActive(true);

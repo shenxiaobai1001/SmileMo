@@ -323,6 +323,7 @@ public class BarrageController : MonoBehaviour
     /// <param name="callName"></param>
     public IEnumerator CallFunction(string user, string avatar, string callName, int giftCount, int times, float delay)
     {
+        PlayerAutomaticSystem.Instance.OnStopAutomatic();
         for (int i = 0; i < giftCount * times; i++)
         {
             switch (callName)

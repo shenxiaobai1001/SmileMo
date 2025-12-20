@@ -88,7 +88,10 @@ public class LevelSevenController : MonoBehaviour
         ModSystemController.Instance.OnTransFarSevenOut();
         UISevenSchedule.Instance.OnCloseSchedule();
         killMonster = 0;
-        GameController.Instance.OnMoveToOldSavePos();
+        if (SystemController.Instance.airWallContin)
+            GameController.Instance.PlayerRestToSavePos(null);
+        else
+            GameController.Instance.OnMoveToOldSavePos();
     }
 
     public void OnOutPlayerSevenSucc()

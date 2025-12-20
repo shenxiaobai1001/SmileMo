@@ -122,7 +122,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   watiTime: 0.5
-  vector: {x: -10, y: 10, z: 0}
+  vector: 0
+  kickTime: 0.2
+  boomType: 0
   boom: 0
   continuous: 0
   continuousTime: 0

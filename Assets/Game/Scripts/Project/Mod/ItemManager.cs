@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Video;
 using static UnityEngine.Rendering.DebugUI;
 
 public class ItemManager : MonoBehaviour
@@ -109,6 +110,7 @@ public class ItemManager : MonoBehaviour
         }
         return duckCount;
     }
+    public GameObject videoPlayer;
     public void OnCreatePDG(string callName)
     {
         Transform createPos = null;
@@ -136,14 +138,25 @@ public class ItemManager : MonoBehaviour
         bool protect = ModSystemController.Instance.Protecket;
         if (protect) return;
          FreezeTime = 1;
+        string path = $"MOD/dingshen";
+        GameObject obj = SimplePool.Spawn(videoPlayer, PlayerController.Instance.transform.position, Quaternion.identity);
+        VideoManager videoManager = obj.GetComponent<VideoManager>();
+        obj.transform.SetParent(Camera.main.transform);
+        obj.SetActive(true); 
+        videoManager.OnPlayVideo(2, path, false);
         Sound.PlaySound("Sound/Mod/Freeze");
-        if (!Freeze)
+        if(!Freeze)
         {
-            PlayerController.Instance.isHit = true;
-            Freeze = true;
-            iceObject=Instantiate(Ice);
-            StartCoroutine(OnChecklayerFreeze());
+            Invoke("OnReadyFreeze", 0.5f);
         }
+            
+    }
+    void OnReadyFreeze()
+    {
+        PlayerController.Instance.isHit = true;
+        Freeze = true;
+        iceObject = Instantiate(Ice);
+        StartCoroutine(OnChecklayerFreeze());
     }
     IEnumerator OnChecklayerFreeze()
     {
@@ -175,7 +188,7 @@ public class ItemManager : MonoBehaviour
     {
         GameObject obj = SimplePool.Spawn(Electricity, transform.position, Quaternion.identity);
         obj.transform.SetParent(transform);
-        PlayerModController.Instance.OnKickPlayer(new Vector3(Random.Range(-3, 3), 10));
+        PlayerModController.Instance.TriggerModMove(MoveDirection.Left, 0.3f, 1);
     }
 
     public bool rainBow = false;
@@ -224,7 +237,7 @@ public class ItemManager : MonoBehaviour
         int allCount = 10;
         GameObject obj = Instantiate(blackHand);
         obj.transform.SetParent(Camera.main.transform);
-        obj.transform.position = Vector3.zero;
+        obj.transform.localPosition =new Vector3(0,0,15);
         BlackHand fastRunEffect = obj.GetComponent<BlackHand>();
         fastRunEffect.OnSetTime (allCount);
         Sound.PlaySound("Sound/Mod/hs");
@@ -236,6 +249,7 @@ public class ItemManager : MonoBehaviour
     public GameObject Banana;
     public void OnCreateRocket()
     {
+        Sound.PlaySound("Sound/Mod/daodan");
         int value = Random.Range(0, 10);
         GameObject rocket = value == 5 ? spacilRocket : normalRocket;
         float x = Random.Range(-10, 10);
@@ -247,6 +261,7 @@ public class ItemManager : MonoBehaviour
     }
     public void OnCreateBanana()
     {
+        Sound.PlaySound("Sound/Mod/banana");
         int value = Random.Range(0, 2);
         Transform trans = value == 0 ? createPos1 : createPos4;
         Vector3 dCPos = new Vector3(trans.position.x, trans.position.y + 8);
@@ -340,7 +355,9 @@ public class ItemManager : MonoBehaviour
     public GameObject Huoquan;
     public void OnCreateHuoquan()
     {
-        Vector3 cpos = new Vector3(createPos1.position.x, createPos1.position.y + 1);
+        Sound.PlaySound("Sound/Mod/huoquan");
+        float y = Random.Range(-1, 5);
+        Vector3 cpos = new Vector3(createPos1.position.x, createPos1.position.y + y);
         GameObject obj = SimplePool.Spawn(Huoquan, cpos, Quaternion.identity);
         obj.transform.SetParent(transform);
         obj.SetActive(true);

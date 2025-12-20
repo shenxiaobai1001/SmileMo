@@ -152,5 +152,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   watiTime: 1.2
-  vector: {x: 0, y: 15, z: 0}
-  boom: 1
+  vector: 0
+  kickTime: 0.3
+  boomType: 2
+  boom: 0
+  continuous: 0
+  continuousTime: 0

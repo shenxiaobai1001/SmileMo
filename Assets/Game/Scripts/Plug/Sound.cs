@@ -21,7 +21,6 @@ public class Sound
     /// <summary>当前使用的音效索引</summary>
     static int SoundIndex = 0;
 
-
     public static bool hasPlayMusic = false;//是否正在播放音乐
     public static string PlayingMusicName;//正在播放的音乐名称
     static Sound()
@@ -38,6 +37,8 @@ public class Sound
         VolumeMusic = musicValue;
         VolumeSound = soundValue;
         VideoVolume = soundValue;
+        PlayerPrefs.SetFloat("VolumeMusic", VolumeMusic);
+        PlayerPrefs.SetFloat("VolumeSound", VolumeSound);
         if (MusicManager) MusicManager.GetComponent<AudioSource>().volume = VolumeMusic;
     }
     /// <summary>获得音乐大小</summary>

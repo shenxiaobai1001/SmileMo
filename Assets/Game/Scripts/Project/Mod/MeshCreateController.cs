@@ -76,7 +76,7 @@ public class MeshCreateController : MonoBehaviour
         obj.transform.SetParent(Camera.main.transform, false);
         obj.transform.localPosition = new Vector3(0, 0, 1);
         obj.transform.localRotation = Quaternion.identity;
-        Invoke("OnReadyCreateFinger", 1);
+        Invoke("OnReadyCreateFinger", 0.5f);
     }
 
     public void OnReadyCreateFinger()

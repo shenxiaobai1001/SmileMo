@@ -17,7 +17,7 @@ public class VideoManager : MonoBehaviour
         mainPlayer.Events.AddListener(OnVideoEvent);         // 订阅播放器本身提供的事件
         mCanvas.renderMode = RenderMode.ScreenSpaceCamera;
         mCanvas.worldCamera = Camera.main;
-        mCanvas.sortingLayerName = "Effect";  // Sorting Layer 名称
+        mCanvas.sortingLayerName = "Video";  // Sorting Layer 名称
         mCanvas.sortingOrder = 0;         // Order in Layer
 
     }

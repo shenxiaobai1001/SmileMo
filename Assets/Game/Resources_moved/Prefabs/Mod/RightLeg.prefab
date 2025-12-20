@@ -122,7 +122,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   watiTime: 1.4
-  vector: {x: -10, y: 5, z: 0}
+  vector: 0
+  kickTime: 0.2
+  boomType: 1
+  boom: 0
+  continuous: 0
+  continuousTime: 0
 --- !u!114 &7149304638244122420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,6 +141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   invokeTime: 2
+  toPool: 0
 --- !u!114 &452680421975108913
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -127,14 +127,14 @@ public class ModSystemController : MonoBehaviour
         Sound.PlaySound("Sound/Mod/dbt");
         GameObject obj = SimplePool.Spawn(bigBeta, transform.position, Quaternion.identity);
         obj.transform.parent = transform;
-        PlayerModController.Instance.OnBigBetaForward(true);
+        PlayerModController.Instance.TriggerModMove(MoveDirection.Right, 17,0, MoveType.Normal,true);
     }
     public void OnBigBetaBack()
     {
         Sound.PlaySound("Sound/Mod/dbt");
         GameObject obj = SimplePool.Spawn(bigBeta, transform.position, Quaternion.identity);
         obj.transform.parent = transform;
-        PlayerModController.Instance.OnBigBetaForward(false);
+        PlayerModController.Instance.TriggerModMove(MoveDirection.Left, 17,0, MoveType.Normal, true);
     }
     public GameObject tansfarPre;
     public void OnRandromPlayerPos()

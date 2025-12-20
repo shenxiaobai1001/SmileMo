@@ -26,6 +26,8 @@ public class UISystem : MonoBehaviour
         sl_music.onValueChanged.AddListener(OnMusicValue);
         sl_sound.onValueChanged.AddListener(OnSoundValue);
         inputField.onEndEdit.AddListener(OnInputEndEdit);
+        sl_music.value = Sound.VolumeMusic / 1;
+        sl_sound.value = Sound.VolumeSound / 1;
     }
 
     void OnMusicValue(float valuie)
@@ -35,7 +37,8 @@ public class UISystem : MonoBehaviour
     }
     void OnSoundValue(float valuie)
     {
-        Sound.VolumeSound = sl_music.value;
+        Sound.VolumeSound = sl_sound.value; 
+        Sound.OnSetVolume(Sound.VolumeMusic, Sound.VolumeSound);
     }
     void OnClose()
     {
@@ -51,7 +54,6 @@ public class UISystem : MonoBehaviour
     }
     void OnRestGame()
     {
-
         Loaded.OnLoadScence("Assets/Game/Scenes/InitScence");
     }
 
@@ -64,7 +66,7 @@ public class UISystem : MonoBehaviour
         if (value == string.Empty) return;
 
         int maxhp=int.Parse(value);
-        SystemController.Instance.maxAirWallHp = maxhp;
-        SystemController.Instance.airWallHp = maxhp;
+        SystemController.Instance.OnSetAirwallHp (maxhp, maxhp);
+        EventManager.Instance.SendMessage(Events.AirWallStateChange, maxhp > 0);
     }
 }
