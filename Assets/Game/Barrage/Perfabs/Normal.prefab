@@ -671,7 +671,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 0.1
   m_Viewport: {fileID: 210377624387537569}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 7155179503742425266}
@@ -987,7 +987,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u5EF6\u8FDF:"
+  m_Text: "\u95F4\u9694:"
 --- !u!114 &4180778760305313243
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2255,7 +2255,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 0.1
   m_Viewport: {fileID: 9177952737417280363}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 6606631093433127224}

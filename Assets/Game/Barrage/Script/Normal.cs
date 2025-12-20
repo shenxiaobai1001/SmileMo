@@ -81,6 +81,6 @@ public class Normal : MonoBehaviour
         int times = BarrageController.Instance.barrageNormalSetting[transform.GetSiblingIndex()].Count;
         float delay = BarrageController.Instance.barrageNormalSetting[transform.GetSiblingIndex()].Delay;
 
-        BarrageController.Instance.StartCoroutine(BarrageController.Instance.CallFunction("测试用户", "", callName, 1, times, delay));
+        BarrageController.Instance.EnqueueAction("测试用户", "", callName, 1, times, delay);
     }
 }

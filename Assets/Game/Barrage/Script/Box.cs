@@ -250,6 +250,6 @@ public class Box : MonoBehaviour
         int times = BarrageController.Instance.barrageBoxSetting[transform.GetSiblingIndex()].Count;
         float delay = BarrageController.Instance.barrageBoxSetting[transform.GetSiblingIndex()].Delay;
 
-        BarrageController.Instance.StartCoroutine(BarrageController.Instance.CallFunction("测试用户", "", callName, 1, times, delay));
+        BarrageController.Instance.EnqueueAction("测试用户", "", callName, 1, times, delay);
     }
 }

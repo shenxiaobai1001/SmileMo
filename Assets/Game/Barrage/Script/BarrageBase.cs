@@ -36,7 +36,7 @@ public class BarrageBase : MonoBehaviour
         {
             if (config.Type == "关注")
             {
-                barrageConfigs.StartCoroutine(barrageConfigs.CallFunction(user, avatar, config.CallName, 1, config.Count, config.Delay));
+                barrageConfigs.EnqueueAction(user, avatar, config.CallName, 1, config.Count, config.Delay);
             }
         }
 
@@ -47,7 +47,7 @@ public class BarrageBase : MonoBehaviour
             {
                 int index = UnityEngine.Random.Range(0, config.Calls.Count);
                 string CallName = config.Calls[index];
-                barrageConfigs.StartCoroutine(barrageConfigs.CallFunction(user, avatar, CallName, 1, config.Count, config.Delay));
+                barrageConfigs.EnqueueAction(user, avatar, CallName, 1, config.Count, config.Delay);
             }
         }
     }
@@ -70,7 +70,7 @@ public class BarrageBase : MonoBehaviour
         {
             if (config.Type == "弹幕" && config.Message == content)
             {
-                barrageConfigs.StartCoroutine(barrageConfigs.CallFunction(user, avatar, config.CallName, 1, config.Count, config.Delay));
+                barrageConfigs.EnqueueAction(user, avatar, config.CallName, 1, config.Count, config.Delay);
             }
         }
 
@@ -81,7 +81,7 @@ public class BarrageBase : MonoBehaviour
             {
                 int index = UnityEngine.Random.Range(0, config.Calls.Count);
                 string CallName = config.Calls[index];
-                barrageConfigs.StartCoroutine(barrageConfigs.CallFunction(user, avatar, CallName, 1, config.Count, config.Delay));
+                barrageConfigs.EnqueueAction(user, avatar, CallName, 1, config.Count, config.Delay);
             }
         }
     }
@@ -105,7 +105,7 @@ public class BarrageBase : MonoBehaviour
         {
             if (config.Type == "礼物" && config.Message == giftName)
             {
-                barrageConfigs.StartCoroutine(barrageConfigs.CallFunction(user, avatar, config.CallName, giftCount, config.Count, config.Delay));
+                barrageConfigs.EnqueueAction(user, avatar, config.CallName, giftCount, config.Count, config.Delay);
             }
         }
 
@@ -116,7 +116,7 @@ public class BarrageBase : MonoBehaviour
             {
                 int index = UnityEngine.Random.Range(0, config.Calls.Count);
                 string CallName = config.Calls[index];
-                barrageConfigs.StartCoroutine(barrageConfigs.CallFunction(user, avatar, CallName, giftCount, config.Count, config.Delay));
+                barrageConfigs.EnqueueAction(user, avatar, CallName, giftCount, config.Count, config.Delay);
             }
         }
     }
@@ -138,7 +138,7 @@ public class BarrageBase : MonoBehaviour
         {
             if (config.Type == "进入")
             {
-                barrageConfigs.StartCoroutine(barrageConfigs.CallFunction(user, avatar, config.CallName, 1, config.Count, config.Delay));
+                barrageConfigs.EnqueueAction(user, avatar, config.CallName, 1, config.Count, config.Delay);
             }
         }
 
@@ -149,7 +149,7 @@ public class BarrageBase : MonoBehaviour
             {
                 int index = UnityEngine.Random.Range(0, config.Calls.Count);
                 string CallName = config.Calls[index];
-                barrageConfigs.StartCoroutine(barrageConfigs.CallFunction(user, avatar, CallName, 1, config.Count, config.Delay));
+                barrageConfigs.EnqueueAction(user, avatar, CallName, 1, config.Count, config.Delay);
             }
         }
     }
@@ -181,7 +181,7 @@ public class BarrageBase : MonoBehaviour
         {
             if (config.Type == "点赞" && likeCount[user] > int.Parse(config.Message))
             {
-                barrageConfigs.StartCoroutine(barrageConfigs.CallFunction(user, avatar, config.CallName, 1, config.Count, config.Delay));
+                barrageConfigs.EnqueueAction(user, avatar, config.CallName, 1, config.Count, config.Delay);
                 likeCount[user] -= int.Parse(config.Message);
             }
         }
@@ -193,7 +193,7 @@ public class BarrageBase : MonoBehaviour
             {
                 int index = UnityEngine.Random.Range(0, config.Calls.Count);
                 string CallName = config.Calls[index];
-                barrageConfigs.StartCoroutine(barrageConfigs.CallFunction(user, avatar, CallName, 1, config.Count, config.Delay));
+                barrageConfigs.EnqueueAction(user, avatar, CallName, 1, config.Count, config.Delay);
                 likeCount[user] -= int.Parse(config.Message);
             }
         }
