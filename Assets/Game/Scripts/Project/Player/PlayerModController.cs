@@ -226,7 +226,6 @@ public class PlayerModController : MonoBehaviour
                     // 检查移动是否结束
                     if (!HasActiveMove())
                     {
-                        PFunc.Log("移动结束", alltime);
                         EndMove();
                     }
                 }

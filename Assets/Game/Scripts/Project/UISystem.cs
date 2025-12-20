@@ -17,7 +17,7 @@ public class UISystem : MonoBehaviour
 
     public TMP_InputField inputField;
 
-    private void Start()
+    private void OnEnable()
     {
         btn_close.Click(OnClose);
         btn_back.Click(OnBackStartScence);
@@ -26,8 +26,15 @@ public class UISystem : MonoBehaviour
         sl_music.onValueChanged.AddListener(OnMusicValue);
         sl_sound.onValueChanged.AddListener(OnSoundValue);
         inputField.onEndEdit.AddListener(OnInputEndEdit);
-        sl_music.value = Sound.VolumeMusic / 1;
-        sl_sound.value = Sound.VolumeSound / 1;
+        PFunc.Log(Sound.VolumeMusic, Sound.VolumeSound);
+        PFunc.Log((float)Sound.VolumeMusic / (float)1, (float)Sound.VolumeSound / (float)1);
+        sl_music.value = (float)Sound.VolumeMusic / (float)1;
+        sl_sound.value = (float)Sound.VolumeSound / (float)1;
+        if (SystemController.Instance.maxAirWallHp != 0)
+        {
+            inputField.text = SystemController.Instance.maxAirWallHp.ToString();
+        }
+       
     }
 
     void OnMusicValue(float valuie)
@@ -66,7 +73,7 @@ public class UISystem : MonoBehaviour
         if (value == string.Empty) return;
 
         int maxhp=int.Parse(value);
-        SystemController.Instance.OnSetAirwallHp (maxhp, maxhp);
+        SystemController.Instance.OnSetAirwallHp(maxhp, maxhp);
         EventManager.Instance.SendMessage(Events.AirWallStateChange, maxhp > 0);
     }
 }

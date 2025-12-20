@@ -393,6 +393,7 @@ public class ItemManager : MonoBehaviour
     public bool isHang = false;
     public void OnCreateHangSelf()
     {
+        PFunc.Log("ио╣У");
         Vector3 vectorPlayer = PlayerController.Instance.transform.position;
         Vector3 createPos = new Vector3(vectorPlayer.x, 0);
         GameObject obj = SimplePool.Spawn(HangSelf, createPos, Quaternion.identity);

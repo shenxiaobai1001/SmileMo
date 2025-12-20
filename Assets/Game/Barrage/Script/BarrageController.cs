@@ -126,6 +126,7 @@ public class BarrageController : MonoBehaviour
     /// <param name="task"></param>
     private void ExecuteAction(ActionTask task)
     {
+        PlayerAutomaticSystem.Instance.OnStopAutomatic();
         switch (task.callName)
         {
             case "砸鸭子":
@@ -182,9 +183,9 @@ public class BarrageController : MonoBehaviour
             case "Boom":
                 ItemManager.Instance.OnBoomGrandma();
                 break;
-            case "随机传送":
-                ModSystemController.Instance.OnRandromPlayerPos();
-                break;
+            //case "随机传送":
+            //    ModSystemController.Instance.OnRandromPlayerPos();
+            //    break;
             case "呸":
                 ItemManager.Instance.OnCreateBlackHand();
                 break;
@@ -259,6 +260,9 @@ public class BarrageController : MonoBehaviour
                 break;
             case "动感DJ":
                 CallManager.Instance.OnCreateVideoPlayer("动感DJ", 2);
+                break;
+            case "上吊":
+                ItemManager.Instance.OnCreateHangSelf();
                 break;
         }
     }

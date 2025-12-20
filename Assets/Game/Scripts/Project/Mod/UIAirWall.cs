@@ -10,17 +10,19 @@ public class UIAirWall : MonoBehaviour
     public GameObject airwall;
     public GameObject airWallCollier;
 
-    public bool airwalls = true;    
+    public bool airwalls = false;    
 
     void Start()
     {
-        EventManager.Instance.AddListener(Events.AirWallStateChange, OnAirWallState);
+        EventManager.Instance.AddListener(Events.AirWallStateChange, OnAirWallState); 
+        airwall.SetActive(false);
+        airWallCollier.SetActive(false);
     }
 
-    void Update()
+    void LateUpdate()
     {
         if (!SystemController.Instance.airWallContin) return;
-        if (GameController.Instance.gameLevel != 1)
+        if (GameController.Instance.gameLevel > 1)
         {
             airwall.SetActive(false);
             airWallCollier.SetActive(false);
@@ -31,14 +33,13 @@ public class UIAirWall : MonoBehaviour
 
         tx_hp.text = $"HP:{hp}/{maxhp}";
         sl_hp.value = (float)hp/ (float)maxhp;
-
-     
     }
 
     void OnAirWallState(object msg)
     {
         bool show = (bool)msg;
 
+        PFunc.Log(" ’µΩOnAirWallState",show);
         airwall.SetActive(show);
         airWallCollier.SetActive(show);
     }

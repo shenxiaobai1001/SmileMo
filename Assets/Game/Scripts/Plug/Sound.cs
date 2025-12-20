@@ -39,6 +39,8 @@ public class Sound
         VideoVolume = soundValue;
         PlayerPrefs.SetFloat("VolumeMusic", VolumeMusic);
         PlayerPrefs.SetFloat("VolumeSound", VolumeSound);
+
+        PFunc.Log("    Sound.OnSetVolume", VolumeMusic, VolumeSound);
         if (MusicManager) MusicManager.GetComponent<AudioSource>().volume = VolumeMusic;
     }
     /// <summary>获得音乐大小</summary>
