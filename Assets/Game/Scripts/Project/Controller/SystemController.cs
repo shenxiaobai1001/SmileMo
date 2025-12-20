@@ -51,7 +51,7 @@ public class SystemController : MonoBehaviour
         maxAirWallHp = max;
         airWallHp = now;
         airWallContin = airWallHp > 0;
-        PlayerPrefs.SetInt("maxAirWallHp", maxAirWallHp);
+        PlayerPrefs.SetInt("maxAirWallHp",maxAirWallHp);
     }
     public void OnSetWallHp(int now)
     {
