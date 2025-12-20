@@ -115,25 +115,27 @@ public class ModSystemController : MonoBehaviour
     public void OnShakespeare()
     {
         int value = Random.Range(0, 2);
+        string path = $"MOD/shashibiya";
+        string fpath = $"MOD/fshashibiya";
+        string tpath = value == 0 ? path : fpath;
+
         GameObject createObj = value == 0 ? ShakespeareLeft : ShakespeareRight;
+        Vector3 scale = value == 0 ? new Vector3(1f, 1f) : new Vector3(1f, 1f);
+        Vector3 offest = value == 0 ? new Vector3(4, 1.5f) : new Vector3(-4, 1.5f);
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(offest, Vector3.one, tpath);
         GameObject obj = SimplePool.Spawn(createObj, transform.position, Quaternion.identity);
-        Sound.PlaySound("Sound/Mod/ssby");
         obj.transform.parent = transform;
     }
-
-    public GameObject bigBeta;
     public void OnBigBetaForward()
     {
-        Sound.PlaySound("Sound/Mod/dbt");
-        GameObject obj = SimplePool.Spawn(bigBeta, transform.position, Quaternion.identity);
-        obj.transform.parent = transform;
+        string path = $"MOD/dabeita";
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(0, 1), new Vector3(0.6f, 0.6f), path);
         PlayerModController.Instance.TriggerModMove(MoveDirection.Right, 17,0, MoveType.Normal,true);
     }
     public void OnBigBetaBack()
     {
-        Sound.PlaySound("Sound/Mod/dbt");
-        GameObject obj = SimplePool.Spawn(bigBeta, transform.position, Quaternion.identity);
-        obj.transform.parent = transform;
+        string path = $"MOD/dabeita";
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(0, 1), new Vector3(0.6f, 0.6f), path);
         PlayerModController.Instance.TriggerModMove(MoveDirection.Left, 17,0, MoveType.Normal, true);
     }
     public GameObject tansfarPre;

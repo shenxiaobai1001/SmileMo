@@ -43,4 +43,8 @@ public class UIAirWall : MonoBehaviour
         airwall.SetActive(show);
         airWallCollier.SetActive(show);
     }
+    private void OnDestroy()
+    {
+        EventManager.Instance.RemoveListener(Events.AirWallStateChange, OnAirWallState);
+    }
 }

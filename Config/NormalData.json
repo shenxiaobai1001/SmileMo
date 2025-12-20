@@ -1,7 +1,7 @@
 {
     "NormalConfigs": [
         {
-            "CallName": "天残脚",
+            "CallName": "大巴掌",
             "Type": "礼物",
             "Message": "1",
             "Tip": "2",
@@ -9,15 +9,7 @@
             "Delay": 0.0
         },
         {
-            "CallName": "砸鸭子",
-            "Type": "",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0
-        },
-        {
-            "CallName": "麒麟臂",
+            "CallName": "冰冻",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -25,7 +17,7 @@
             "Delay": 0.0
         },
         {
-            "CallName": "撞大运",
+            "CallName": "跑快点",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -33,7 +25,15 @@
             "Delay": 0.0
         },
         {
-            "CallName": "一阳指",
+            "CallName": "右鞭腿",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "莎士比亚",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -57,7 +57,7 @@
             "Delay": 0.0
         },
         {
-            "CallName": "吐口水五",
+            "CallName": "彩虹猫",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -65,7 +65,31 @@
             "Delay": 0.0
         },
         {
-            "CallName": "上吊",
+            "CallName": "番茄连招",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "撞大运",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "动感DJ",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "火圈",
             "Type": "礼物",
             "Message": "",
             "Tip": "",

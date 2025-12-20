@@ -214,15 +214,16 @@ public class PlayerModController : MonoBehaviour
                             OnChangeState(true);
                         }
                     }
-                        // 减少所有移动时间
-                        ReduceAllMoveTimes(Time.deltaTime);
+                    // 减少所有移动时间
+                    ReduceAllMoveTimes(Time.deltaTime);
                     alltime += Time.deltaTime;
                     // 检查Normal移动是否超时
-                    if (Time.time - lastNormalMoveTime > 1f && currentMove.type == MoveType.Normal)
+                    if (Time.time - lastNormalMoveTime > 1f 
+                        && currentMove.type == MoveType.Normal
+                        && !ModVideoPlayerController.Instance.IsPlaying)
                     {
                         storedMoveTimes[MoveType.Normal] = 0f;
                     }
-
                     // 检查移动是否结束
                     if (!HasActiveMove())
                     {
@@ -358,6 +359,7 @@ public class PlayerModController : MonoBehaviour
     /// <summary> 结束移动</summary>
     private void EndMove()
     {
+        spriteTrans.transform.localEulerAngles= Vector3.zero;
         isPassivityMove = 0;
         OnChangeState(true);
     }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Video;
 using static UnityEngine.Rendering.DebugUI;
@@ -173,15 +174,17 @@ public class ItemManager : MonoBehaviour
 
     public void OnRightLegKick()
     {
-        GameObject obj=  Instantiate(RightLeg);
+        string path = $"MOD/rightleg";
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(-0.4f, 0.5f), new Vector3(0.6f, 0.6f), path, "Effect");
+        GameObject obj= SimplePool.Spawn(RightLeg, transform.position, Quaternion.identity);
         obj.transform.SetParent(transform);
-        Sound.PlaySound("Sound/Mod/rightLeg");
     }
     public void OnLeftLegKick()
     {
-        GameObject obj = Instantiate(LeftLeg);
+        string path = $"MOD/leftleg";
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(0.8f, 1), new Vector3(0.6f, 0.6f), path, "Effect");
+        GameObject obj = SimplePool.Spawn(LeftLeg, transform.position, Quaternion.identity);
         obj.transform.SetParent(transform);
-        Sound.PlaySound("Sound/Mod/leftLeg");
     }
 
     public void OnLightningHit()
@@ -220,7 +223,8 @@ public class ItemManager : MonoBehaviour
 
     public void OnBoomGrandma()
     {
-        Sound.PlaySound("Sound/Mod/BoomGrandma");
+        string path = $"MOD/BOOM";
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(1.2F, 0), new Vector3(0.8f, 0.8f), path, "Effect");
         GameObject obj = SimplePool.Spawn(BoomGrandema, transform.position, Quaternion.identity);
         obj.transform.SetParent(transform);
     }
@@ -275,7 +279,8 @@ public class ItemManager : MonoBehaviour
     public GameObject bird;
     public void OnCreateBird()
     {
-        Sound.PlaySound("Sound/Mod/brid");
+        string path = $"MOD/bird";
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(-0.5f, 0.5f), new Vector3(0.8f, 0.8f), path, "Effect");
         GameObject obj = SimplePool.Spawn(bird, Vector3.zero, Quaternion.identity);
         obj.transform.SetParent(transform);
         obj.SetActive(true);
@@ -326,23 +331,28 @@ public class ItemManager : MonoBehaviour
         switch (callName)
         {
             case "吐口水一":
-                Sound.PlaySound("Sound/Mod/tks1");
+                string path1 = $"MOD/tks1";
+                ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(0.2f, 1.7f), new Vector3(0.8f, 0.8f), path1, "Effect");
                 tksobj = tksone;
                 break;
             case "吐口水二":
-                Sound.PlaySound("Sound/Mod/tks2");
+                string path2 = $"MOD/tks2";
+                ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(3, -2.8f), new Vector3(0.8f, 0.8f), path2, "Effect");
                 tksobj = tkstwo;
                 break;
             case "吐口水三":
-                Sound.PlaySound("Sound/Mod/tks3");
+                string path3 = $"MOD/tks3";
+                ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(-4, -0.8f), new Vector3(0.8f, 0.8f), path3, "Effect");
                 tksobj = tksthree;
                 break;
             case "吐口水四":
-                Sound.PlaySound("Sound/Mod/tks4");
+                string path4 = $"MOD/tks4";
+                ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(1.9f, -3), new Vector3(0.8f, 0.8f), path4, "Effect");
                 tksobj = tksfour;
                 break;
             case "吐口水五":
-                Sound.PlaySound("Sound/Mod/tks5");
+                string path5 = $"MOD/tks5";
+                ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(-1.7f, -1.4f), new Vector3(0.8f, 0.8f), path5, "Effect");
                 tksobj = tksfive;
                 break;
         }
@@ -365,17 +375,18 @@ public class ItemManager : MonoBehaviour
     public GameObject bannedPost;
     public void OnCreateBannedPost()
     {
-        Sound.PlaySound("Sound/Mod/jy");
-        GameObject obj = SimplePool.Spawn(bannedPost,Vector3.zero, Quaternion.identity);
-        obj.transform.SetParent(Camera.main.transform);
-        obj.transform.localPosition = new Vector3(0, 0,5);
-        obj.transform.localEulerAngles = Vector3.zero;
+        string path5 = $"MOD/jinyan";
+        GameObject obj = SimplePool.Spawn(videoPlayer, PlayerController.Instance.transform.position, Quaternion.identity);
+        VideoManager videoManager = obj.GetComponent<VideoManager>();
+        obj.transform.SetParent(transform);
         obj.SetActive(true);
+        videoManager.OnPlayVideo(2, path5,false);
     }
     public GameObject gofast;
     public void OnCreateGoFast()
     {
-        Sound.PlaySound("Sound/Mod/pkd");
+        string path5 = $"MOD/PKD";
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(-0.3f, 2.2f), new Vector3(0.8f, 0.8f), path5, "Effect");
         GameObject obj = SimplePool.Spawn(gofast, PlayerController.Instance.transform.position, Quaternion.identity);
         obj.transform.SetParent(transform);
         obj.SetActive(true);
@@ -383,7 +394,8 @@ public class ItemManager : MonoBehaviour
     public GameObject goback;
     public void OnCreateGoBack()
     {
-        Sound.PlaySound("Sound/Mod/ttt");
+        string path5 = $"MOD/TTT";
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(-0.3f, 2.2f), new Vector3(0.8f, 0.8f), path5, "Effect");
         GameObject obj = SimplePool.Spawn(goback, PlayerController.Instance.transform.position, Quaternion.identity);
         obj.transform.SetParent(transform);
         obj.SetActive(true);

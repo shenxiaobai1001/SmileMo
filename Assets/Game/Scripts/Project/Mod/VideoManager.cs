@@ -19,8 +19,8 @@ public class VideoManager : MonoBehaviour
         mCanvas.worldCamera = Camera.main;
         mCanvas.sortingLayerName = "Video";  // Sorting Layer Ãû³Æ
         mCanvas.sortingOrder = 0;         // Order in Layer
-
     }
+
     int videoType = 0;
     public void OnPlayVideo(int type, string title, bool snake = true)
     {
