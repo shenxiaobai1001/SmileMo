@@ -289,7 +289,6 @@ public class BarrageController : MonoBehaviour
     {
         isInit = false;
         prankType = (PrankType)type;
-        LoadDataFromJson();
         if (type == (int)PrankType.normal)
         {
             RemoveAllItem();
@@ -300,7 +299,6 @@ public class BarrageController : MonoBehaviour
             RemoveAllItem();
             InitBoxConfig();
         }
-        SaveDataToJson();
     }
 
     /// <summary>
@@ -404,53 +402,51 @@ public class BarrageController : MonoBehaviour
     /// </summary>
     public void LoadDataFromJson()
     {
-        if(prankType == PrankType.normal)
+ 
+        string filePath1 = Path.Combine(Directory.GetCurrentDirectory(), "Config", "NormalData.json");
+
+        if (!File.Exists(filePath1))
         {
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "Config", "NormalData.json");
-
-            if (!File.Exists(filePath))
-            {
-                Debug.LogWarning("未找到配置文件: " + filePath);
-                return;
-            }
-
-            try
-            {
-                string jsonData = File.ReadAllText(filePath);
-
-                BarrageNormalWrapper wrapper = JsonUtility.FromJson<BarrageNormalWrapper>(jsonData);
-                barrageNormalSetting = wrapper.NormalConfigs;
-
-                Debug.Log($"成功加载 {wrapper.NormalConfigs.Count} 条普通配置数据");
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"加载失败: {e.Message}");
-            }
+            Debug.LogWarning("未找到配置文件: " + filePath1);
+            return;
         }
-        else
+
+        try
         {
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "Config", "BoxData.json");
-            if (!File.Exists(filePath))
-            {
-                Debug.LogWarning("未找到配置文件: " + filePath);
-                return;
-            }
+            string jsonData = File.ReadAllText(filePath1);
 
-            try
-            {
-                string jsonData = File.ReadAllText(filePath);
+            BarrageNormalWrapper wrapper = JsonUtility.FromJson<BarrageNormalWrapper>(jsonData);
+            barrageNormalSetting = wrapper.NormalConfigs;
 
-                BarrageBoxWrapper wrapper = JsonUtility.FromJson<BarrageBoxWrapper>(jsonData);
-                barrageBoxSetting = wrapper.BoxConfigs;
-
-                Debug.Log($"成功加载 {wrapper.BoxConfigs.Count} 条盲盒配置数据");
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"加载失败: {e.Message}");
-            }
+            Debug.Log($"成功加载 {wrapper.NormalConfigs.Count} 条普通配置数据");
         }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"加载失败: {e.Message}");
+        }
+        
+
+        string filePath2 = Path.Combine(Directory.GetCurrentDirectory(), "Config", "BoxData.json");
+        if (!File.Exists(filePath2))
+        {
+            Debug.LogWarning("未找到配置文件: " + filePath2);
+            return;
+        }
+
+        try
+        {
+            string jsonData = File.ReadAllText(filePath2);
+
+            BarrageBoxWrapper wrapper = JsonUtility.FromJson<BarrageBoxWrapper>(jsonData);
+            barrageBoxSetting = wrapper.BoxConfigs;
+
+            Debug.Log($"成功加载 {wrapper.BoxConfigs.Count} 条盲盒配置数据");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"加载失败: {e.Message}");
+        }
+        
 
     }
 

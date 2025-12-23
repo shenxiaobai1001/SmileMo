@@ -63,6 +63,7 @@ public class GameController : MonoBehaviour
         if (isPrankPanel)
         {
             prankPanel.SetActive(true);
+            BarrageController.Instance.LoadDataFromJson();
             BarrageController.Instance.ChangePrankType(0);
         }
         else
