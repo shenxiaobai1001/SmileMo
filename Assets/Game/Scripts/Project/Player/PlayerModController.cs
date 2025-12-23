@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Video;
 
 public class PlayerModController : MonoBehaviour
@@ -20,7 +21,6 @@ public class PlayerModController : MonoBehaviour
     public Transform createPos;
     public GameObject Tomato;
     public GameObject videoPlayer;
-
 
     // 爆炸类型
     public enum BoomType
@@ -49,6 +49,37 @@ public class PlayerModController : MonoBehaviour
         public bool IsActive => moveTime > 0f;
     }
 
+    public MoveType moveType1 = MoveType.None;
+
+    // 新增：长时移动记忆
+    private class LongTimeMove
+    {
+        public MoveDirection direction = MoveDirection.Left;
+        public float remainingTime = 0f;  // 剩余移动时间
+        public float totalTime = 0f;      // 总移动时间
+        public float interruptedAt = 0f;  // 被打断时的时间点
+
+        public void Set(MoveDirection dir, float time)
+        {
+            direction = dir;
+            remainingTime = time;
+            totalTime = time;
+        }
+
+        public void ReduceTime(float deltaTime)
+        {
+            if (remainingTime > 0)
+            {
+                remainingTime -= deltaTime;
+                if (remainingTime < 0) remainingTime = 0;
+            }
+        }
+
+        public bool HasRemainingTime => remainingTime > 0f;
+    }
+
+    private LongTimeMove longTimeMove = new LongTimeMove();
+
     // 移动数据存储
     private MoveData currentMove = new MoveData();
     private Dictionary<MoveType, float> storedMoveTimes = new Dictionary<MoveType, float>();
@@ -64,19 +95,25 @@ public class PlayerModController : MonoBehaviour
     // 其他功能状态
     private bool canTomto = false;
     private float tomateTime = 0;
-    private float cloakingTime = 0;
     private float visibilityTime = 0;
     private float fastSpeedTime = 0;
-    private float BigBetaTime = 17;
-    private float BigBetaBackTime = 17;
-
-    private bool isBigBetaForward = false;
-    private bool isBigBetaBack = false;
-    private bool isCloaking = false;
     private bool invisibility = false;
     private bool fastSpeed = false;
-    private float lastNormalMoveTime = 0f;
     private Coroutine modMoveCoroutine;
+
+    // 等待结束相关状态
+    private bool isWaitingToEnd = false;
+    private float waitStartTime = 0f;
+
+    // 添加一个移动完全结束的标志
+    private bool isMoveCompletelyEnded = true;
+
+    // 新增：Normal方向时间记录
+    private Dictionary<MoveDirection, float> normalDirectionTimes = new Dictionary<MoveDirection, float>()
+    {
+        { MoveDirection.Left, 0f },
+        { MoveDirection.Right, 0f }
+    };
 
     private void Awake()
     {
@@ -110,14 +147,13 @@ public class PlayerModController : MonoBehaviour
         modMoveCoroutine = StartCoroutine(ModMoveContinue());
     }
 
+    float lastAddTime = 0;
+    float lastNormalMoveTime = 0;
     #region 统一的移动系统
+
     /// <summary>
     /// 统一的外部移动触发方法
     /// </summary>
-    /// <param name="direction">移动方向（Left/Right）</param>
-    /// <param name="moveTime">移动时间（秒）</param>
-    /// <param name="boomType">爆炸特效类型（0=无特效，1=BoomEffect，其他=BoomPre）</param>
-    /// <param name="moveType">移动类型（Normal/TC/QL/DuiKang）</param>
     public void TriggerModMove(MoveDirection direction, float moveTime, int boomType, MoveType moveType = MoveType.Normal, bool rotate = false)
     {
         // 检查保护状态
@@ -133,12 +169,18 @@ public class PlayerModController : MonoBehaviour
             OnCancelHangSelf();
         }
 
+        // 重置移动完全结束标志
+        isMoveCompletelyEnded = false;
+
+        // 重置等待状态，因为有新的移动加入
+        isWaitingToEnd = false;
+
         // 处理不同移动类型的逻辑
         switch (moveType)
         {
             case MoveType.Normal:
-                // Normal移动累加时间
-                storedMoveTimes[MoveType.Normal] += moveTime;
+                // 新增：处理Normal移动
+                HandleNormalMove(direction, moveTime);
                 lastNormalMoveTime = Time.time;
                 break;
 
@@ -158,12 +200,27 @@ public class PlayerModController : MonoBehaviour
                 storedMoveTimes[MoveType.QL] = moveTime;
                 break;
         }
-
-        // 记录当前移动的方向
+        // 重置等待状态
+        isWaitingToEnd = false;
+        isWait = false;
+        if (moveTime >= lastAddTime)
+        {
+            lastAddTime =  moveTime ;
+            waitStartTime = Time.time;
+        }
+    
         currentMove.direction = direction;
         currentMove.rotate = rotate;
     }
 
+    /// <summary>
+    /// 新增：处理Normal移动
+    /// </summary>
+    private void HandleNormalMove(MoveDirection direction, float time)
+    {
+        // 累加对应方向的时间
+        normalDirectionTimes[direction] += time;
+    }
     /// <summary> 播放爆炸特效 </summary>
     private void PlayBoomEffect(int boomType)
     {
@@ -177,7 +234,7 @@ public class PlayerModController : MonoBehaviour
             boom.SetActive(true);
         }
     }
-    float alltime = 0;
+
     /// <summary>统一的移动协程</summary>
     private IEnumerator ModMoveContinue()
     {
@@ -186,10 +243,15 @@ public class PlayerModController : MonoBehaviour
             // 检查是否有活动的移动
             if (HasActiveMove())
             {
+                // 重置移动完全结束标志
+                isMoveCompletelyEnded = false;
+
                 // 开始移动
                 if (!currentMove.IsActive)
                 {
+                    DetermineCurrentMove();
                     StartMove();
+                    yield return null;
                 }
 
                 // 确定当前移动类型
@@ -197,48 +259,102 @@ public class PlayerModController : MonoBehaviour
 
                 // 执行移动
                 if (currentMove.IsActive)
-                {        // 检查保护状态
+                {
+                    // 检查保护状态
                     bool protect = ModSystemController.Instance.Protecket;
                     if (!protect)
                     {
                         if (!isKinematic)
                         {
                             OnChangeState(false);
+                            yield return null;
+                            bool isfip = currentMove.type == MoveType.QL ||
+                                       (currentMove.type == MoveType.Normal && currentMove.direction == MoveDirection.Right);
+                            playerController.OnChangeHitState(isfip);
                         }
                         ExecuteMove();
                     }
                     else
                     {
-                        if (isKinematic)
-                        {
-                            OnChangeState(true);
-                        }
+                        if (isKinematic) OnChangeState(true);
                     }
+
                     // 减少所有移动时间
                     ReduceAllMoveTimes(Time.deltaTime);
-                    alltime += Time.deltaTime;
-                    // 检查Normal移动是否超时
-                    if (Time.time - lastNormalMoveTime > 1f 
-                        && currentMove.type == MoveType.Normal
+
+                    PFunc.Log("减少所有移动时间", Time.time, lastNormalMoveTime,(Time.time - lastNormalMoveTime), (lastAddTime + 0.1f), currentMove.type, ModVideoPlayerController.Instance.IsPlaying);
+
+                    if (Time.time - lastNormalMoveTime > (lastAddTime + 0.1f)
+                        && (currentMove.type == MoveType.Normal|| currentMove.type == MoveType.NormalDuiKang)
                         && !ModVideoPlayerController.Instance.IsPlaying)
                     {
                         storedMoveTimes[MoveType.Normal] = 0f;
-                    }
-                    // 检查移动是否结束
-                    if (!HasActiveMove())
-                    {
-                        EndMove();
+                        normalDirectionTimes[MoveDirection.Right] =0;
+                        normalDirectionTimes[MoveDirection.Left] = 0;
+                        isWaitingToEnd=true;
                     }
                 }
             }
-
+            else
+            {
+                PFunc.Log("没有活动移动，检查是否在等待结束");
+                // 没有活动移动，检查是否在等待结束
+                if (isWaitingToEnd)
+                {
+                    PFunc.Log("检查是否等待了1秒", waitStartTime  ,lastAddTime, (waitStartTime-Time.time ), (lastAddTime + 0.1f));
+                    // 检查是否等待了1秒
+                    if (waitStartTime  >= (lastAddTime + 0.1f))
+                    {
+                        // 等待结束，执行真正的结束
+                        EndMove();
+                        isWaitingToEnd = false;
+                        waitStartTime = 0f;
+                        isMoveCompletelyEnded = true;
+                        yield return null;
+                    }
+                    else
+                    {
+                        if (!isWait)
+                        {
+                            OnDeepMove();
+                        }
+                    }
+                }
+                else if (!isMoveCompletelyEnded)
+                {
+                    // 第一次检测到没有活动移动，开始等待
+                    isWaitingToEnd = true;
+                    waitStartTime = Time.time;
+                }
+            }
             yield return null;
         }
     }
 
-    /// <summary> 检查是否有活动的移动 </summary>
+    bool isWait = false;
+
+    void OnDeepMove()
+    {
+        if (!currentMove.IsActive) return;
+        bool protect = ModSystemController.Instance.Protecket;
+        if (protect) return;
+
+        if (SystemController.Instance.airWallContin)
+        {
+            if ((currentMove.type == MoveType.TC || currentMove.type == MoveType.Normal && currentMove.direction == MoveDirection.Left)
+             && transform.position.x <= -6) return;
+        }
+        isWait = true;
+        if (isKinematic) OnChangeState(true);
+        Vector3 moveDir = currentMove.direction == MoveDirection.Left ?
+                new Vector3(-10, 0) : new Vector3(10, 0);
+        rigidbody.AddForce(moveDir, ForceMode2D.Impulse);
+    }
+
+    /// <summary> 检查是否有活动的移动 </summary> 
     private bool HasActiveMove()
     {
+        // 检查TC/QL/对抗
         foreach (var kvp in storedMoveTimes)
         {
             if (kvp.Value > 0f && kvp.Key != MoveType.None)
@@ -246,53 +362,81 @@ public class PlayerModController : MonoBehaviour
                 return true;
             }
         }
+        if (normalDirectionTimes[MoveDirection.Left] > 0f) return true;
+        if (normalDirectionTimes[MoveDirection.Right] > 0f) return true;
+
         return false;
     }
 
     /// <summary> 确定当前应该执行的移动类型</summary>
     private void DetermineCurrentMove()
     {
-        // 检查是否进入对抗状态
+        // 优先级1：TC/QL对抗
         if (storedMoveTimes[MoveType.TC] > 0f && storedMoveTimes[MoveType.QL] > 0f)
         {
             currentMove.type = MoveType.DuiKang;
+            CameraShaker.Instance.SetShakeParameters(0.2f, 2,new Vector3(0,1.2f));
             currentMove.moveTime = Mathf.Min(storedMoveTimes[MoveType.TC], storedMoveTimes[MoveType.QL]);
         }
-        // 检查TC移动
+        // 优先级2：TC移动
         else if (storedMoveTimes[MoveType.TC] > 0f)
         {
             currentMove.type = MoveType.TC;
             currentMove.direction = MoveDirection.Left; // TC固定向左
             currentMove.moveTime = storedMoveTimes[MoveType.TC];
         }
-        // 检查QL移动
+        // 优先级3：QL移动
         else if (storedMoveTimes[MoveType.QL] > 0f)
         {
             currentMove.type = MoveType.QL;
             currentMove.direction = MoveDirection.Right; // QL固定向右
             currentMove.moveTime = storedMoveTimes[MoveType.QL];
         }
-        // 检查Normal移动
-        else if (storedMoveTimes[MoveType.Normal] > 0f)
+        // 优先级4：Normal对抗
+        else if (normalDirectionTimes[MoveDirection.Left] > 0 &&  normalDirectionTimes[MoveDirection.Right] > 0)
+        {
+            CameraShaker.Instance.SetShakeParameters(0.2f, 2, new Vector3(0, 0.8f));
+            currentMove.type = MoveType.NormalDuiKang;
+            float duikangTime = normalDirectionTimes[MoveDirection.Left] > normalDirectionTimes[MoveDirection.Right] ? 
+                normalDirectionTimes[MoveDirection.Right] : normalDirectionTimes[MoveDirection.Left];
+            currentMove.moveTime = duikangTime;
+        }
+        // 优先级5：Normal向左移动
+        else if (normalDirectionTimes[MoveDirection.Left] > 0f)
         {
             currentMove.type = MoveType.Normal;
-            // 方向已由外部设置
-            currentMove.moveTime = storedMoveTimes[MoveType.Normal];
+            currentMove.direction = MoveDirection.Left;
+            currentMove.moveTime = normalDirectionTimes[MoveDirection.Left];
+        }
+        // 优先级6：Normal向右移动
+        else if (normalDirectionTimes[MoveDirection.Right] > 0f)
+        {
+            currentMove.type = MoveType.Normal;
+            currentMove.direction = MoveDirection.Right;
+            currentMove.moveTime = normalDirectionTimes[MoveDirection.Right];
         }
         else
         {
             currentMove.Reset();
         }
+
+        moveType1 = currentMove.type;
     }
+
     float airMintime = 0.1f;
     float airtime = 0;
+    float snakeTargetTime = 1;
+    float snakeTime = 2;
+
     /// <summary> 执行移动逻辑 </summary>
     private void ExecuteMove()
     {
         if (!currentMove.IsActive) return;
+
         if (SystemController.Instance.airWallContin)
         {
-            if ((currentMove.type==MoveType.TC || currentMove.type == MoveType.Normal && currentMove.direction == MoveDirection.Left)
+            if ((currentMove.type == MoveType.TC ||
+                 (currentMove.type == MoveType.Normal && currentMove.direction == MoveDirection.Left))
                 && transform.position.x <= -6)
             {
                 airtime += Time.deltaTime;
@@ -305,6 +449,7 @@ public class PlayerModController : MonoBehaviour
                 {
                     transform.position = new Vector3(-6, transform.position.y);
                 }
+                spriteTrans.transform.localEulerAngles = Vector3.zero;
                 return;
             }
         }
@@ -313,9 +458,13 @@ public class PlayerModController : MonoBehaviour
         switch (currentMove.type)
         {
             case MoveType.DuiKang:
-                // 对抗状态，摄像机抖动，不移动
-                Camera.main.DOShakePosition(0.5f, new Vector3(2, 2, 2), 3, 50, true);
+                OnNormalDuiKangScence();
                 break;
+
+            case MoveType.NormalDuiKang:  // 新增：Normal对抗状态
+                OnNormalDuiKangScence();
+                break;
+
             case MoveType.TC:
                 MovePlayer(new Vector3(-1, 0f) * 20);
                 break;
@@ -323,6 +472,7 @@ public class PlayerModController : MonoBehaviour
             case MoveType.QL:
                 MovePlayer(new Vector3(1, 0f) * 20);
                 break;
+
             case MoveType.Normal:
                 float moveSpeed = 16f;
                 Vector3 moveDir = currentMove.direction == MoveDirection.Left ?
@@ -330,9 +480,19 @@ public class PlayerModController : MonoBehaviour
                 MovePlayer(moveDir * moveSpeed);
                 break;
         }
-        if(currentMove.rotate)
+    }
+
+    /// <summary>
+    /// 新增：Normal对抗状态处理
+    /// </summary>
+    void OnNormalDuiKangScence()
+    {
+        // Normal对抗状态，摄像机抖动，不移动
+        snakeTime += Time.deltaTime;
+        if (snakeTime > snakeTargetTime)
         {
-            spriteTrans.Rotate(new Vector3(0, 0, 360) * 10 * Time.deltaTime);
+            CameraShaker.Instance.StartShake(snakeTargetTime);
+            snakeTime = 0;
         }
     }
 
@@ -352,29 +512,42 @@ public class PlayerModController : MonoBehaviour
         if (!isKinematic)
         {
             OnChangeState(false);
+            bool isfip = currentMove.type == MoveType.QL ||
+                       (currentMove.type == MoveType.Normal && currentMove.direction == MoveDirection.Right);
+            playerController.OnChangeHitState(isfip);
         }
-     
     }
 
     /// <summary> 结束移动</summary>
     private void EndMove()
     {
-        spriteTrans.transform.localEulerAngles= Vector3.zero;
         isPassivityMove = 0;
         OnChangeState(true);
+        PFunc.Log("移动完全结束");
     }
 
     /// <summary> 减少所有移动时间</summary>
     private void ReduceAllMoveTimes(float deltaTime)
     {
+        // 减少TC/QL移动时间
         foreach (var type in new List<MoveType>(storedMoveTimes.Keys))
         {
             if (storedMoveTimes[type] > 0f)
             {
                 storedMoveTimes[type] -= deltaTime;
-                if (storedMoveTimes[type] < 0f) storedMoveTimes[type] = 0f;
+                if (storedMoveTimes[type] < 0f)
+                    storedMoveTimes[type] = 0f;
             }
         }
+
+        if (normalDirectionTimes[MoveDirection.Left]>0)
+        normalDirectionTimes[MoveDirection.Left] -= deltaTime;
+        if (normalDirectionTimes[MoveDirection.Left] < 0f)
+            normalDirectionTimes[MoveDirection.Left] = 0f;
+        if (normalDirectionTimes[MoveDirection.Right] > 0)
+            normalDirectionTimes[MoveDirection.Right] -= deltaTime;
+        if (normalDirectionTimes[MoveDirection.Right] < 0f)
+            normalDirectionTimes[MoveDirection.Right] = 0f;
     }
 
     #endregion
@@ -416,7 +589,7 @@ public class PlayerModController : MonoBehaviour
                 Sound.PlaySound($"Sound/Mod/fanqie{gaiYas[index]}");
             }
         }
-        if (!isGMControl)
+        if (!isGMControl && !GameController.Instance.isAutomatic)
         {
             if (transform.position.y >= playerY)
             {
@@ -438,6 +611,7 @@ public class PlayerModController : MonoBehaviour
     }
 
     bool isKinematic = false;
+
     void OnChangeState(bool open)
     {
         box.enabled = open;
@@ -454,10 +628,6 @@ public class PlayerModController : MonoBehaviour
         }
     }
 
-    public void OnCloaking(DataInfo dataInfo)
-    {
-        cloakingTime += dataInfo.count * dataInfo.time;
-    }
 
     public void OnClickToCreateTomaTo()
     {
@@ -569,22 +739,17 @@ public class PlayerModController : MonoBehaviour
 
     public void OnHangSelf()
     {
+        OnChangeState(false);
         if (playerController != null)
         {
-            playerController.OnRest();
             playerController.isHit = true;
         }
         spriteTrans.gameObject.SetActive(false);
         isPassivityMove++;
-        OnChangeState(false);
     }
 
     public void OnCancelHangSelf()
     {
-        if (playerController != null)
-        {
-            playerController.isHit = true;
-        }
         spriteTrans.gameObject.SetActive(true);
         isPassivityMove--;
         if (isPassivityMove <= 0)
@@ -603,5 +768,6 @@ public class PlayerModController : MonoBehaviour
             HangSelf.Instance.OnBreakeHang();
         }
     }
+
     #endregion
 }

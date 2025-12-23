@@ -54,7 +54,7 @@ public class ImageDownloader : MonoBehaviour
     IEnumerator DownloadImageCoroutine(string user, string avatar)
     {
         string url = avatar;
-        //string url = "https://p26.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_c82fb87ae4b005b32e9af941ce39ec38.jpeg?from=3067671334";
+       // string url = "https://p26.douyinpic.com/aweme/100x100/aweme-avatar/tos-cn-avt-0015_c82fb87ae4b005b32e9af941ce39ec38.jpeg?from=3067671334";
         using (UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(url))
         {
             // ∑¢ÀÕ«Î«Û
@@ -64,6 +64,7 @@ public class ImageDownloader : MonoBehaviour
                 webRequest.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.LogError($"Õº∆¨œ¬‘ÿ ß∞‹: {webRequest.error}");
+                yield break;
             }
             else
             {

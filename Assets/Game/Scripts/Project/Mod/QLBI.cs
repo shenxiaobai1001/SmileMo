@@ -29,6 +29,7 @@ public class QLBI : MonoBehaviour
     void OnBeginCreateBoom()
     {
         PlayerModController.Instance.TriggerModMove(MoveDirection.Right, allTime, 0, MoveType.QL);
+        CameraShaker.Instance.StartShake(2);
         StartCoroutine(OnCreateBoom());
     }
 
@@ -42,7 +43,6 @@ public class QLBI : MonoBehaviour
                 Sound.PlaySound("Sound/Mod/Boom");
                 GameObject bb = SimplePool.Spawn(boom, boomPos.transform.position, Quaternion.identity);
                 bb.transform.parent = ItemManager.Instance.transform;
-                Camera.main.DOShakePosition(0.1f, new Vector3(0, 1.2f, 0), 0, 0f, false);
                 bb.SetActive(true);
                 boomTime = 0;
             }

@@ -125,18 +125,33 @@ public class ModSystemController : MonoBehaviour
         ModVideoPlayerController.Instance.OnCreateModVideoPlayer(offest, Vector3.one, tpath);
         GameObject obj = SimplePool.Spawn(createObj, transform.position, Quaternion.identity);
         obj.transform.parent = transform;
+        obj.SetActive(true);
     }
+    public GameObject bigdabeita;
+    public bool isDabeita = false;
     public void OnBigBetaForward()
     {
         string path = $"MOD/dabeita";
         ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(0, 1), new Vector3(0.6f, 0.6f), path);
         PlayerModController.Instance.TriggerModMove(MoveDirection.Right, 17,0, MoveType.Normal,true);
+        GameObject obj = SimplePool.Spawn(bigdabeita, transform.position, Quaternion.identity);
+        obj.transform.parent = transform;
+        obj.SetActive(true);
     }
+
+    void OnCloseDabeita()
+    {
+        isDabeita = false;  
+    }
+
     public void OnBigBetaBack()
     {
         string path = $"MOD/dabeita";
         ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(0, 1), new Vector3(0.6f, 0.6f), path);
         PlayerModController.Instance.TriggerModMove(MoveDirection.Left, 17,0, MoveType.Normal, true);
+        GameObject obj = SimplePool.Spawn(bigdabeita, transform.position, Quaternion.identity);
+        obj.transform.parent = transform;
+        obj.SetActive(true);
     }
     public GameObject tansfarPre;
     public void OnRandromPlayerPos()
@@ -176,6 +191,9 @@ public class ModSystemController : MonoBehaviour
 
         LevelSevenController.Instance.OnSetPlayerSeven();
         if (Map) Map.SetActive(false);
+
+        PFunc.Log("传送第七关", level7, Map);
+        PFunc.Log("传送第七关", level7.activeSelf, Map.activeSelf);
     }
     public void OnTransFarSevenOut()
     {

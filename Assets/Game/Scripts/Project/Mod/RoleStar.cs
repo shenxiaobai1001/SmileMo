@@ -17,7 +17,6 @@ public class RoleStar : MonoBehaviour
     void Start()
     {
         playerTarget = PlayerController.Instance.transform;
-
     }
 
     void Update()
@@ -63,7 +62,7 @@ public class RoleStar : MonoBehaviour
             kickPlayer = false;
             bool protect = ModSystemController.Instance.Protecket;
             if (!protect)
-                PlayerModController.Instance.TriggerModMove(MoveDirection.Left , 0.5f, 2);
+                PlayerModController.Instance.TriggerModMove(MoveDirection.Left , 0.2f, 1);
             OnReachPlayer();
         }
     }

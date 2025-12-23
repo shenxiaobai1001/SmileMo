@@ -18,6 +18,7 @@ public enum MoveType
 {
     None,
     Normal,
+    NormalDuiKang,
     DuiKang,
     TC,
     QL
@@ -42,6 +43,7 @@ public enum Events
     SevenMonsterDie,
     BeginSnakeMap,
     OnVideoPlayEnd,
+    OnModVideoPlayEnd,
     AirWallStateChange,
 }
 

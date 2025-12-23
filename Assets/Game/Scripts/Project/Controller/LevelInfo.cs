@@ -25,4 +25,30 @@ public class LevelInfo : MonoBehaviour
         }
     }
 
+    public void OnSetItemMonsterShow(bool show)
+    {
+        Transform monster = transform.Find("Monster");
+        Transform item = transform.Find("Item");
+
+        if (monster != null) 
+        { 
+             if (monster.childCount >0)
+            {
+                for (int i = 0; i < monster.childCount; i++)
+                {
+                    monster.GetChild(i).gameObject.SetActive(show);
+                }
+            }
+        }
+        if (item != null)
+        {
+            if (item.childCount > 0)
+            {
+                for (int i = 0; i < item.childCount; i++)
+                {
+                    item.GetChild(i).gameObject.SetActive(show);
+                }
+            }
+        }
+    }
 }

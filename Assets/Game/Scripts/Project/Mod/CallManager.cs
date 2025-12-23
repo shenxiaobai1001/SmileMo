@@ -61,7 +61,7 @@ public class CallManager : MonoBehaviour
         VideoManager videoManager = obj.GetComponent<VideoManager>();
         obj.transform.SetParent(transform);
         obj.SetActive(true);
-        videoManager.OnPlayVideo(type, path);
+        videoManager.OnPlayVideo(type, path, callName != "√¿≈Æ√§∫–");
         videoType= type;
     }
     Queue<int> onCreate=new Queue<int>();
@@ -117,19 +117,15 @@ public class CallManager : MonoBehaviour
             {
                 duckPath = 100;
             }
-            else if (index >= 61 && index < 65)
+            else if (index >= 61 && index < 64)
             {
                 duckPath = 200;
             }
-            else if (index >= 65 && index < 69)
+            else if (index >= 65 && index < 67)
             {
                 duckPath = 300;
             }
-            else if (index >= 69 && index < 73)
-            {
-                duckPath = 500;
-            }
-            else if (index >= 73 && index < 77)
+            else if (index >= 73 && index < 75)
             {
                 duckPath = 500;
             }

@@ -1,15 +1,23 @@
 {
     "NormalConfigs": [
         {
-            "CallName": "大巴掌",
+            "CallName": "砸落头像",
             "Type": "礼物",
-            "Message": "1",
-            "Tip": "2",
+            "Message": "",
+            "Tip": "",
             "Count": 1,
-            "Delay": 0.0
+            "Delay": 0.5
         },
         {
-            "CallName": "冰冻",
+            "CallName": "天残脚",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.5
+        },
+        {
+            "CallName": "大贝塔",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -17,7 +25,7 @@
             "Delay": 0.0
         },
         {
-            "CallName": "跑快点",
+            "CallName": "反向大贝塔",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -33,7 +41,7 @@
             "Delay": 0.0
         },
         {
-            "CallName": "莎士比亚",
+            "CallName": "左正蹬",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -41,7 +49,15 @@
             "Delay": 0.0
         },
         {
-            "CallName": "呸",
+            "CallName": "麒麟臂",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 3,
+            "Delay": 1.7999999523162842
+        },
+        {
+            "CallName": "天残脚",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -49,7 +65,7 @@
             "Delay": 0.0
         },
         {
-            "CallName": "啄木鸟",
+            "CallName": "打台球",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -57,7 +73,7 @@
             "Delay": 0.0
         },
         {
-            "CallName": "彩虹猫",
+            "CallName": "大巴掌",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -65,31 +81,7 @@
             "Delay": 0.0
         },
         {
-            "CallName": "番茄连招",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0
-        },
-        {
-            "CallName": "撞大运",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0
-        },
-        {
-            "CallName": "动感DJ",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0
-        },
-        {
-            "CallName": "火圈",
+            "CallName": "砸鸭子",
             "Type": "礼物",
             "Message": "",
             "Tip": "",

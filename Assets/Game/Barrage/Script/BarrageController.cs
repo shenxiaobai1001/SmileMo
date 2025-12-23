@@ -126,7 +126,8 @@ public class BarrageController : MonoBehaviour
     /// <param name="task"></param>
     private void ExecuteAction(ActionTask task)
     {
-        PlayerAutomaticSystem.Instance.OnStopAutomatic();
+        if(task.callName!= "√¿≈Æ√§∫–")
+             PlayerAutomaticSystem.Instance.OnStopAutomatic();
         switch (task.callName)
         {
             case "‘“—º◊”":

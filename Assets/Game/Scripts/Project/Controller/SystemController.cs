@@ -58,9 +58,6 @@ public class SystemController : MonoBehaviour
         if (airWallHp <= 0) return;
         airWallHp -= now;
         airWallContin = airWallHp > 0;
-        if (!airWallContin)
-        {
-            EventManager.Instance.SendMessage(Events.AirWallStateChange, false);
-        }
+        EventManager.Instance.SendMessage(Events.AirWallStateChange, airWallContin);
     }
 }

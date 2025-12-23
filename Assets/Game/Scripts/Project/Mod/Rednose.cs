@@ -36,6 +36,7 @@ public class Rednose : MonoBehaviour
     // 击中玩家后的处理
     private void OnHitPlayer()
     {
+        Sound.PlaySound("Sound/Mod/boomm");
         Camera.main.DOShakePosition(0.1f, new Vector3(0, 1.2f, 0), 0, 0f, false);
         int value = Random.Range(0, 2);
         if (value == 0)

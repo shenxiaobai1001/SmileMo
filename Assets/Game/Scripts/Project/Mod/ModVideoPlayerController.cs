@@ -24,7 +24,7 @@ public class ModVideoPlayerController : MonoBehaviour
 
     private void Start()
     {
-        EventManager.Instance.AddListener(Events.OnVideoPlayEnd, OnVideoPlayEnd);
+        EventManager.Instance.AddListener(Events.OnModVideoPlayEnd, OnVideoPlayEnd);
     }
 
     public void OnCreateModVideoPlayer(Vector3 offset, Vector3 scale, string path, string layer = "Video",  bool snake = false)
@@ -42,6 +42,6 @@ public class ModVideoPlayerController : MonoBehaviour
     }
     private void OnDestroy()
     {
-        EventManager.Instance.RemoveListener(Events.OnVideoPlayEnd, OnVideoPlayEnd);
+        EventManager.Instance.RemoveListener(Events.OnModVideoPlayEnd, OnVideoPlayEnd);
     }
 }

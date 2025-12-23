@@ -29,6 +29,7 @@ public class TCJiao : MonoBehaviour
     void OnBeginCreateBoom()
     {
         PlayerModController.Instance.TriggerModMove(MoveDirection.Left, allTime, 0, MoveType.TC);
+        CameraShaker.Instance.StartShake(2);
         StartCoroutine(OnCreateBoom());
     }
 
@@ -36,7 +37,6 @@ public class TCJiao : MonoBehaviour
     {
         while (time <= allTime)
         {
-
             time += Time.deltaTime;
             boomTime += Time.deltaTime;
             if (boomTime > 0.15f)
@@ -44,7 +44,6 @@ public class TCJiao : MonoBehaviour
                 Sound.PlaySound("Sound/Mod/Boom");
                 GameObject bb = SimplePool.Spawn(boom, boomPos.transform.position, Quaternion.identity);
                 bb.transform.parent = ItemManager.Instance.transform;
-                Camera.main.DOShakePosition(0.1f, new Vector3(0, 1.2f, 0), 0, 0f, false);
                 bb.SetActive(true);
                 boomTime = 0;
             }

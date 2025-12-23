@@ -74,43 +74,6 @@ public class ItemManager : MonoBehaviour
         UIDuck.Instance.OnSetCenter(false);
     }
 
-    int OnGetDuckCount()
-    {
-        int duckCount = 0;
-        int hasDuck = Random.Range(0,20);
-        if (hasDuck == 0) {
-            duckCount = Random.Range(1, 5001);
-        }
-        else
-        {
-            int qian = Random.Range(0, 10);
-            if (qian == 0)
-            {
-                duckCount = Random.Range(1, 2001);
-            }
-            else
-            {
-                int shi = Random.Range(0, 10);
-                if (shi == 0)
-                {
-                    duckCount = Random.Range(1, 1001);
-                }
-                else
-                {
-                    int bai = Random.Range(0, 10);
-                    if (bai == 0)
-                    {
-                        duckCount = Random.Range(1, 101);
-                    }
-                    else
-                    {
-                        duckCount = Random.Range(0, 11);
-                    }
-                }
-            }
-        }
-        return duckCount;
-    }
     public GameObject videoPlayer;
     public void OnCreatePDG(string callName)
     {
@@ -189,6 +152,7 @@ public class ItemManager : MonoBehaviour
 
     public void OnLightningHit()
     {
+        Sound.PlaySound("Sound/Mod/dianji");
         GameObject obj = SimplePool.Spawn(Electricity, transform.position, Quaternion.identity);
         obj.transform.SetParent(transform);
         PlayerModController.Instance.TriggerModMove(MoveDirection.Left, 0.3f, 1);
@@ -372,7 +336,7 @@ public class ItemManager : MonoBehaviour
         obj.transform.SetParent(transform);
         obj.SetActive(true);
     }
-    public GameObject bannedPost;
+
     public void OnCreateBannedPost()
     {
         string path5 = $"MOD/jinyan";

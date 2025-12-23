@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,9 +9,12 @@ public class UIAirWall : MonoBehaviour
     public Slider sl_hp;
     public Text tx_hp;
     public GameObject airwall;
+    public GameObject airwallui;
     public GameObject airWallCollier;
 
-    public bool airwalls = false;    
+    public bool airwalls = false;
+    float showTime = 2;
+    float useTime = 0;
 
     void Start()
     {
@@ -33,15 +37,27 @@ public class UIAirWall : MonoBehaviour
 
         tx_hp.text = $"HP:{hp}/{maxhp}";
         sl_hp.value = (float)hp/ (float)maxhp;
+        useTime += Time.deltaTime;
+        if (useTime > showTime)
+        {
+            if (airwallui) airwallui.SetActive(false);
+        }
     }
 
     void OnAirWallState(object msg)
     {
         bool show = (bool)msg;
-
-        PFunc.Log("ÊÕµ½OnAirWallState",show);
         airwall.SetActive(show);
         airWallCollier.SetActive(show);
+        airwallui.SetActive(show);
+        if (show)
+        {
+            if (tx_hp) tx_hp.transform.DOScale(0.6f, 0.03f).SetLoops(2, LoopType.Yoyo).OnComplete(() =>
+            {
+                tx_hp.transform.localScale = new Vector3(0.5f,0.5f);
+            });
+        }
+        useTime = 0;
     }
     private void OnDestroy()
     {

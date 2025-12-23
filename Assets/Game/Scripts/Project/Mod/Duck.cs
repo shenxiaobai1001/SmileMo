@@ -61,7 +61,7 @@ public class Duck : MonoBehaviour
             kickPlayer = false;
             bool protect = ModSystemController.Instance.Protecket;
             if(!protect)
-                PlayerModController.Instance.TriggerModMove(MoveDirection.Left,0.05f,1);
+                PlayerModController.Instance.TriggerModMove(MoveDirection.Left,0.1f,1);
             UIDuck.Instance.OnSetNullCount();
             OnReachPlayer();
         }

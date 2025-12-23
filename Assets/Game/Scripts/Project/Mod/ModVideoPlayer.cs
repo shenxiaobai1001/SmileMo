@@ -75,6 +75,7 @@ public class ModVideoPlayer : MonoBehaviour
     public void OnEnd()
     {
         Sound.PauseOrPlayVolumeMusic(false);
+        EventManager.Instance.SendMessage(Events.OnModVideoPlayEnd);
         EventManager.Instance.SendMessage(Events.BeginSnakeMap, false);
         mainPlayer.CloseMedia();
         SimplePool.Despawn(this.gameObject);
