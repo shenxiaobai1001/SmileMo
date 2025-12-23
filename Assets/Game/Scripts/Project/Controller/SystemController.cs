@@ -24,6 +24,9 @@ public class SystemController : MonoBehaviour
     [HideInInspector]
     public int airWallHp;
     public bool airWallContin = false;
+
+    public int scheduleDeviation;
+
     private void Start()
     {
         OnGetData();

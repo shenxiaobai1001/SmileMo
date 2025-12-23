@@ -297,7 +297,6 @@ public class PlayerModController : MonoBehaviour
             }
             else
             {
-                PFunc.Log("没有活动移动，检查是否在等待结束");
                 // 没有活动移动，检查是否在等待结束
                 if (isWaitingToEnd)
                 {

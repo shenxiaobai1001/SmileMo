@@ -265,6 +265,12 @@ public class BarrageController : MonoBehaviour
             case "上吊":
                 ItemManager.Instance.OnCreateHangSelf();
                 break;
+            case "加一万米":
+                SystemController.Instance.scheduleDeviation += 10000;
+                break;
+            case "减一万米":
+                SystemController.Instance.scheduleDeviation -= 10000;
+                break;
         }
     }
 
