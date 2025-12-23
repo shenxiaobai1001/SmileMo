@@ -275,7 +275,6 @@ MonoBehaviour:
   displayUGUI: {fileID: 4109110759895277804}
   candisplayUGUI: {fileID: 8143013440019801579}
   mCanvas: {fileID: 5128381059250683293}
-  canmaterial: {fileID: 2100000, guid: d304070729de70747926c4e9bb51ef06, type: 2}
 --- !u!1 &4966798235518837244
 GameObject:
   m_ObjectHideFlags: 0

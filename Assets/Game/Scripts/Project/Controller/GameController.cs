@@ -112,7 +112,7 @@ public class GameController : MonoBehaviour
         if (msg == null) return;
         saveIndex = (int)msg;
     }
-    void PlayerRestToSavePos(object msg)
+    public void PlayerRestToSavePos(object msg)
     {
         PFunc.Log("÷ÿ÷√ÕÊº“Œª÷√");
         Vector3 vector2 = savePos[saveIndex-1].gameObject.transform.position;
@@ -143,6 +143,7 @@ public class GameController : MonoBehaviour
         }
         PlayerRestToSavePos(null);
     }
+
     private void OnDestroy()
     {
         EventManager.Instance.RemoveListener(Events.SaveSchedule, OnSetSavePos);

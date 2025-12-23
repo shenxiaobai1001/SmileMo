@@ -86,7 +86,11 @@ public class ModSystemController : MonoBehaviour
     public void OnSetPlayerProtecket(int giftCount, int times, float delay)
     {
         ProtecketTime = giftCount * times * 5;
-      //  Sound.PlaySound("Sound/Mod/Freeze");
+        if (ItemManager.Instance.isHang)
+        {
+            PlayerModController.Instance.OnCancelHangSelf();
+        }
+        //  Sound.PlaySound("Sound/Mod/Freeze");
         if (!Protecket)
         {
             Protecket = true;
@@ -111,26 +115,43 @@ public class ModSystemController : MonoBehaviour
     public void OnShakespeare()
     {
         int value = Random.Range(0, 2);
-        GameObject createObj = value == 0 ? ShakespeareLeft : ShakespeareRight;
-        GameObject obj = SimplePool.Spawn(createObj, transform.position, Quaternion.identity);
-        Sound.PlaySound("Sound/Mod/ssby");
-        obj.transform.parent = transform;
-    }
+        string path = $"MOD/shashibiya";
+        string fpath = $"MOD/fshashibiya";
+        string tpath = value == 0 ? path : fpath;
 
-    public GameObject bigBeta;
+        GameObject createObj = value == 0 ? ShakespeareLeft : ShakespeareRight;
+        Vector3 scale = value == 0 ? new Vector3(1f, 1f) : new Vector3(1f, 1f);
+        Vector3 offest = value == 0 ? new Vector3(4, 1.5f) : new Vector3(-4, 1.5f);
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(offest, Vector3.one, tpath);
+        GameObject obj = SimplePool.Spawn(createObj, transform.position, Quaternion.identity);
+        obj.transform.parent = transform;
+        obj.SetActive(true);
+    }
+    public GameObject bigdabeita;
+    public bool isDabeita = false;
     public void OnBigBetaForward()
     {
-        Sound.PlaySound("Sound/Mod/dbt");
-        GameObject obj = SimplePool.Spawn(bigBeta, transform.position, Quaternion.identity);
+        string path = $"MOD/dabeita";
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(0, 1), new Vector3(0.6f, 0.6f), path);
+        PlayerModController.Instance.TriggerModMove(MoveDirection.Right, 17,0, MoveType.Normal,true);
+        GameObject obj = SimplePool.Spawn(bigdabeita, transform.position, Quaternion.identity);
         obj.transform.parent = transform;
-        PlayerModController.Instance.OnBigBetaForward(true);
+        obj.SetActive(true);
     }
+
+    void OnCloseDabeita()
+    {
+        isDabeita = false;  
+    }
+
     public void OnBigBetaBack()
     {
-        Sound.PlaySound("Sound/Mod/dbt");
-        GameObject obj = SimplePool.Spawn(bigBeta, transform.position, Quaternion.identity);
+        string path = $"MOD/dabeita";
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(0, 1), new Vector3(0.6f, 0.6f), path);
+        PlayerModController.Instance.TriggerModMove(MoveDirection.Left, 17,0, MoveType.Normal, true);
+        GameObject obj = SimplePool.Spawn(bigdabeita, transform.position, Quaternion.identity);
         obj.transform.parent = transform;
-        PlayerModController.Instance.OnBigBetaForward(false);
+        obj.SetActive(true);
     }
     public GameObject tansfarPre;
     public void OnRandromPlayerPos()
@@ -170,6 +191,9 @@ public class ModSystemController : MonoBehaviour
 
         LevelSevenController.Instance.OnSetPlayerSeven();
         if (Map) Map.SetActive(false);
+
+        PFunc.Log("传送第七关", level7, Map);
+        PFunc.Log("传送第七关", level7.activeSelf, Map.activeSelf);
     }
     public void OnTransFarSevenOut()
     {

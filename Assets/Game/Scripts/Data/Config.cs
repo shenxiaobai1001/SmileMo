@@ -7,6 +7,22 @@ public class Config
     public static int ClearType=1;
  
 }
+// 移动方向
+public enum MoveDirection
+{
+    Left,
+    Right
+}   
+// 移动类型
+public enum MoveType
+{
+    None,
+    Normal,
+    NormalDuiKang,
+    DuiKang,
+    TC,
+    QL
+}
 
 /// <summary>事件合集 </summary>
 public enum Events
@@ -27,6 +43,8 @@ public enum Events
     SevenMonsterDie,
     BeginSnakeMap,
     OnVideoPlayEnd,
+    OnModVideoPlayEnd,
+    AirWallStateChange,
 }
 
 public enum PlayerControState

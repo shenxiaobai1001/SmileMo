@@ -97,7 +97,8 @@ public class PlayerAutomaticSystem : MonoBehaviour
                 {
                     for (int i = 0; i < point.redMonsterSetting.Count; i++) {
                         var redSet = point.redMonsterSetting[i];
-                        redSet.redMonster.SetLocalPositionAndDirection(redSet.restPos, redSet.moveRight);
+                        if (redSet.redMonster != null)
+                            redSet.redMonster.SetLocalPositionAndDirection(redSet.restPos, redSet.moveRight);
                     }
                 }
                 if (point.sawwerSetting.Count > 0)
@@ -105,6 +106,7 @@ public class PlayerAutomaticSystem : MonoBehaviour
                     for (int i = 0; i < point.sawwerSetting.Count; i++)
                     {
                         var sawwerr = point.sawwerSetting[i];
+                        if (sawwerr.sawwer != null) 
                         sawwerr.sawwer.SetSawLocalPosition(sawwerr.restPos, sawwerr.moveToPoint2);
                     }
                 }
@@ -114,7 +116,8 @@ public class PlayerAutomaticSystem : MonoBehaviour
                     for (int i = 0; i < point.fixTurretSetting.Count; i++)
                     {
                         var ffixTurret = point.fixTurretSetting[i];
-                        ffixTurret.fixTurret.OnSetWaitTime(ffixTurret.waitTime);
+                        if (ffixTurret.fixTurret != null)
+                            ffixTurret.fixTurret.OnSetWaitTime(ffixTurret.waitTime);
                     }
                 }
 

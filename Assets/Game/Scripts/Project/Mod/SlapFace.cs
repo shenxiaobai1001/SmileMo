@@ -23,7 +23,7 @@ public class SlapFace : MonoBehaviour
     void OnHitPlayer()
     {
         Sound.PlaySound("Sound/Mod/slapFace");
-        PlayerModController.Instance.OnKickPlayer(new Vector3(-10, 15));
+        PlayerModController.Instance.TriggerModMove(MoveDirection.Left, 0.5f, 1);
         GameObject obj = SimplePool.Spawn(boom, boomPos.transform.position, Quaternion.identity);
         obj.transform.SetParent(boomPos.transform);
         obj.SetActive(true);

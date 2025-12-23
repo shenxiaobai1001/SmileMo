@@ -5,7 +5,9 @@ using UnityEngine;
 public class ReadyKickPlayer : MonoBehaviour
 {
     public float watiTime = 0;
-    public Vector3 vector;
+    public MoveDirection vector;
+    public float kickTime = 0;
+    public int boomType = 0;
     public bool boom = false;
     public bool continuous = false;
     public float continuousTime = 0;
@@ -23,6 +25,6 @@ public class ReadyKickPlayer : MonoBehaviour
     }
     void OnHitPlayer()
     {
-        PlayerModController.Instance.OnKickPlayer(vector, boom);
+        PlayerModController.Instance.TriggerModMove(vector, kickTime, boomType);
     }
 }

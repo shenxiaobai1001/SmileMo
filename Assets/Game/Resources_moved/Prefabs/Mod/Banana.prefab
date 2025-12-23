@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 1886974746766285666}
   - component: {fileID: 5952684325731875748}
   - component: {fileID: 6623657432046778033}
-  m_Layer: 0
+  - component: {fileID: 3891754311200642839}
+  m_Layer: 11
   m_Name: Banana
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -149,6 +150,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   invokeTime: 5
   toPool: 1
+--- !u!114 &3891754311200642839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3882042842603843081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1695282e55af2f141836f35adddd99e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  polygonCollider2D: {fileID: 5952684325731875748}
 --- !u!1 &7101676764668614236
 GameObject:
   m_ObjectHideFlags: 0
@@ -159,7 +173,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1220139082051080741}
   - component: {fileID: 4751178996462890824}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}

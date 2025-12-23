@@ -1,7 +1,9 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
+using static Cinemachine.DocumentationSortingAttribute;
 
 public class MapController : MonoBehaviour
 {
@@ -20,6 +22,7 @@ public class MapController : MonoBehaviour
     {
         int level = GameController.Instance.gameLevel;
         if (level == 7) return;
+        PFunc.Log("µØÍ¼¸Ä±ä", level);
         LevelInfo levelInfo = levels[level-1];
         LevelInfo leftInfo = levels[levelInfo.LeftIndex - 1];
         LevelInfo rightInfo = levels[levelInfo.RightIndex - 1];
@@ -30,10 +33,27 @@ public class MapController : MonoBehaviour
         rightInfo.levelTransform.position = new Vector3(rightX, 0);
         for (int i = 0; i < levels.Count; i++) {
             int index = i;
-            bool show = levels[i] == levels[i] || levels[i] == leftInfo || levels[i] == rightInfo;
+            bool show = levels[i] == levelInfo || levels[i] == leftInfo || levels[i] == rightInfo;
             levels[i].gameObject.SetActive(show);
             if (show&& index== level-1) levels[i].OnRestAllMonster();
+            if (show) {
+                levels[i].OnSetItemMonsterShow(index == level - 1);
+            }
         }
+    }
+
+    public void OnCloseAllActive()
+    {
+        for (int i = 0; i < levels.Count; i++)
+        {
+            int index = i;
+            GameObject mapObj = levels[i].gameObject;
+            if (mapObj.activeSelf)
+            {
+                levels[i].OnSetItemMonsterShow(false);
+            }
+        }
+
     }
 
     private void OnDestroy()

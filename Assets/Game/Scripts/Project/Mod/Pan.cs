@@ -65,11 +65,9 @@ public class Pan : MonoBehaviour
             if (!protect)
             {
                 if(left)
-                    PlayerModController.Instance.OnRightHitPlayer();
+                    PlayerModController.Instance.TriggerModMove(MoveDirection.Right, 0.2f, 1);
                 else
-                {
-                    PlayerModController.Instance.OnLeftHitPlayer();
-                }
+                    PlayerModController.Instance.TriggerModMove(MoveDirection.Left, 0.2f, 1);
             }
             
             OnReachPlayer();

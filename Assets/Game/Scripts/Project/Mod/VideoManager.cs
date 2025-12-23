@@ -19,8 +19,8 @@ public class VideoManager : MonoBehaviour
         mCanvas.worldCamera = Camera.main;
         mCanvas.sortingLayerName = "Video";  // Sorting Layer Ãû³Æ
         mCanvas.sortingOrder = 0;         // Order in Layer
-
     }
+
     int videoType = 0;
     public void OnPlayVideo(int type, string title, bool snake = true)
     {
@@ -59,6 +59,7 @@ public class VideoManager : MonoBehaviour
     {
         Sound.PauseOrPlayVolumeMusic(true);
         mainPlayer.Play();
+        mainPlayer.Control.SetVolume(Sound.VideoVolume);
         if (snakeScene)
         {
             EventManager.Instance.SendMessage(Events.BeginSnakeMap, true);
@@ -82,7 +83,6 @@ public class VideoManager : MonoBehaviour
         string videoData = await OnGetPlayBytes(pathTitle);
         if (mainPlayer)
         {
-            mainPlayer.Control.SetVolume(Sound.VideoVolume);
             mainPlayer.gameObject.SetActive(true);
             mainPlayer.OpenMedia(MediaPathType.AbsolutePathOrURL, videoData, false);
         }

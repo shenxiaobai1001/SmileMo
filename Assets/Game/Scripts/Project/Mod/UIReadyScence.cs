@@ -19,6 +19,7 @@ public class UIReadyScence : MonoBehaviour
         if (btn_start) btn_start.Click(OnClickStart);
         if (btn_Close) btn_Close.Click(OnClickClose);
         if (btn_system) btn_system.Click(OnClickSystem);
+        systemPanel = transform.Find("UISystem").gameObject;
         if (systemPanel) systemPanel.SetActive(false);
     }
 

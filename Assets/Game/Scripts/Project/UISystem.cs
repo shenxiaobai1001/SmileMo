@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +15,9 @@ public class UISystem : MonoBehaviour
     public Slider sl_music;
     public Slider sl_sound;
 
-    private void Start()
+    public TMP_InputField inputField;
+
+    private void OnEnable()
     {
         btn_close.Click(OnClose);
         btn_back.Click(OnBackStartScence);
@@ -21,6 +25,16 @@ public class UISystem : MonoBehaviour
         btn_closeGame.Click(OnCloseGame);
         sl_music.onValueChanged.AddListener(OnMusicValue);
         sl_sound.onValueChanged.AddListener(OnSoundValue);
+        inputField.onEndEdit.AddListener(OnInputEndEdit);
+        PFunc.Log(Sound.VolumeMusic, Sound.VolumeSound);
+        PFunc.Log((float)Sound.VolumeMusic / (float)1, (float)Sound.VolumeSound / (float)1);
+        sl_music.value = (float)Sound.VolumeMusic / (float)1;
+        sl_sound.value = (float)Sound.VolumeSound / (float)1;
+        if (SystemController.Instance.maxAirWallHp != 0)
+        {
+            inputField.text = SystemController.Instance.maxAirWallHp.ToString();
+        }
+       
     }
 
     void OnMusicValue(float valuie)
@@ -30,7 +44,8 @@ public class UISystem : MonoBehaviour
     }
     void OnSoundValue(float valuie)
     {
-        Sound.VolumeSound = sl_music.value;
+        Sound.VolumeSound = sl_sound.value; 
+        Sound.OnSetVolume(Sound.VolumeMusic, Sound.VolumeSound);
     }
     void OnClose()
     {
@@ -52,5 +67,13 @@ public class UISystem : MonoBehaviour
     void OnCloseGame()
     {
         Application.Quit();
+    }
+    void OnInputEndEdit(string value)
+    {
+        if (value == string.Empty) return;
+
+        int maxhp=int.Parse(value);
+        SystemController.Instance.OnSetAirwallHp(maxhp, maxhp);
+        EventManager.Instance.SendMessage(Events.AirWallStateChange, maxhp > 0);
     }
 }

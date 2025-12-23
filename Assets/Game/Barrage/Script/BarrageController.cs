@@ -126,6 +126,8 @@ public class BarrageController : MonoBehaviour
     /// <param name="task"></param>
     private void ExecuteAction(ActionTask task)
     {
+        if(task.callName!= "美女盲盒")
+             PlayerAutomaticSystem.Instance.OnStopAutomatic();
         switch (task.callName)
         {
             case "砸鸭子":
@@ -182,9 +184,9 @@ public class BarrageController : MonoBehaviour
             case "Boom":
                 ItemManager.Instance.OnBoomGrandma();
                 break;
-            case "随机传送":
-                ModSystemController.Instance.OnRandromPlayerPos();
-                break;
+            //case "随机传送":
+            //    ModSystemController.Instance.OnRandromPlayerPos();
+            //    break;
             case "呸":
                 ItemManager.Instance.OnCreateBlackHand();
                 break;
@@ -259,6 +261,15 @@ public class BarrageController : MonoBehaviour
                 break;
             case "动感DJ":
                 CallManager.Instance.OnCreateVideoPlayer("动感DJ", 2);
+                break;
+            case "上吊":
+                ItemManager.Instance.OnCreateHangSelf();
+                break;
+            case "加一万米":
+                SystemController.Instance.scheduleDeviation += 10000;
+                break;
+            case "减一万米":
+                SystemController.Instance.scheduleDeviation -= 10000;
                 break;
         }
     }
@@ -510,6 +521,159 @@ public class BarrageController : MonoBehaviour
                 dropdown.value = i;
                 return;
             }
+        }
+    }
+
+
+    /// <summary>
+    /// 执行功能
+    /// </summary>
+    /// <param name="callName"></param>
+    public IEnumerator CallFunction(string user, string avatar, string callName, int giftCount, int times, float delay)
+    {
+        PlayerAutomaticSystem.Instance.OnStopAutomatic();
+        for (int i = 0; i < giftCount * times; i++)
+        {
+            switch (callName)
+            {
+                case "砸鸭子":
+                    CallManager.Instance.OnCreateDuckVideoPlayer();
+                    break;
+                case "左边砸平底锅":
+                    ItemManager.Instance.OnCreatePDG(callName);
+                    break;
+                case "右边砸平底锅":
+                    ItemManager.Instance.OnCreatePDG(callName);
+                    break;
+                case "视角反转":
+                    ModSystemController.Instance.OnSetRerverseCamera();
+                    break;
+                case "冰冻":
+                    ItemManager.Instance.OnSetPlayerFreeze();
+                    break;
+                case "无敌护盾":
+                    ModSystemController.Instance.OnSetPlayerProtecket(giftCount, times, delay);
+                    break;
+                case "左正蹬":
+                    ItemManager.Instance.OnLeftLegKick();
+                    break;
+                case "右鞭腿":
+                    ItemManager.Instance.OnRightLegKick();
+                    break;
+                case "麒麟臂":
+                    MeshCreateController.Instance.OnCreateQLBi();
+                    break;
+                case "天残脚":
+                    MeshCreateController.Instance.OnCreateTCJiao();
+                    break;
+                case "撞大运":
+                    MeshCreateController.Instance.OnCreateTrunck();
+                    break;
+                case "莎士比亚":
+                    ModSystemController.Instance.OnShakespeare();
+                    break;
+                case "大贝塔":
+                    ModSystemController.Instance.OnBigBetaForward();
+                    break;
+                case "反向大贝塔":
+                    ModSystemController.Instance.OnBigBetaBack();
+                    break;
+                case "电击":
+                    ItemManager.Instance.OnLightningHit();
+                    break;
+                case "彩虹猫":
+                    ItemManager.Instance.OnRainbowCat();
+                    break;
+                case "番茄连招":
+                    PlayerModController.Instance.OnClickToCreateTomaTo();
+                    break;
+                case "Boom":
+                    ItemManager.Instance.OnBoomGrandma();
+                    break;
+             //   case "随机传送":
+                   // ModSystemController.Instance.OnRandromPlayerPos();
+                   // break;
+                case "呸":
+                    ItemManager.Instance.OnCreateBlackHand();
+                    break;
+                case "导弹":
+                    ItemManager.Instance.OnCreateRocket();
+                    break;
+                case "隐身":
+                    PlayerModController.Instance.OnInvisibility();
+                    break;
+                case "加速":
+                    PlayerModController.Instance.OnFastSpeed();
+                    break;
+                case "减速":
+                    PlayerModController.Instance.OnMainSpeed();
+                    break;
+                case "啄木鸟":
+                    ItemManager.Instance.OnCreateBird();
+                    break;
+                case "砸落头像":
+                    ImageDownloader.Instance.OnRoleStar(user, avatar);
+                    break;
+                case "打台球":
+                    ItemManager.Instance.OnCreateBilliard();
+                    break;
+                case "大巴掌":
+                    ItemManager.Instance.OnCreateSlapFace();
+                    break;
+                case "一阳指":
+                    MeshCreateController.Instance.OnCreateOneFinger();
+                    break;
+                case "乌萨奇":
+                    ItemManager.Instance.OnCreateWuSaQi();
+                    break;
+                case "传送第七关":
+                    ModSystemController.Instance.OnTransFarSeven();
+                    break;
+                case "扔香蕉":
+                    ItemManager.Instance.OnCreateBanana();
+                    break;
+                case "吐口水一":
+                    ItemManager.Instance.OnCreateTKS("吐口水一");
+                    break;
+                case "吐口水二":
+                    ItemManager.Instance.OnCreateTKS("吐口水二");
+                    break;
+                case "吐口水三":
+                    ItemManager.Instance.OnCreateTKS("吐口水三");
+                    break;
+                case "吐口水四":
+                    ItemManager.Instance.OnCreateTKS("吐口水四");
+                    break;
+                case "吐口水五":
+                    ItemManager.Instance.OnCreateTKS("吐口水五");
+                    break;
+                case "动物怎么叫":
+                    CallManager.Instance.OnCreateCall();
+                    break;
+                case "火圈":
+                    ItemManager.Instance.OnCreateHuoquan();
+                    break;
+                case "禁言":
+                    ItemManager.Instance.OnCreateBannedPost();
+                    break;
+                case "跑快点":
+                    ItemManager.Instance.OnCreateGoFast();
+                    break;
+                case "退退退":
+                    ItemManager.Instance.OnCreateGoBack();
+                    break;
+                case "美女盲盒":
+                    CallManager.Instance.OnCreateVideoPlayer("美女盲盒", 1);
+                    break;
+                case "动感DJ":
+                    CallManager.Instance.OnCreateVideoPlayer("动感DJ", 2);
+                    break;
+                case "上吊":
+                    ItemManager.Instance.OnCreateHangSelf();
+                    break;
+            }
+
+            yield return new WaitForSeconds(delay);
         }
     }
 }

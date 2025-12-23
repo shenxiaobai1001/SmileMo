@@ -117,7 +117,13 @@ public class PlayerController : MonoBehaviour
         playerCheckLeft.isGround = false;
         playerCheckRight.isGround = false;
         gameObject.SetActive(true);
+        playerCheckHit.isHit = false;
         isHit = false;
+        isFip = false;
+        damageTime = 0;
+        spriteTrans.transform.localEulerAngles = Vector3.zero;
+        int gameLevel = GameController.Instance.gameLevel;
+        OnSetStickCheck(gameLevel != 1 && gameLevel != 2 && gameLevel != 3 && gameLevel != 5);
     }
 
     void OnClickState()
@@ -1403,6 +1409,7 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
     }
+    bool isFip = false;
     IEnumerator OnCreateHorHitEffect()
     {
         while (true)
@@ -1410,7 +1417,10 @@ public class PlayerController : MonoBehaviour
             if (pLState == PLState.HorHit)
             {
                 chitobj = SimplePool.Spawn(horHitEffect, transform.position, Quaternion.identity);
+                chitobj.transform.localScale= Vector3.one;
+                Vector3 fipScale = isFip?new Vector3(-1,1): Vector3.one;
                 chitobj.transform.parent = createPos;
+                chitobj.transform.localScale = fipScale;
                 chitobj.SetActive(true);
             }
             // 每0.1秒检查一次（避免频繁生成）
@@ -1425,7 +1435,10 @@ public class PlayerController : MonoBehaviour
             if (pLState == PLState.VecHit)
             {
                 chitobj = SimplePool.Spawn(vecHitEffect, transform.position, Quaternion.identity);
+                chitobj.transform.localScale = Vector3.one;
+                Vector3 fipScale = isFip ? new Vector3(-1, 1) : Vector3.one;
                 chitobj.transform.parent = createPos;
+                chitobj.transform.localScale = fipScale;
                 chitobj.SetActive(true);
             }
 
@@ -1499,6 +1512,34 @@ public class PlayerController : MonoBehaviour
         pCteateHit.OnCreateHitEffect(1);
         boostImageContro.StartRecovery();
     }
+
+    public void OnChangeHitState(bool isFip = false)
+    {
+        this.isFip = isFip;
+        spriteTrans.localScale = isFip ? new Vector3(-1, 1, 0) : new Vector3(1, 1, 0);
+        if (isHit)
+            return; 
+        PFunc.Log("进入被攻击状态",isFip);
+        playerCheckHit.isHit = true;
+        isHit = true;
+        if (animator)
+        {
+            animator.SetBool("Run", false);
+            animator.SetBool("FastRun", false); 
+            animator.SetBool("BrakeF", false);
+            animator.SetBool("Drop", false);
+            animator.SetBool("Jump", false);
+            animator.SetBool("Brake", false);
+            animator.SetBool("Stick", false);
+            animator.SetBool("StickF", false);
+            animator.SetBool("Boost", false);
+            animator.SetBool("DamageOver", false);
+            animator.SetTrigger("Demage");
+        }
+   
+        pLState = PLState.VecHit;
+        pCteateHit.OnCreateHitEffect(1);
+    }
     public void HandleDownHitCollision()
     {
         isHit = true;
@@ -1547,7 +1588,8 @@ public class PlayerController : MonoBehaviour
 
         damageTime = 0;
         pLState = PLState.HitOver;
-        if(dizzard) dizzard.SetActive(true);
+        isFip=false;
+        if (dizzard) dizzard.SetActive(true);
     }
     void OnChekcVecHit()
     {

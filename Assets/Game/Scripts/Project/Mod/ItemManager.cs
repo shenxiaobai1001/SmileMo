@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Video;
 using static UnityEngine.Rendering.DebugUI;
 
 public class ItemManager : MonoBehaviour
@@ -64,51 +67,14 @@ public class ItemManager : MonoBehaviour
             allReadyCreateDuck--;
             allCreateDuck++;
 
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.05f);
         }
         isCreateDuck= false;
         allReadyCreateDuck = 0;
-        allCreateDuck = 0;
         UIDuck.Instance.OnSetCenter(false);
     }
 
-    int OnGetDuckCount()
-    {
-        int duckCount = 0;
-        int hasDuck = Random.Range(0,20);
-        if (hasDuck == 0) {
-            duckCount = Random.Range(1, 5001);
-        }
-        else
-        {
-            int qian = Random.Range(0, 10);
-            if (qian == 0)
-            {
-                duckCount = Random.Range(1, 2001);
-            }
-            else
-            {
-                int shi = Random.Range(0, 10);
-                if (shi == 0)
-                {
-                    duckCount = Random.Range(1, 1001);
-                }
-                else
-                {
-                    int bai = Random.Range(0, 10);
-                    if (bai == 0)
-                    {
-                        duckCount = Random.Range(1, 101);
-                    }
-                    else
-                    {
-                        duckCount = Random.Range(0, 11);
-                    }
-                }
-            }
-        }
-        return duckCount;
-    }
+    public GameObject videoPlayer;
     public void OnCreatePDG(string callName)
     {
         Transform createPos = null;
@@ -136,14 +102,25 @@ public class ItemManager : MonoBehaviour
         bool protect = ModSystemController.Instance.Protecket;
         if (protect) return;
          FreezeTime = 1;
+        string path = $"MOD/dingshen";
+        GameObject obj = SimplePool.Spawn(videoPlayer, PlayerController.Instance.transform.position, Quaternion.identity);
+        VideoManager videoManager = obj.GetComponent<VideoManager>();
+        obj.transform.SetParent(Camera.main.transform);
+        obj.SetActive(true); 
+        videoManager.OnPlayVideo(2, path, false);
         Sound.PlaySound("Sound/Mod/Freeze");
-        if (!Freeze)
+        if(!Freeze)
         {
-            PlayerController.Instance.isHit = true;
-            Freeze = true;
-            iceObject=Instantiate(Ice);
-            StartCoroutine(OnChecklayerFreeze());
+            Invoke("OnReadyFreeze", 0.5f);
         }
+            
+    }
+    void OnReadyFreeze()
+    {
+        PlayerController.Instance.isHit = true;
+        Freeze = true;
+        iceObject = Instantiate(Ice);
+        StartCoroutine(OnChecklayerFreeze());
     }
     IEnumerator OnChecklayerFreeze()
     {
@@ -160,22 +137,25 @@ public class ItemManager : MonoBehaviour
 
     public void OnRightLegKick()
     {
-        GameObject obj=  Instantiate(RightLeg);
+        string path = $"MOD/rightleg";
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(-0.4f, 0.5f), new Vector3(0.6f, 0.6f), path, "Effect");
+        GameObject obj= SimplePool.Spawn(RightLeg, transform.position, Quaternion.identity);
         obj.transform.SetParent(transform);
-        Sound.PlaySound("Sound/Mod/rightLeg");
     }
     public void OnLeftLegKick()
     {
-        GameObject obj = Instantiate(LeftLeg);
+        string path = $"MOD/leftleg";
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(0.8f, 1), new Vector3(0.6f, 0.6f), path, "Effect");
+        GameObject obj = SimplePool.Spawn(LeftLeg, transform.position, Quaternion.identity);
         obj.transform.SetParent(transform);
-        Sound.PlaySound("Sound/Mod/leftLeg");
     }
 
     public void OnLightningHit()
     {
+        Sound.PlaySound("Sound/Mod/dianji");
         GameObject obj = SimplePool.Spawn(Electricity, transform.position, Quaternion.identity);
         obj.transform.SetParent(transform);
-        PlayerModController.Instance.OnKickPlayer(new Vector3(Random.Range(-3, 3), 10));
+        PlayerModController.Instance.TriggerModMove(MoveDirection.Left, 0.3f, 1);
     }
 
     public bool rainBow = false;
@@ -207,7 +187,8 @@ public class ItemManager : MonoBehaviour
 
     public void OnBoomGrandma()
     {
-        Sound.PlaySound("Sound/Mod/BoomGrandma");
+        string path = $"MOD/BOOM";
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(1.2F, 0), new Vector3(0.8f, 0.8f), path, "Effect");
         GameObject obj = SimplePool.Spawn(BoomGrandema, transform.position, Quaternion.identity);
         obj.transform.SetParent(transform);
     }
@@ -224,7 +205,7 @@ public class ItemManager : MonoBehaviour
         int allCount = 10;
         GameObject obj = Instantiate(blackHand);
         obj.transform.SetParent(Camera.main.transform);
-        obj.transform.position = Vector3.zero;
+        obj.transform.localPosition =new Vector3(0,0,15);
         BlackHand fastRunEffect = obj.GetComponent<BlackHand>();
         fastRunEffect.OnSetTime (allCount);
         Sound.PlaySound("Sound/Mod/hs");
@@ -236,6 +217,7 @@ public class ItemManager : MonoBehaviour
     public GameObject Banana;
     public void OnCreateRocket()
     {
+        Sound.PlaySound("Sound/Mod/daodan");
         int value = Random.Range(0, 10);
         GameObject rocket = value == 5 ? spacilRocket : normalRocket;
         float x = Random.Range(-10, 10);
@@ -247,6 +229,7 @@ public class ItemManager : MonoBehaviour
     }
     public void OnCreateBanana()
     {
+        Sound.PlaySound("Sound/Mod/banana");
         int value = Random.Range(0, 2);
         Transform trans = value == 0 ? createPos1 : createPos4;
         Vector3 dCPos = new Vector3(trans.position.x, trans.position.y + 8);
@@ -260,7 +243,8 @@ public class ItemManager : MonoBehaviour
     public GameObject bird;
     public void OnCreateBird()
     {
-        Sound.PlaySound("Sound/Mod/brid");
+        string path = $"MOD/bird";
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(-0.5f, 0.5f), new Vector3(0.8f, 0.8f), path, "Effect");
         GameObject obj = SimplePool.Spawn(bird, Vector3.zero, Quaternion.identity);
         obj.transform.SetParent(transform);
         obj.SetActive(true);
@@ -311,23 +295,28 @@ public class ItemManager : MonoBehaviour
         switch (callName)
         {
             case "吐口水一":
-                Sound.PlaySound("Sound/Mod/tks1");
+                string path1 = $"MOD/tks1";
+                ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(0.2f, 1.7f), new Vector3(0.8f, 0.8f), path1, "Effect");
                 tksobj = tksone;
                 break;
             case "吐口水二":
-                Sound.PlaySound("Sound/Mod/tks2");
+                string path2 = $"MOD/tks2";
+                ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(3, -2.8f), new Vector3(0.8f, 0.8f), path2, "Effect");
                 tksobj = tkstwo;
                 break;
             case "吐口水三":
-                Sound.PlaySound("Sound/Mod/tks3");
+                string path3 = $"MOD/tks3";
+                ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(-4, -0.8f), new Vector3(0.8f, 0.8f), path3, "Effect");
                 tksobj = tksthree;
                 break;
             case "吐口水四":
-                Sound.PlaySound("Sound/Mod/tks4");
+                string path4 = $"MOD/tks4";
+                ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(1.9f, -3), new Vector3(0.8f, 0.8f), path4, "Effect");
                 tksobj = tksfour;
                 break;
             case "吐口水五":
-                Sound.PlaySound("Sound/Mod/tks5");
+                string path5 = $"MOD/tks5";
+                ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(-1.7f, -1.4f), new Vector3(0.8f, 0.8f), path5, "Effect");
                 tksobj = tksfive;
                 break;
         }
@@ -340,25 +329,28 @@ public class ItemManager : MonoBehaviour
     public GameObject Huoquan;
     public void OnCreateHuoquan()
     {
-        Vector3 cpos = new Vector3(createPos1.position.x, createPos1.position.y + 1);
+        Sound.PlaySound("Sound/Mod/huoquan");
+        float y = Random.Range(-1, 5);
+        Vector3 cpos = new Vector3(createPos1.position.x, createPos1.position.y + y);
         GameObject obj = SimplePool.Spawn(Huoquan, cpos, Quaternion.identity);
         obj.transform.SetParent(transform);
         obj.SetActive(true);
     }
-    public GameObject bannedPost;
+
     public void OnCreateBannedPost()
     {
-        Sound.PlaySound("Sound/Mod/jy");
-        GameObject obj = SimplePool.Spawn(bannedPost,Vector3.zero, Quaternion.identity);
-        obj.transform.SetParent(Camera.main.transform);
-        obj.transform.localPosition = new Vector3(0, 0,5);
-        obj.transform.localEulerAngles = Vector3.zero;
+        string path5 = $"MOD/jinyan";
+        GameObject obj = SimplePool.Spawn(videoPlayer, PlayerController.Instance.transform.position, Quaternion.identity);
+        VideoManager videoManager = obj.GetComponent<VideoManager>();
+        obj.transform.SetParent(transform);
         obj.SetActive(true);
+        videoManager.OnPlayVideo(2, path5,false);
     }
     public GameObject gofast;
     public void OnCreateGoFast()
     {
-        Sound.PlaySound("Sound/Mod/pkd");
+        string path5 = $"MOD/PKD";
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(-0.3f, 2.2f), new Vector3(0.8f, 0.8f), path5, "Effect");
         GameObject obj = SimplePool.Spawn(gofast, PlayerController.Instance.transform.position, Quaternion.identity);
         obj.transform.SetParent(transform);
         obj.SetActive(true);
@@ -366,9 +358,24 @@ public class ItemManager : MonoBehaviour
     public GameObject goback;
     public void OnCreateGoBack()
     {
-        Sound.PlaySound("Sound/Mod/ttt");
+        string path5 = $"MOD/TTT";
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(-0.3f, 2.2f), new Vector3(0.8f, 0.8f), path5, "Effect");
         GameObject obj = SimplePool.Spawn(goback, PlayerController.Instance.transform.position, Quaternion.identity);
         obj.transform.SetParent(transform);
         obj.SetActive(true);
+    }
+
+    public GameObject HangSelf;
+    public bool isHang = false;
+    public void OnCreateHangSelf()
+    {
+        PFunc.Log("上吊");
+        Vector3 vectorPlayer = PlayerController.Instance.transform.position;
+        Vector3 createPos = new Vector3(vectorPlayer.x, 0);
+        GameObject obj = SimplePool.Spawn(HangSelf, createPos, Quaternion.identity);
+        obj.transform.SetParent(transform);
+        Sound.PlaySound("Sound/Mod/hangself");
+        isHang = true;
+        PlayerModController.Instance.OnHangSelf();
     }
 }

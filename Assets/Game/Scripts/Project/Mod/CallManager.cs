@@ -7,8 +7,6 @@ public class CallManager : MonoBehaviour
 {
     public static CallManager Instance;
 
-    public List<GameObject> smallCalls;
-
     private void Awake()
     {
         if (Instance == null)
@@ -63,7 +61,7 @@ public class CallManager : MonoBehaviour
         VideoManager videoManager = obj.GetComponent<VideoManager>();
         obj.transform.SetParent(transform);
         obj.SetActive(true);
-        videoManager.OnPlayVideo(type, path);
+        videoManager.OnPlayVideo(type, path, callName != "美女盲盒");
         videoType= type;
     }
     Queue<int> onCreate=new Queue<int>();
@@ -119,19 +117,15 @@ public class CallManager : MonoBehaviour
             {
                 duckPath = 100;
             }
-            else if (index >= 61 && index < 65)
+            else if (index >= 61 && index < 64)
             {
                 duckPath = 200;
             }
-            else if (index >= 65 && index < 69)
+            else if (index >= 65 && index < 67)
             {
                 duckPath = 300;
             }
-            else if (index >= 69 && index < 73)
-            {
-                duckPath = 500;
-            }
-            else if (index >= 73 && index < 77)
+            else if (index >= 73 && index < 75)
             {
                 duckPath = 500;
             }
@@ -158,7 +152,6 @@ public class CallManager : MonoBehaviour
         else 
             duckPath = Random.Range(1, 24);
         string path = $"{title}/{duckPath}";
-        PFunc.Log("鸭子视频路径", path, duckPath);
         GameObject obj = SimplePool.Spawn(videoPlayer, PlayerController.Instance.transform.position, Quaternion.identity);
         VideoManager videoManager = obj.GetComponent<VideoManager>();
         obj.transform.SetParent(transform);
@@ -181,37 +174,38 @@ public class CallManager : MonoBehaviour
     }
     public void OnCreateCall()
     {
-
-        int index = Random.Range(0, smallCalls.Count);
-        GameObject tksobj = smallCalls[index];
+        int index = Random.Range(0, 7);
         switch (index)
         {
             case 0:
-                Sound.PlaySound("Sound/Mod/xy1");
+                string path1 = $"MOD/xj";
+                ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(0, 3), new Vector3(1, 1), path1, "Effect");
                 break;
             case 1:
-                Sound.PlaySound("Sound/Mod/lh1");
+                string path2 = $"MOD/xd";
+                ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(0, 3), new Vector3(1, 1), path2, "Effect");
                 break;
             case 2:
-                Sound.PlaySound("Sound/Mod/qw1");
+                string path3 = $"MOD/xm";
+                ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(0, 3), new Vector3(1, 1), path3, "Effect");
                 break;
             case 3:
-                Sound.PlaySound("Sound/Mod/xj1");
+                string path4 = $"MOD/lh";
+                ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(0, 3), new Vector3(1, 1), path4, "Effect");
                 break;
             case 4:
-                Sound.PlaySound("Sound/Mod/xm1");
+                string path5 = $"MOD/qw";
+                ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(0, 3), new Vector3(1, 1), path5, "Effect");
                 break;
             case 5:
-                Sound.PlaySound("Sound/Mod/xn1");
+                string path6 = $"MOD/xn";
+                ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(0, 3), new Vector3(1, 1), path6, "Effect");
                 break;
             case 6:
-                Sound.PlaySound("Sound/Mod/xxy");
+                string path7 = $"MOD/xy";
+                ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(0, 3), new Vector3(1, 1), path7, "Effect");
                 break;
         }
-
-        GameObject obj = SimplePool.Spawn(tksobj, PlayerController.Instance.transform.position, Quaternion.identity);
-        obj.transform.SetParent(transform);
-        obj.SetActive(true);
     }
     Tween tweenCamera;
     Tween tweenPlayer;

@@ -72,11 +72,12 @@ public class MeshCreateController : MonoBehaviour
     public void OnCreateOneFinger()
     {
         Sound.PlaySound("Sound/Mod/yiyangz");
-        GameObject obj = Instantiate(yiyangzhi);
+        GameObject obj = SimplePool.Spawn(yiyangzhi, Vector3.zero, Quaternion.identity);
         obj.transform.SetParent(Camera.main.transform, false);
         obj.transform.localPosition = new Vector3(0, 0, 1);
         obj.transform.localRotation = Quaternion.identity;
-        Invoke("OnReadyCreateFinger", 1);
+        obj.SetActive(true);
+        Invoke("OnReadyCreateFinger", 0.5f);
     }
 
     public void OnReadyCreateFinger()

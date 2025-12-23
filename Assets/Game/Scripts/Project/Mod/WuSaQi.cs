@@ -41,8 +41,8 @@ public class WuSaQi : MonoBehaviour
             Sound.PlaySound("Sound/Mod/dao");
             spriteRenderer.SetActive(true);
             kickPlayer = false;
-            Vector2 hitvector = isLeft ? new Vector3(20, 10) : new Vector3(-20, 10);
-            PlayerModController.Instance.OnKickPlayer(hitvector);
+            MoveDirection hitvector = isLeft ? MoveDirection.Right : MoveDirection.Left;
+            PlayerModController.Instance.TriggerModMove(hitvector, 0.2f, 1);
             Invoke("OnClose",0.5f);
         }
     }

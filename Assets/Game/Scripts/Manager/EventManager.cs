@@ -44,7 +44,10 @@ public class EventManager : Singleton<EventManager>, IDisposable
             eventListeners.Invoke(mess);
         }
     }
+     void OnTest(  )
+    {
 
+    }
     public void ClearListener(Events name)
     {
         listeners.Remove(name);

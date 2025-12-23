@@ -53,7 +53,7 @@ public class RainbowCat : MonoBehaviour
     
         if (collision.gameObject.tag.Equals("Player"))
         {
-            PlayerModController.Instance.OnKickPlayer(new Vector3(-6, 6));
+            PlayerModController.Instance.TriggerModMove(MoveDirection.Left, 0.2f, 1);
         }
     }
 }

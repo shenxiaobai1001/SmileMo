@@ -10,7 +10,7 @@ public class UISchedule : MonoBehaviour
     {
         if (PlayerController.Instance == null) return;
 
-        int value = (int)PlayerController.Instance.transform.position.x;
+        int value = (int)PlayerController.Instance.transform.position.x+ SystemController.Instance.scheduleDeviation;
         if (tx_mpos) tx_mpos.text = $"{value}รื";
     }
 }

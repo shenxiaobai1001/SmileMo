@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Linq;
+using TMPro;
 using UnityEngine;
 
 public class RoleStar : MonoBehaviour
@@ -9,6 +11,8 @@ public class RoleStar : MonoBehaviour
     public float destroyHeight = 20f; // 物体删除的高度阈值
     public ParticleSystem particleSystem;
     public SpriteRenderer spriteRenderer;
+    public TextMeshProUGUI tx_name;
+
 
     bool kickPlayer = true;
     Transform playerTarget;
@@ -17,7 +21,6 @@ public class RoleStar : MonoBehaviour
     void Start()
     {
         playerTarget = PlayerController.Instance.transform;
-
     }
 
     void Update()
@@ -39,13 +42,15 @@ public class RoleStar : MonoBehaviour
     }
 
     // 外部方法：设置初始位置
-    public void StartMove(Sprite sprite)
+    public void StartMove(Sprite sprite,string name)
     {
+        Sound.PlaySound("Sound/Mod/rain");
         spriteRenderer.sprite = sprite;
-        InitializeRandomRotation();
+        tx_name.text = name;
+        //InitializeRandomRotation();
         isMove = true;
         kickPlayer = true;
-        particleSystem.Play();
+       // particleSystem.Play();
     }
 
     void ChasePlayer()
@@ -55,7 +60,7 @@ public class RoleStar : MonoBehaviour
         {
             rigidbody.isKinematic = true;
         }
-        transform.LookAt(playerTarget);
+        //transform.LookAt(playerTarget);
         // 向玩家移动
         transform.position = Vector3.MoveTowards(transform.position, playerTarget.position, moveSpeed * Time.deltaTime);
         if (Vector3.Distance(transform.position, playerTarget.position) < 0.1f)
@@ -63,7 +68,7 @@ public class RoleStar : MonoBehaviour
             kickPlayer = false;
             bool protect = ModSystemController.Instance.Protecket;
             if (!protect)
-                PlayerModController.Instance.OnLeftHitPlayer();
+                PlayerModController.Instance.TriggerModMove(MoveDirection.Left , 0.2f, 1);
             OnReachPlayer();
         }
     }

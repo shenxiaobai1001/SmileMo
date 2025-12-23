@@ -32,6 +32,10 @@ public class LevelSevenController : MonoBehaviour
     {
         EventManager.Instance.AddListener(Events.GameRest, GameRest);
     }
+    private void OnDestroy()
+    {
+        EventManager.Instance.RemoveListener(Events.GameRest, GameRest);
+    }
 
     private void Update()
     {
@@ -47,16 +51,35 @@ public class LevelSevenController : MonoBehaviour
             OnOutPlayerSevenSucc();
         }
     }
-    void GameRest(object msg)
+
+    private Coroutine modMoveCoroutine;
+    IEnumerator OnRestMonsters()
     {
-        if (Monsters == null || Monsters.Count < 0) return;
-        for (int i = 0; i < Monsters.Count; i++) {
+        for (int i = 0; i < Monsters.Count; i++)
+        {
             Monsters[i].gameObject.SetActive(true);
             MonsterBase monsterBase = Monsters[i].GetComponent<MonsterBase>();
-            if (monsterBase != null) {
+            if (monsterBase != null)
+            {
                 monsterBase.OnRest();
             }
+            yield return null;
         }
+    }
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+    }
+    void GameRest(object msg)
+    {
+        PFunc.Log("第七关GameRest");
+        if (Monsters == null || Monsters.Count < 0) return;
+        PFunc.Log("第七关GameRest", Monsters.Count);
+        if (modMoveCoroutine != null)
+        {
+            StopCoroutine(modMoveCoroutine);
+        }
+        modMoveCoroutine = StartCoroutine(OnRestMonsters());
     }
 
     public void OnKillMonster()
@@ -88,7 +111,10 @@ public class LevelSevenController : MonoBehaviour
         ModSystemController.Instance.OnTransFarSevenOut();
         UISevenSchedule.Instance.OnCloseSchedule();
         killMonster = 0;
-        GameController.Instance.OnMoveToOldSavePos();
+        if (SystemController.Instance.airWallContin)
+            GameController.Instance.PlayerRestToSavePos(null);
+        else
+            GameController.Instance.OnMoveToOldSavePos();
     }
 
     public void OnOutPlayerSevenSucc()
