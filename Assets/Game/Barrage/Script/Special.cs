@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
-public class Box : MonoBehaviour
+public class Special : MonoBehaviour
 {
     public Transform selectCalls;
     public Transform calls;
@@ -46,7 +46,7 @@ public class Box : MonoBehaviour
             }
         }
 
-        if(videos.options[videos.value].text != "空")
+        if (videos.options[videos.value].text != "空")
         {
             string boxPath = $"Box/{videos.options[videos.value].text}";
             yield return barrageConfig.PlayBoxVideoAndWait(boxPath, 2, false, CallManager.Instance != null ? CallManager.Instance.transform : null);
@@ -56,7 +56,7 @@ public class Box : MonoBehaviour
     public void Remove()
     {
         Destroy(gameObject);
-        barrageConfig.barrageBoxSetting.RemoveAt(transform.GetSiblingIndex());
+        barrageConfig.barrageSpecialBoxSetting.RemoveAt(transform.GetSiblingIndex());
     }
 
     public void LoadCalls()
@@ -68,13 +68,13 @@ public class Box : MonoBehaviour
 
             int boxIndex = transform.GetSiblingIndex();
 
-            if (boxIndex < 0 || boxIndex >= barrageConfig.barrageBoxSetting.Count)
+            if (boxIndex < 0 || boxIndex >= barrageConfig.barrageSpecialBoxSetting.Count)
             {
                 Debug.LogError($"索引 {boxIndex} 超出范围");
                 return;
             }
 
-            var currentBoxCalls = barrageConfig.barrageBoxSetting[boxIndex].Calls;
+            var currentBoxCalls = barrageConfig.barrageSpecialBoxSetting[boxIndex].Calls;
 
             Dictionary<string, int> callCountDict = new Dictionary<string, int>();
 
@@ -162,8 +162,8 @@ public class Box : MonoBehaviour
         if(obj != null)
         {
             string name = call.transform.GetChild(0).GetComponent<Text>().text;
-            barrageConfig.barrageBoxSetting[transform.GetSiblingIndex()].Calls.Add(name);
-
+            barrageConfig.barrageSpecialBoxSetting[transform.GetSiblingIndex()].Calls.Add(name);
+                
             obj.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = name;
             InputField inputField = obj.transform.GetChild(1).GetComponent<InputField>();
             if (inputField != null)
@@ -191,14 +191,15 @@ public class Box : MonoBehaviour
     public void ChangeCountInCall(string callName, int value)
     {
         int boxIndex = transform.GetSiblingIndex();
+        Debug.Log(boxIndex);
 
-        if (boxIndex < 0 || boxIndex >= barrageConfig.barrageBoxSetting.Count)
+        if (boxIndex < 0 || boxIndex >= barrageConfig.barrageSpecialBoxSetting.Count)
         {
             Debug.LogError($"Box索引 {boxIndex} 超出范围");
             return;
         }
 
-        var calls = barrageConfig.barrageBoxSetting[boxIndex].Calls;
+        var calls = barrageConfig.barrageSpecialBoxSetting[boxIndex].Calls;
 
         for (int i = calls.Count - 1; i >= 0; i--)
         {
@@ -224,26 +225,26 @@ public class Box : MonoBehaviour
     {
         if (barrageConfig.isInit)
         {
-            BarrageBoxSetting barrageBoxSetting = barrageConfig.barrageBoxSetting[transform.GetSiblingIndex()];
+            BarrageSpecialBoxSetting barrageSpecialBoxSetting = barrageConfig.barrageSpecialBoxSetting[transform.GetSiblingIndex()];
 
             Transform line = transform.GetChild(0);
 
             foreach (Transform child in line)
             {
-                if (child.gameObject.name == "InputField1") barrageBoxSetting.BoxName = child.gameObject.GetComponent<InputField>().text;
-                if (child.gameObject.name == "Dropdown1") barrageBoxSetting.Type = child.gameObject.GetComponent<Dropdown>().options[child.gameObject.GetComponent<Dropdown>().value].text;
-                if (child.gameObject.name == "InputField2") barrageBoxSetting.Message = child.gameObject.GetComponent<InputField>().text;
-                if (child.gameObject.name == "InputField3") barrageBoxSetting.Tip = child.gameObject.GetComponent<InputField>().text;
+                if (child.gameObject.name == "InputField1") barrageSpecialBoxSetting.BoxName = child.gameObject.GetComponent<InputField>().text;
+                if (child.gameObject.name == "Dropdown1") barrageSpecialBoxSetting.Type = child.gameObject.GetComponent<Dropdown>().options[child.gameObject.GetComponent<Dropdown>().value].text;
+                if (child.gameObject.name == "InputField2") barrageSpecialBoxSetting.Message = child.gameObject.GetComponent<InputField>().text;
+                if (child.gameObject.name == "InputField3") barrageSpecialBoxSetting.Tip = child.gameObject.GetComponent<InputField>().text;
                 if (child.gameObject.name == "InputField4")
                 {
                     string text = child.gameObject.GetComponent<InputField>().text;
                     if (int.TryParse(text, out int value))
                     {
-                        barrageBoxSetting.Count = value;
+                        barrageSpecialBoxSetting.Count = value;
                     }
                     else
                     {
-                        barrageBoxSetting.Count = 1;
+                        barrageSpecialBoxSetting.Count = 1;
                         Debug.Log("解析倍率失败，使用默认值.");
                     }
                 }
@@ -252,15 +253,15 @@ public class Box : MonoBehaviour
                     string text = child.gameObject.GetComponent<InputField>().text;
                     if (float.TryParse(text, out float value))
                     {
-                        barrageBoxSetting.Delay = value;
+                        barrageSpecialBoxSetting.Delay = value;
                     }
                     else
                     {
-                        barrageBoxSetting.Delay = 0;
+                        barrageSpecialBoxSetting.Delay = 0;
                         Debug.Log("解析延迟失败，使用默认值.");
                     }
                 }
-                if (child.gameObject.name == "Dropdown2") barrageBoxSetting.videoName = child.gameObject.GetComponent<Dropdown>().options[child.gameObject.GetComponent<Dropdown>().value].text;
+                if (child.gameObject.name == "Dropdown2") barrageSpecialBoxSetting.videoName = child.gameObject.GetComponent<Dropdown>().options[child.gameObject.GetComponent<Dropdown>().value].text;
             }
         }
     }
@@ -278,11 +279,14 @@ public class Box : MonoBehaviour
         // 调用控制器的播放逻辑
         yield return PlayVideoAndWait();
 
-        int index = UnityEngine.Random.Range(0, BarrageController.Instance.barrageBoxSetting[transform.GetSiblingIndex()].Calls.Count);
-        string callName = BarrageController.Instance.barrageBoxSetting[transform.GetSiblingIndex()].Calls[index];
-        int times = BarrageController.Instance.barrageBoxSetting[transform.GetSiblingIndex()].Count;
-        float delay = BarrageController.Instance.barrageBoxSetting[transform.GetSiblingIndex()].Delay;
+        foreach(var callName in BarrageController.Instance.barrageSpecialBoxSetting[transform.GetSiblingIndex()].Calls)
+        {
+            int index = UnityEngine.Random.Range(0, BarrageController.Instance.barrageSpecialBoxSetting[transform.GetSiblingIndex()].Calls.Count);
+            int times = BarrageController.Instance.barrageSpecialBoxSetting[transform.GetSiblingIndex()].Count;
+            float delay = BarrageController.Instance.barrageSpecialBoxSetting[transform.GetSiblingIndex()].Delay;
 
-        BarrageController.Instance.EnqueueAction("测试用户", "", callName, 1, times, delay);
+            BarrageController.Instance.EnqueueAction("测试用户", "", callName, 1, times, delay);
+        }
     }
 }
+        

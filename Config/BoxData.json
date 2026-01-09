@@ -1,3 +1,14 @@
 {
-    "BoxConfigs": []
+    "BoxConfigs": [
+        {
+            "BoxName": "CS ",
+            "Type": "礼物",
+            "Message": "123",
+            "Tip": "123",
+            "Count": 1,
+            "Delay": 0.0,
+            "videoName": "空",
+            "Calls": []
+        }
+    ]
 }

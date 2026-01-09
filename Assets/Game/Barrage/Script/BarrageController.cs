@@ -26,13 +26,30 @@ public class BarrageBoxSetting
     public string Tip; // 提示
     public int Count; // 倍率
     public float Delay; // 延迟
+    public string videoName; // 选择的视频
+
+    public List<string> Calls = new List<string>(); // 盲盒所有功能
+}
+
+[Serializable]
+public class BarrageSpecialBoxSetting
+{
+    public string BoxName; // 盲盒名称
+    public string Type; // 数据类型名称
+    public string Message; // 触发内容
+    public string Tip; // 提示
+    public int Count; // 倍率
+    public float Delay; // 延迟
+    public string videoName; // 选择的视频
+
     public List<string> Calls = new List<string>(); // 盲盒所有功能
 }
 
 public enum PrankType
 {
     normal,
-    box
+    box,
+    special
 }
 
 public class BarrageNormalWrapper
@@ -43,6 +60,11 @@ public class BarrageNormalWrapper
 public class BarrageBoxWrapper
 {
     public List<BarrageBoxSetting> BoxConfigs;
+}
+
+public class BarrageSpecialWrapper
+{
+    public List<BarrageSpecialBoxSetting> SpecialConfigs;
 }
 
 public class BarrageController : MonoBehaviour
@@ -58,8 +80,13 @@ public class BarrageController : MonoBehaviour
     public GameObject content;
     public GameObject item;
     public GameObject box;
+    public GameObject special;
+    [Header("视频播放器")]
+    public GameObject videoPlayerPrefab;
+
     public List<BarrageNormalSetting> barrageNormalSetting = new List<BarrageNormalSetting>();
     public List<BarrageBoxSetting> barrageBoxSetting = new List<BarrageBoxSetting>();
+    public List<BarrageSpecialBoxSetting> barrageSpecialBoxSetting = new List<BarrageSpecialBoxSetting>();
     public bool isInit;
 
     private class ActionTask
@@ -76,7 +103,7 @@ public class BarrageController : MonoBehaviour
     private readonly Dictionary<string, Coroutine> _runners = new Dictionary<string, Coroutine>();
     private readonly Dictionary<string, float> _lastExec = new Dictionary<string, float>();
 
-    public void EnqueueAction(string user, string avatar, string callName, int giftCount, int times, float delay)
+    public void EnqueueAction(string user, string avatar, string callName, int giftCount, int times, float delay, bool isBox = false)
     {
         if (string.IsNullOrEmpty(callName)) return;
         if (!_queues.TryGetValue(callName, out var q))
@@ -118,6 +145,33 @@ public class BarrageController : MonoBehaviour
             _lastExec[callName] = Time.time;
         }
         _runners[callName] = null;
+    }
+
+    /// <summary>
+    /// 从 Box 播放视频并等待播放结束（VideoManager 播放完会 Despawn 自己）
+    /// </summary>
+    public IEnumerator PlayBoxVideoAndWait(string boxPath, int playerType = 2, bool snake = false, Transform parent = null)
+    {
+        Debug.Log(boxPath);
+        if (videoPlayerPrefab == null)
+        {
+            Debug.LogError("BarrageController: 未设置 videoPlayerPrefab，无法播放视频。");
+            yield break;
+        }
+        if (parent == null)
+        {
+            parent = CallManager.Instance != null ? CallManager.Instance.transform : this.transform;
+        }
+
+        GameObject obj = SimplePool.Spawn(videoPlayerPrefab, PlayerController.Instance.transform.position, Quaternion.identity);
+        var videoManager = obj.GetComponent<VideoManager>();
+        obj.transform.SetParent(parent);
+        obj.SetActive(true);
+
+        videoManager.OnPlayVideo(playerType, boxPath, snake);
+
+        // 等待对象被回收或失活
+        yield return new WaitUntil(() => obj == null || !obj.activeInHierarchy);
     }
 
     /// <summary>
@@ -305,10 +359,15 @@ public class BarrageController : MonoBehaviour
             RemoveAllItem();
             InitNormalConfig();
         }
-        else
+        else if(type == (int)PrankType.box)
         {
             RemoveAllItem();
             InitBoxConfig();
+        }
+        else if (type == (int)PrankType.special)
+        {
+            RemoveAllItem();
+            InitSpecialConfig();
         }
     }
 
@@ -330,13 +389,21 @@ public class BarrageController : MonoBehaviour
             config.Count = 1;
             barrageNormalSetting.Add(config);
         }
-        else
+        else if(prankType == PrankType.box)
         {
             GameObject obj = Instantiate(box, content.transform);
 
             BarrageBoxSetting config = new BarrageBoxSetting();
             config.Count = 1;
             barrageBoxSetting.Add(config);
+        }
+        else if (prankType == PrankType.special)
+        {
+            GameObject obj = Instantiate(special, content.transform);
+
+            BarrageSpecialBoxSetting config = new BarrageSpecialBoxSetting();
+            config.Count = 1;
+            barrageSpecialBoxSetting.Add(config);
         }
     }
 
@@ -406,6 +473,16 @@ public class BarrageController : MonoBehaviour
         File.WriteAllText(filePath2, jsonData2);
 
         Debug.Log("盲盒配置数据已保存到: " + filePath2);
+
+        BarrageSpecialWrapper barrageSpecialWrapper = new BarrageSpecialWrapper();
+        barrageSpecialWrapper.SpecialConfigs = barrageSpecialBoxSetting;
+
+        string filePath3 = Path.Combine(Directory.GetCurrentDirectory(), "Config", "SpecialData.json");
+        string jsonData3 = JsonUtility.ToJson(barrageSpecialWrapper, true);
+
+        File.WriteAllText(filePath3, jsonData3);
+
+        Debug.Log("多特效配置数据已保存到: " + filePath3);
     }
 
     /// <summary>
@@ -457,7 +534,28 @@ public class BarrageController : MonoBehaviour
         {
             Debug.LogError($"加载失败: {e.Message}");
         }
-        
+
+        string filePath3 = Path.Combine(Directory.GetCurrentDirectory(), "Config", "SpecialData.json");
+        if (!File.Exists(filePath3))
+        {
+            Debug.LogWarning("未找到配置文件: " + filePath3);
+            return;
+        }
+
+        try
+        {
+            string jsonData = File.ReadAllText(filePath3);
+
+            BarrageSpecialWrapper wrapper = JsonUtility.FromJson<BarrageSpecialWrapper>(jsonData);
+            barrageSpecialBoxSetting = wrapper.SpecialConfigs;
+
+            Debug.Log($"成功加载 {wrapper.SpecialConfigs.Count} 条多特效配置数据");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"加载失败: {e.Message}");
+        }
+
 
     }
 
@@ -497,8 +595,8 @@ public class BarrageController : MonoBehaviour
         {
             GameObject itemObj = Instantiate(box, content.transform);
             GameObject lineObj = itemObj.transform.GetChild(0).gameObject;
-            Dropdown dropdown = lineObj.transform.GetChild(2).GetComponent<Dropdown>();
-
+            Dropdown dropdown1 = lineObj.transform.GetChild(2).GetComponent<Dropdown>();
+            Dropdown dropdown2 = lineObj.transform.GetChild(11).GetComponent<Dropdown>();
 
             lineObj.transform.GetChild(1).GetComponent<InputField>().text = barrageBoxSetting[i].BoxName;
             lineObj.transform.GetChild(3).GetComponent<InputField>().text = barrageBoxSetting[i].Message;
@@ -506,7 +604,33 @@ public class BarrageController : MonoBehaviour
             lineObj.transform.GetChild(7).GetComponent<InputField>().text = barrageBoxSetting[i].Count.ToString();
             lineObj.transform.GetChild(9).GetComponent<InputField>().text = barrageBoxSetting[i].Delay.ToString();
 
-            ChoiceCall(dropdown, barrageBoxSetting[i].Type);
+            ChoiceCall(dropdown1, barrageBoxSetting[i].Type);
+            ChoiceCall(dropdown2, barrageBoxSetting[i].videoName);
+        }
+        isInit = true;
+    }
+
+    /// <summary>
+    /// 初始化多特效配置box
+    /// </summary>
+    public void InitSpecialConfig()
+    {
+        RemoveAllItem();
+        for (int i = 0; i < barrageSpecialBoxSetting.Count; i++)
+        {
+            GameObject itemObj = Instantiate(special, content.transform);
+            GameObject lineObj = itemObj.transform.GetChild(0).gameObject;
+            Dropdown dropdown1 = lineObj.transform.GetChild(2).GetComponent<Dropdown>();
+            Dropdown dropdown2 = lineObj.transform.GetChild(11).GetComponent<Dropdown>();
+
+            lineObj.transform.GetChild(1).GetComponent<InputField>().text = barrageSpecialBoxSetting[i].BoxName;
+            lineObj.transform.GetChild(3).GetComponent<InputField>().text = barrageSpecialBoxSetting[i].Message;
+            lineObj.transform.GetChild(5).GetComponent<InputField>().text = barrageSpecialBoxSetting[i].Tip;
+            lineObj.transform.GetChild(7).GetComponent<InputField>().text = barrageSpecialBoxSetting[i].Count.ToString();
+            lineObj.transform.GetChild(9).GetComponent<InputField>().text = barrageSpecialBoxSetting[i].Delay.ToString();
+
+            ChoiceCall(dropdown1, barrageSpecialBoxSetting[i].Type);
+            ChoiceCall(dropdown2, barrageSpecialBoxSetting[i].videoName);
         }
         isInit = true;
     }
@@ -529,7 +653,7 @@ public class BarrageController : MonoBehaviour
     /// 执行功能
     /// </summary>
     /// <param name="callName"></param>
-    public IEnumerator CallFunction(string user, string avatar, string callName, int giftCount, int times, float delay)
+    public void CallFunction(string user, string avatar, string callName, int giftCount, int times, float delay)
     {
         PlayerAutomaticSystem.Instance.OnStopAutomatic();
         for (int i = 0; i < giftCount * times; i++)
@@ -671,9 +795,13 @@ public class BarrageController : MonoBehaviour
                 case "上吊":
                     ItemManager.Instance.OnCreateHangSelf();
                     break;
+                case "加一万米":
+                    SystemController.Instance.scheduleDeviation += 10000;
+                    break;
+                case "减一万米":
+                    SystemController.Instance.scheduleDeviation -= 10000;
+                    break;
             }
-
-            yield return new WaitForSeconds(delay);
         }
     }
 }

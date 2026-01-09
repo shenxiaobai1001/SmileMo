@@ -40567,8 +40567,11 @@ MonoBehaviour:
   content: {fileID: 348967110}
   item: {fileID: 8778753865026988281, guid: efca32274d0dcbf48802281ecb1b1840, type: 3}
   box: {fileID: 3790567738090041751, guid: 31ee4f7feb5182e458f8ee951d0c834f, type: 3}
+  special: {fileID: 3790567738090041751, guid: 1c488a850c3214d4584314fd461044f5, type: 3}
+  videoPlayerPrefab: {fileID: 2042542256360193339, guid: 070de3256e328b045add230da05a760e, type: 3}
   barrageNormalSetting: []
   barrageBoxSetting: []
+  barrageSpecialBoxSetting: []
   isInit: 0
 --- !u!4 &166008277 stripped
 Transform:
@@ -716572,19 +716575,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 73159795090900900, guid: 8d9b74bf07a053e4999e905edc41c752, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 79.99999
+      value: 77.79676
       objectReference: {fileID: 0}
     - target: {fileID: 73159795090900900, guid: 8d9b74bf07a053e4999e905edc41c752, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 39.999996
+      value: 38.89838
       objectReference: {fileID: 0}
     - target: {fileID: 181212183628440528, guid: 8d9b74bf07a053e4999e905edc41c752, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 79.99999
+      value: 77.79676
       objectReference: {fileID: 0}
     - target: {fileID: 181212183628440528, guid: 8d9b74bf07a053e4999e905edc41c752, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 39.999996
+      value: 38.89838
       objectReference: {fileID: 0}
     - target: {fileID: 185746989333529439, guid: 8d9b74bf07a053e4999e905edc41c752, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -716626,10 +716629,30 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: -7
       objectReference: {fileID: 0}
+    - target: {fileID: 2394502426988250678, guid: 8d9b74bf07a053e4999e905edc41c752, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 121.55744
+      objectReference: {fileID: 0}
+    - target: {fileID: 2394502426988250678, guid: 8d9b74bf07a053e4999e905edc41c752, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 24.31149
+      objectReference: {fileID: 0}
     - target: {fileID: 4240686741096843797, guid: 8d9b74bf07a053e4999e905edc41c752, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1327341635}
+    - target: {fileID: 4402347376788348442, guid: 8d9b74bf07a053e4999e905edc41c752, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 165876002}
+    - target: {fileID: 4402347376788348442, guid: 8d9b74bf07a053e4999e905edc41c752, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ChangePrankType
+      objectReference: {fileID: 0}
+    - target: {fileID: 4402347376788348442, guid: 8d9b74bf07a053e4999e905edc41c752, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5413724867095579751, guid: 8d9b74bf07a053e4999e905edc41c752, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

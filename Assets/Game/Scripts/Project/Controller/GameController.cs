@@ -32,6 +32,7 @@ public class GameController : MonoBehaviour
         EventManager.Instance.AddListener(Events.SaveSchedule, OnSetSavePos);
         EventManager.Instance.AddListener(Events.PlayerRestToSavePos, PlayerRestToSavePos);
         systemPanel.SetActive(false);
+        BarrageController.Instance.LoadDataFromJson();
     }
 
     public bool isSystemPanel = false;

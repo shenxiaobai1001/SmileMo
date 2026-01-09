@@ -45,9 +45,16 @@ public class BarrageBase : MonoBehaviour
         {
             if (config.Type == "关注")
             {
-                int index = UnityEngine.Random.Range(0, config.Calls.Count);
-                string CallName = config.Calls[index];
-                barrageConfigs.EnqueueAction(user, avatar, CallName, 1, config.Count, config.Delay);
+                StartCoroutine(PlayBoxVideoThenEnqueue(barrageConfigs, config, user, avatar, 1));
+            }
+        }
+
+        // 多特效触发逻辑
+        foreach (BarrageSpecialBoxSetting config in barrageConfigs.barrageSpecialBoxSetting)
+        {
+            if (config.Type == "关注")
+            {
+                StartCoroutine(PlaySpecialVideoThenEnqueue(barrageConfigs, config, user, avatar, 1));
             }
         }
     }
@@ -79,9 +86,16 @@ public class BarrageBase : MonoBehaviour
         {
             if (config.Type == "弹幕" && config.Message == content)
             {
-                int index = UnityEngine.Random.Range(0, config.Calls.Count);
-                string CallName = config.Calls[index];
-                barrageConfigs.EnqueueAction(user, avatar, CallName, 1, config.Count, config.Delay);
+                StartCoroutine(PlayBoxVideoThenEnqueue(barrageConfigs, config, user, avatar, 1));
+            }
+        }
+
+        // 多特效触发逻辑
+        foreach (BarrageSpecialBoxSetting config in barrageConfigs.barrageSpecialBoxSetting)
+        {
+            if (config.Type == "弹幕" && config.Message == content)
+            {
+                StartCoroutine(PlaySpecialVideoThenEnqueue(barrageConfigs, config, user, avatar, 1));
             }
         }
     }
@@ -114,9 +128,16 @@ public class BarrageBase : MonoBehaviour
         {
             if (config.Type == "礼物" && config.Message == giftName)
             {
-                int index = UnityEngine.Random.Range(0, config.Calls.Count);
-                string CallName = config.Calls[index];
-                barrageConfigs.EnqueueAction(user, avatar, CallName, giftCount, config.Count, config.Delay);
+                StartCoroutine(PlayBoxVideoThenEnqueue(barrageConfigs, config, user, avatar, giftCount));
+            }
+        }
+
+        // 多特效触发逻辑
+        foreach (BarrageSpecialBoxSetting config in barrageConfigs.barrageSpecialBoxSetting)
+        {
+            if (config.Type == "礼物" && config.Message == giftName)
+            {
+                StartCoroutine(PlaySpecialVideoThenEnqueue(barrageConfigs, config, user, avatar, 1));
             }
         }
     }
@@ -147,9 +168,16 @@ public class BarrageBase : MonoBehaviour
         {
             if (config.Type == "进入")
             {
-                int index = UnityEngine.Random.Range(0, config.Calls.Count);
-                string CallName = config.Calls[index];
-                barrageConfigs.EnqueueAction(user, avatar, CallName, 1, config.Count, config.Delay);
+                StartCoroutine(PlayBoxVideoThenEnqueue(barrageConfigs, config, user, avatar, 1));
+            }
+        }
+
+        // 多特效触发逻辑
+        foreach (BarrageSpecialBoxSetting config in barrageConfigs.barrageSpecialBoxSetting)
+        {
+            if (config.Type == "进入")
+            {
+                StartCoroutine(PlaySpecialVideoThenEnqueue(barrageConfigs, config, user, avatar, 1));
             }
         }
     }
@@ -191,12 +219,65 @@ public class BarrageBase : MonoBehaviour
         {
             if (config.Type == "点赞" && likeCount[user] > int.Parse(config.Message))
             {
-                int index = UnityEngine.Random.Range(0, config.Calls.Count);
-                string CallName = config.Calls[index];
-                barrageConfigs.EnqueueAction(user, avatar, CallName, 1, config.Count, config.Delay);
+                StartCoroutine(PlayBoxVideoThenEnqueue(barrageConfigs, config, user, avatar, 1));
                 likeCount[user] -= int.Parse(config.Message);
+            }
+        }
+
+        // 多特效触发逻辑
+        foreach (BarrageSpecialBoxSetting config in barrageConfigs.barrageSpecialBoxSetting)
+        {
+            if (config.Type == "点赞" && likeCount[user] > int.Parse(config.Message))
+            {
+                StartCoroutine(PlaySpecialVideoThenEnqueue(barrageConfigs, config, user, avatar, 1));
             }
         }
     }
 
+    // 盲盒播放视频后再执行功能：如果配置了视频名则先播完再触发
+    private IEnumerator PlayBoxVideoThenEnqueue(BarrageController controller, BarrageBoxSetting box, string user, string avatar, int giftCount)
+    {
+        if (box == null)
+            yield break;
+
+        if (!string.IsNullOrEmpty(box.videoName) && box.videoName != "空")
+        {
+            string path = $"Box/{box.videoName}";
+            yield return controller.PlayBoxVideoAndWait(path, 2, false, CallManager.Instance != null ? CallManager.Instance.transform : null);
+        }
+
+        if (box.Calls == null || box.Calls.Count == 0)
+        {
+            Debug.LogWarning($"盲盒 '{box.BoxName}' 未配置任何功能 Calls");
+            yield break;
+        }
+
+        int index = UnityEngine.Random.Range(0, box.Calls.Count);
+        string callName = box.Calls[index];
+        controller.EnqueueAction(user, avatar, callName, Mathf.Max(1, giftCount), box.Count, box.Delay, true);
+    }
+
+    // 多特效播放视频后再执行功能：如果配置了视频名则先播完再触发
+    private IEnumerator PlaySpecialVideoThenEnqueue(BarrageController controller, BarrageSpecialBoxSetting box, string user, string avatar, int giftCount)
+    {
+        if (box == null)
+            yield break;
+
+        if (!string.IsNullOrEmpty(box.videoName) && box.videoName != "空")
+        {
+            string path = $"Box/{box.videoName}";
+            yield return controller.PlayBoxVideoAndWait(path, 2, false, CallManager.Instance != null ? CallManager.Instance.transform : null);
+        }
+
+        if (box.Calls == null || box.Calls.Count == 0)
+        {
+            Debug.LogWarning($"盲盒 '{box.BoxName}' 未配置任何功能 Calls");
+            yield break;
+        }
+
+        foreach (var callName in box.Calls)
+        {
+            controller.CallFunction(user, avatar, callName, Mathf.Max(1, giftCount), box.Count, box.Delay);
+        }
+    }
 }

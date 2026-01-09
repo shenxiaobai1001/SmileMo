@@ -1,0 +1,18 @@
+{
+    "SpecialConfigs": [
+        {
+            "BoxName": "",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0,
+            "videoName": "火力全开",
+            "Calls": [
+                "麒麟臂",
+                "天残脚",
+                "电击"
+            ]
+        }
+    ]
+}

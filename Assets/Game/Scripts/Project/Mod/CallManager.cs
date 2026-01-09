@@ -157,6 +157,7 @@ public class CallManager : MonoBehaviour
         obj.transform.SetParent(transform);
         obj.SetActive(true);
         videoManager.OnPlayVideo(2, path,false);
+        Debug.Log(path);
         duckPath = getduck ? duckPath : 0;
         onCreate.Enqueue(duckPath);
         videoType = 2;
