@@ -422,10 +422,6 @@ public class PlayerModController : MonoBehaviour
         moveType1 = currentMove.type;
     }
 
-    float airMintime = 0.1f;
-    float airtime = 0;
-    float snakeTargetTime = 1;
-    float snakeTime = 2;
 
     /// <summary> 执行移动逻辑 </summary>
     private void ExecuteMove()
@@ -480,6 +476,10 @@ public class PlayerModController : MonoBehaviour
                 break;
         }
     }
+    float airMintime = 0.1f;
+    float airtime = 0;
+    float snakeTargetTime = 1;
+    float snakeTime = 2;
 
     /// <summary>
     /// 新增：Normal对抗状态处理

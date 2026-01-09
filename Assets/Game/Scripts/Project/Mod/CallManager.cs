@@ -68,7 +68,7 @@ public class CallManager : MonoBehaviour
     public void OnCreateDuckVideoPlayer()
     {
         boxIndex = 0;
-        int index = Random.Range(0, 82);
+        int index = Random.Range(0, 150);
         bool getduck = index >= 17;
         string title = getduck ? getDUCK : nullDUCK;
         int duckPath = 0;

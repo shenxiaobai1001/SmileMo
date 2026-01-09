@@ -1,28 +1,28 @@
 {
     "NormalConfigs": [
         {
-            "CallName": "砸落头像",
+            "CallName": "加一万米",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
-            "Count": 100,
-            "Delay": 0.5
+            "Count": 0,
+            "Delay": 0.0
         },
         {
-            "CallName": "天残脚",
+            "CallName": "减一万米",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
             "Count": 1,
-            "Delay": 0.5
+            "Delay": 0.0
         },
         {
             "CallName": "大贝塔",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
-            "Count": 1,
-            "Delay": 0.0
+            "Count": 10,
+            "Delay": 0.10000000149011612
         },
         {
             "CallName": "反向大贝塔",

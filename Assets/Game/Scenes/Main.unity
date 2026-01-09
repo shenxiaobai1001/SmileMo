@@ -40563,6 +40563,8 @@ MonoBehaviour:
   - "\u7F8E\u5973\u76F2\u76D2"
   - "\u52A8\u611FDJ"
   - "\u4E0A\u540A"
+  - "\u52A0\u4E00\u4E07\u7C73"
+  - "\u51CF\u4E00\u4E07\u7C73"
   prankType: 0
   content: {fileID: 348967110}
   item: {fileID: 8778753865026988281, guid: efca32274d0dcbf48802281ecb1b1840, type: 3}
@@ -441043,7 +441045,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameLevel: 0
-  saveIndex: 0
+  saveIndex: 1
   savePos:
   - {fileID: 1567034463}
   - {fileID: 1309749090}

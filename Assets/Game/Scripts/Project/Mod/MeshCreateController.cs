@@ -27,11 +27,6 @@ public class MeshCreateController : MonoBehaviour
             return;
         }
     }
-    private void Start()
-    {
-        
-    }
-
     public void OnCreateTCJiao()
     {
         GameObject obj = SimplePool.Spawn(TCJiao, Vector3.zero, Quaternion.identity);

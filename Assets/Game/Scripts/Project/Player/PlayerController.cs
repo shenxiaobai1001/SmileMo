@@ -1622,7 +1622,7 @@ public class PlayerController : MonoBehaviour
     void OnCheckHitOverTime()
     {
         damageTime += Time.deltaTime;
-        if (damageTime < 1)  return;
+        if (damageTime < 0.25f)  return;
      
         if (animator)
         {

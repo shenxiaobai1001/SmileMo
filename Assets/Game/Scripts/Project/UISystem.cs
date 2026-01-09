@@ -26,8 +26,7 @@ public class UISystem : MonoBehaviour
         sl_music.onValueChanged.AddListener(OnMusicValue);
         sl_sound.onValueChanged.AddListener(OnSoundValue);
         inputField.onEndEdit.AddListener(OnInputEndEdit);
-        PFunc.Log(Sound.VolumeMusic, Sound.VolumeSound);
-        PFunc.Log((float)Sound.VolumeMusic / (float)1, (float)Sound.VolumeSound / (float)1);
+
         sl_music.value = (float)Sound.VolumeMusic / (float)1;
         sl_sound.value = (float)Sound.VolumeSound / (float)1;
         if (SystemController.Instance.maxAirWallHp != 0)
