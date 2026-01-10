@@ -1,14 +1,17 @@
 {
     "BoxConfigs": [
         {
-            "BoxName": "CS ",
+            "BoxName": "测试盲盒",
             "Type": "礼物",
-            "Message": "123",
-            "Tip": "123",
+            "Message": "玫瑰",
+            "Tip": "",
             "Count": 1,
             "Delay": 0.0,
-            "videoName": "空",
-            "Calls": []
+            "videoName": "关注盲盒",
+            "Calls": [
+                "天残脚",
+                "麒麟臂"
+            ]
         }
     ]
 }

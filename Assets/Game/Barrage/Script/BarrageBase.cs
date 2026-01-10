@@ -137,7 +137,7 @@ public class BarrageBase : MonoBehaviour
         {
             if (config.Type == "礼物" && config.Message == giftName)
             {
-                StartCoroutine(PlaySpecialVideoThenEnqueue(barrageConfigs, config, user, avatar, 1));
+                StartCoroutine(PlaySpecialVideoThenEnqueue(barrageConfigs, config, user, avatar, giftCount));
             }
         }
     }

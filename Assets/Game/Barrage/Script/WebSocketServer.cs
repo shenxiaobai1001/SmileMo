@@ -22,7 +22,7 @@ public class WebSocketServer : MonoBehaviour
     private readonly List<TcpClient> _clients = new List<TcpClient>();
 
     private List<string> followUser = new List<string>();
-    private BarrageBase barrageBase = new BarrageBase();
+    [SerializeField] private BarrageBase barrageBase; // 通过场景引用或运行时查找，避免 new MonoBehaviour
     private UnityMainThreadDispatcher _dispatcher; // 缓存调度器，避免后台线程访问 Instance 触发查找
 
     private void HandleMessage(string json)
@@ -31,6 +31,16 @@ public class WebSocketServer : MonoBehaviour
  
         BarrageData barrage = JsonUtility.FromJson<BarrageData>(json);
         Debug.Log($"类型: {barrage.Type}");
+        if (barrageBase == null)
+        {
+            // 尝试补救性查找一次
+            barrageBase = FindAnyObjectByType<BarrageBase>();
+            if (barrageBase == null)
+            {
+                Debug.LogWarning("BarrageBase 未就绪，丢弃该条消息");
+                return;
+            }
+        }
         switch (barrage.Type)
         {
             case "进场":
@@ -63,6 +73,15 @@ public class WebSocketServer : MonoBehaviour
     void Start()
     {
         _dispatcher = UnityMainThreadDispatcher.Instance;
+        // 若未在 Inspector 赋值，则尝试在场景中查找 BarrageBase
+        if (barrageBase == null)
+        {
+            barrageBase = FindAnyObjectByType<BarrageBase>();
+            if (barrageBase == null)
+            {
+                Debug.LogWarning("WebSocketServer: 未找到场景中的 BarrageBase，请在场景中挂载并在 Inspector 赋值");
+            }
+        }
         StartServer();
     }
 

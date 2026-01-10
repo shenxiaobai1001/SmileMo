@@ -1,17 +1,16 @@
 {
     "SpecialConfigs": [
         {
-            "BoxName": "",
+            "BoxName": "测试盲盒",
             "Type": "礼物",
-            "Message": "",
+            "Message": "小心心",
             "Tip": "",
             "Count": 1,
             "Delay": 0.0,
             "videoName": "火力全开",
             "Calls": [
-                "麒麟臂",
                 "天残脚",
-                "电击"
+                "麒麟臂"
             ]
         }
     ]
