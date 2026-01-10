@@ -73,7 +73,7 @@ public class PlayerAutomaticSystem : MonoBehaviour
 
     IEnumerator AutomaticMove()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.1f);
         while (GameController.Instance.isAutomatic)
         {
             PFunc.Log("OnPlayerControStateChange", automaticPoints.Count, hasAutoMaticPoint);

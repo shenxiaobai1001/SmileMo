@@ -23,6 +23,11 @@ public class SaveItem : MonoBehaviour
         if (collision.tag.Equals("Player"))
         {
             if (GameController.Instance.saveIndex == saveIndex) return;
+           
+            if (GameController.Instance.saveIndex == saveIndex -1)
+            {
+                SystemController.Instance.scheduleDeviation += 1000;
+            }
             Sound.PlaySound("Sound/SavePointSfx");
             Instantiate(effect, effectPos.position,Quaternion.identity);
             animator.SetTrigger("Save");

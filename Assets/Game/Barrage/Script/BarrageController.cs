@@ -320,9 +320,11 @@ public class BarrageController : MonoBehaviour
                 ItemManager.Instance.OnCreateHangSelf();
                 break;
             case "加一万米":
+                Sound.PlaySound("Sound/Mod/AddTen");
                 SystemController.Instance.scheduleDeviation += 10000;
                 break;
             case "减一万米":
+                Sound.PlaySound("Sound/Mod/MinTen");
                 SystemController.Instance.scheduleDeviation -= 10000;
                 break;
         }
