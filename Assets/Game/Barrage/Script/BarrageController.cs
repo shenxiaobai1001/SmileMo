@@ -327,6 +327,9 @@ public class BarrageController : MonoBehaviour
                 Sound.PlaySound("Sound/Mod/MinTen");
                 SystemController.Instance.scheduleDeviation -= 10000;
                 break;
+            case "´ó±ø±¨µÀ":
+                
+                break;
         }
     }
 

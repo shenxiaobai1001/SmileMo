@@ -7,6 +7,12 @@ public class Config
     public static int ClearType=1;
  
 }
+
+public class ModData
+{
+    public static bool modDao = false;
+}
+
 // 移动方向
 public enum MoveDirection
 {
