@@ -5,13 +5,43 @@
             "Type": "礼物",
             "Message": "小心心",
             "Tip": "",
-            "Count": 1,
-            "Delay": 0.0,
+            "Count": 2,
+            "Delay": 2.0,
             "videoName": "火力全开",
             "Calls": [
                 "天残脚",
                 "麒麟臂"
             ]
+        },
+        {
+            "BoxName": "",
+            "Type": "",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0,
+            "videoName": "",
+            "Calls": []
+        },
+        {
+            "BoxName": "",
+            "Type": "",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0,
+            "videoName": "",
+            "Calls": []
+        },
+        {
+            "BoxName": "",
+            "Type": "",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0,
+            "videoName": "",
+            "Calls": []
         }
     ]
 }
