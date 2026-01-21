@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 
 public class ModVideoPlayer : MonoBehaviour
@@ -17,16 +18,17 @@ public class ModVideoPlayer : MonoBehaviour
         mainPlayer.Events.AddListener(OnVideoEvent);         // 订阅播放器本身提供的事件
         OnInitPlayer();
     }
-
+    UnityAction callback = null;
     int videoType = 0;
     Vector3 scale= Vector3.one;
-    public void OnPlayVideo(Vector3 offset, Vector3 scale, string path, string layer = "Video", bool snake = false)
+    public void OnPlayVideo(Vector3 offset, Vector3 scale, string path, string layer = "Video", bool snake = false, UnityAction callback = null)
     {
         PFunc.Log("OnPlayVideo", path, layer);
         objFllow.offset = offset;
         center.transform.localScale = scale;
         pathTitle = path;
         snakeScene = snake;
+        this.callback = callback;   
         if(mCanvas) mCanvas.sortingLayerName = layer;  // Sorting Layer 名称
         if (mCanvas) mCanvas.sortingOrder = 1;         // Order in Laye
         OnBeginGetVideo();
@@ -77,6 +79,8 @@ public class ModVideoPlayer : MonoBehaviour
         Sound.PauseOrPlayVolumeMusic(false);
         EventManager.Instance.SendMessage(Events.OnModVideoPlayEnd);
         EventManager.Instance.SendMessage(Events.BeginSnakeMap, false);
+        if (callback != null) callback.Invoke();
+        callback=null;
         mainPlayer.CloseMedia();
         SimplePool.Despawn(this.gameObject);
     }

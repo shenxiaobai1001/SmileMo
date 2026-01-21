@@ -1,7 +1,111 @@
 {
     "NormalConfigs": [
         {
-            "CallName": "右鞭腿",
+            "CallName": "大兵报道",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 2.0
+        },
+        {
+            "CallName": "乌鸦坐飞机",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 4,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "灵魂拷问",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "埋坟",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "埋坟",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "锁链",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "电击",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 10,
+            "Delay": 1.0
+        },
+        {
+            "CallName": "一库",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 10,
+            "Delay": 1.0
+        },
+        {
+            "CallName": "打板子",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "帅哥盲盒",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "美女盲盒",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "动感DJ",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "大贝塔",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "无敌护盾",
             "Type": "礼物",
             "Message": "",
             "Tip": "",

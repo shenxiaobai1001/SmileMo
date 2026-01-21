@@ -45,8 +45,14 @@ public class SystemController : MonoBehaviour
             maxAirWallHp = PlayerPrefs.GetInt("maxAirWallHp");
         airWallHp = maxAirWallHp;
 
+        if (PlayerPrefs.HasKey("NameValue"))
+            Config.NameValue = PlayerPrefs.GetString("NameValue");
+
+        if (PlayerPrefs.HasKey("isFileAdd"))
+            Config.isFileAdd = PlayerPrefs.GetInt("isFileAdd") == 0;
         airWallContin = airWallHp > 0;
         EventManager.Instance.SendMessage(Events.AirWallStateChange, airWallContin);
+        EventManager.Instance.SendMessage(Events.OnPlayerNameChange);
     }
 
     public void OnSetAirwallHp(int max,int now)
@@ -55,6 +61,15 @@ public class SystemController : MonoBehaviour
         airWallHp = now;
         airWallContin = airWallHp > 0;
         PlayerPrefs.SetInt("maxAirWallHp",maxAirWallHp);
+    }
+    public void OnSetPlayerName(string value)
+    {
+        Config.NameValue=value;
+        PlayerPrefs.SetString("NameValue", value);
+    }
+    public void OnSetFile()
+    {
+        PlayerPrefs.SetInt("isFileAdd", Config.isFileAdd ? 0 : 1);
     }
     public void OnSetWallHp(int now)
     {

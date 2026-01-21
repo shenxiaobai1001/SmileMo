@@ -24,7 +24,7 @@ public class SaveItem : MonoBehaviour
         {
             if (GameController.Instance.saveIndex == saveIndex) return;
            
-            if (GameController.Instance.saveIndex == saveIndex -1)
+            if (GameController.Instance.saveIndex == saveIndex -1&&Config.isFileAdd)
             {
                 SystemController.Instance.scheduleDeviation += 1000;
             }

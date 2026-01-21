@@ -51,10 +51,12 @@ public class CallManager : MonoBehaviour
     int greenCount = 9;
     int boxIndex = 0;
     int videoType = 0;
+    int manCount = 49;
+
     public void OnCreateVideoPlayer(string callName ,int type)
     {
         string title = callName == "√¿≈Æ√§∫–" ? box : dj;
-        int allCount = type == 1 ? normalCount : greenCount;
+        int allCount = callName == "√¿≈Æ√§∫–" ? normalCount : greenCount; 
         boxIndex = Random.Range(1, allCount + 1);
         string path = $"{title}/{boxIndex}";
         GameObject obj = SimplePool.Spawn(videoPlayer, PlayerController.Instance.transform.position, Quaternion.identity);
@@ -63,6 +65,18 @@ public class CallManager : MonoBehaviour
         obj.SetActive(true);
         videoManager.OnPlayVideo(type, path, callName != "√¿≈Æ√§∫–");
         videoType= type;
+    }
+    public void OnCreateManVideoPlayer()
+    {
+        string title = "Man";
+        boxIndex = Random.Range(1, manCount);
+        string path = $"{title}/{boxIndex}";
+        GameObject obj = SimplePool.Spawn(videoPlayer, PlayerController.Instance.transform.position, Quaternion.identity);
+        VideoManager videoManager = obj.GetComponent<VideoManager>();
+        obj.transform.SetParent(transform);
+        obj.SetActive(true);
+        videoManager.OnPlayVideo(1, path, false);
+        videoType = 1;
     }
     Queue<int> onCreate=new Queue<int>();
     public void OnCreateDuckVideoPlayer()
@@ -163,6 +177,83 @@ public class CallManager : MonoBehaviour
         videoType = 2;
     }
 
+    public void OnCreateDuckVideoPlayer(bool getduck1 ,int Count)
+    {
+        boxIndex = 0;
+        int index = Random.Range(0, 150);
+        bool getduck = getduck1;
+        string title = getduck ? getDUCK : nullDUCK;
+        int duckPath = Count;
+        if (!getduck)
+        {
+            duckPath = Random.Range(1, 24);
+        }
+        string path = $"{title}/{duckPath}";
+        GameObject obj = SimplePool.Spawn(videoPlayer, PlayerController.Instance.transform.position, Quaternion.identity);
+        VideoManager videoManager = obj.GetComponent<VideoManager>();
+        obj.transform.SetParent(transform);
+        obj.SetActive(true);
+        videoManager.OnPlayVideo(2, path, false);
+        Debug.Log(path);
+        duckPath = getduck ? duckPath : 0;
+        onCreate.Enqueue(duckPath);
+        videoType = 2;
+    }
+
+    public void OnCreateFlog()
+    {
+        boxIndex = 0;
+        int index = Random.Range(0, 9);
+        string title = "MOD/Flog";
+        int duckPath = 0;
+
+        switch (index)
+        {
+            case 0:
+                duckPath = 8;
+                break;
+            case 1:
+                duckPath = 18;
+                break;
+                case 2:
+                duckPath = 20;
+                break;
+                case 3:
+                duckPath = 30;
+                break;
+                case 4:
+                duckPath = 66;
+                break;
+                case 5:
+                duckPath = 73;
+                break;
+                case 6:
+                duckPath = 88;
+                break;
+                case 7:
+                duckPath = 128;
+                break;
+                case 8:
+                duckPath = 188;
+                break;     
+        }
+        string path = $"{title}/{duckPath}";
+        GameObject obj = SimplePool.Spawn(videoPlayer, PlayerController.Instance.transform.position, Quaternion.identity);
+        VideoManager videoManager = obj.GetComponent<VideoManager>();
+        obj.transform.SetParent(transform);
+        obj.SetActive(true);
+        videoManager.OnPlayVideo(2, path, false);
+        Debug.Log(path);
+  
+        Invoke("OnShowFlog",1);
+        bool protect = ModSystemController.Instance.Protecket;
+        if (protect) return;
+        Config.FlogCount += duckPath;
+    }
+    void OnShowFlog()
+    {
+        ItemManager.Instance.OnCreateFlog();
+    }
     void OnBeginCreateDuck(object msg)
     {
         if (onCreate == null || onCreate.Count <= 0) return;
@@ -261,5 +352,26 @@ public class CallManager : MonoBehaviour
         isSnake = false;
         if (tweenCamera != null) tweenCamera.Kill();
         if (tweenPlayer != null) tweenPlayer.Kill();
+    }
+    public bool isBury = false;
+    public void OnKuFen()
+    {
+        PFunc.Log("øﬁ∑ÿ");
+        GameObject obj = SimplePool.Spawn(videoPlayer, PlayerController.Instance.transform.position, Quaternion.identity);
+        VideoManager videoManager = obj.GetComponent<VideoManager>();
+        obj.transform.SetParent(transform);
+        obj.SetActive(true);
+        videoManager.OnPlayVideo(2, $"MOD/kufen", false, OnCloseKufen, "Default",-22);
+        ItemManager.Instance.OnCreatePaperMoney();
+        PlayerModController.Instance.OnChangeState(false);
+        PlayerModController.Instance.OnSetspriteTrans(false);
+        isBury = true;
+    }
+    void OnCloseKufen()
+    {
+        PFunc.Log("øﬁ∑ÿΩ· ¯");
+        isBury = false;
+        PlayerModController.Instance.OnSetspriteTrans(true);
+        PlayerModController.Instance.OnChangeState(true);
     }
 }

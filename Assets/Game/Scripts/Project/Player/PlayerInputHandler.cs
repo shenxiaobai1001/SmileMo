@@ -30,6 +30,7 @@ public class PlayerInputHandler : MonoBehaviour
     
     void LeftMove()
     {
+        if (Config.isSYSTEM) return;
         if (GameController.Instance.isAutomatic) return;
         if (playerController.isHit) return;
         bool protect = ModSystemController.Instance.Protecket;
@@ -44,6 +45,7 @@ public class PlayerInputHandler : MonoBehaviour
     }
     void RightMove()
     {
+        if (Config.isSYSTEM) return;
         if (GameController.Instance.isAutomatic) return;
         if (playerController.isHit) return;
         bool protect = ModSystemController.Instance.Protecket;
@@ -58,6 +60,7 @@ public class PlayerInputHandler : MonoBehaviour
     }
     void CLeftMove()
     {
+        if (Config.isSYSTEM) return;
         if (GameController.Instance.isAutomatic) return;
         if (playerController.isHit) return;
         bool protect = ModSystemController.Instance.Protecket;
@@ -73,6 +76,7 @@ public class PlayerInputHandler : MonoBehaviour
     }
     void CRightMove()
     {
+        if (Config.isSYSTEM) return;
         if (GameController.Instance.isAutomatic) return;
         if (playerController.isHit) return;
         bool protect = ModSystemController.Instance.Protecket;
@@ -88,6 +92,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     void LeftJump()
     {
+        if (Config.isSYSTEM) return;
         if (GameController.Instance.isAutomatic) return;
         if (playerController.isHit) return;
         bool protect = ModSystemController.Instance.Protecket;
@@ -104,6 +109,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     void RightJump()
     {
+        if (Config.isSYSTEM) return;
         if (GameController.Instance.isAutomatic) return;
         if (playerController.isHit) return;
         bool protect = ModSystemController.Instance.Protecket;
@@ -118,6 +124,7 @@ public class PlayerInputHandler : MonoBehaviour
     }
     void Jump()
     {
+        if (Config.isSYSTEM) return;
         if (GameController.Instance.isAutomatic) return;
         if (playerController.isHit) return;
         playerController.OnPlayerControStateChange(PlayerControState.Jump);
@@ -125,12 +132,14 @@ public class PlayerInputHandler : MonoBehaviour
 
     void CJump()
     {
+        if (Config.isSYSTEM) return;
         if (GameController.Instance.isAutomatic) return;
         if (playerController.isHit) return;
         playerController.OnPlayerControStateChange(PlayerControState.CJump);
     }
     void Boost()
     {
+        if (Config.isSYSTEM) return;
         if (GameController.Instance.isAutomatic) return;
         if (playerController.isHit) return;
         playerController.OnPlayerControStateChange(PlayerControState.Boost);
@@ -138,11 +147,13 @@ public class PlayerInputHandler : MonoBehaviour
 
     void CBoost()
     {
+        if (Config.isSYSTEM) return;
         if (playerController.isHit) return;
         playerController.OnPlayerControStateChange(PlayerControState.CanelBoost);
     }
     void FastMove()
     {
+        if (Config.isSYSTEM) return;
         if (GameController.Instance.isAutomatic) return;
         if (playerController.isHit) return;
         playerController.OnPlayerControStateChange(PlayerControState.ToFast);
@@ -150,6 +161,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     void CBoostFastMove()
     {
+        if (Config.isSYSTEM) return;
         if (GameController.Instance.isAutomatic) return;
         if (playerController.isHit) return;
         playerController.OnPlayerControStateChange(PlayerControState.CancelFast);

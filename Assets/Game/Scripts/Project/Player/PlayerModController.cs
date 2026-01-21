@@ -21,6 +21,7 @@ public class PlayerModController : MonoBehaviour
     public Transform createPos;
     public GameObject Tomato;
     public GameObject videoPlayer;
+    public Animator animator;
 
     // 爆炸类型
     public enum BoomType
@@ -145,6 +146,8 @@ public class PlayerModController : MonoBehaviour
             StopCoroutine(modMoveCoroutine);
         }
         modMoveCoroutine = StartCoroutine(ModMoveContinue());
+        if(playerBreak) playerBreak.gameObject.SetActive(false);
+        if (modSurrender) modSurrender.SetActive(false);
     }
 
     float lastAddTime = 0;
@@ -160,6 +163,9 @@ public class PlayerModController : MonoBehaviour
         bool protect = ModSystemController.Instance.Protecket;
         if (protect) return;
 
+        //if (CallManager.Instance.isBury) return;
+
+        //if (ItemManager.Instance.lockPlayer) return;
         // 播放爆炸特效
         PlayBoomEffect(boomType);
 
@@ -262,7 +268,8 @@ public class PlayerModController : MonoBehaviour
                 {
                     // 检查保护状态
                     bool protect = ModSystemController.Instance.Protecket;
-                    if (!protect)
+                    PFunc.Log(protect, ItemManager.Instance.lockPlayer, CallManager.Instance.isBury);
+                    if (!protect && !ItemManager.Instance.lockPlayer && !CallManager.Instance.isBury)
                     {
                         if (!isKinematic)
                         {
@@ -611,14 +618,16 @@ public class PlayerModController : MonoBehaviour
 
     bool isKinematic = false;
 
-    void OnChangeState(bool open)
+    public void OnChangeState(bool open)
     {
+
+        PFunc.Log(open, ItemManager.Instance.lockPlayer, CallManager.Instance.isBury);
+        if (open && (ItemManager.Instance.lockPlayer || CallManager.Instance.isBury)) return;
+        PlayerController.Instance.isHit = !open;
         box.enabled = open;
         Center.SetActive(open);
         if (playerController != null)
-        {
             playerController.isHit = !open;
-        }
         rigidbody.isKinematic = !open;
         isKinematic = !open;
         if (PlayerController.Instance != null)
@@ -626,7 +635,6 @@ public class PlayerModController : MonoBehaviour
             PlayerController.Instance.OnRest();
         }
     }
-
 
     public void OnClickToCreateTomaTo()
     {
@@ -746,16 +754,22 @@ public class PlayerModController : MonoBehaviour
         spriteTrans.gameObject.SetActive(false);
         isPassivityMove++;
     }
-
-    public void OnCancelHangSelf()
+    public void OnCancelLock()
     {
+        if (ItemManager.Instance.lockPlayer) return;
         spriteTrans.gameObject.SetActive(true);
         isPassivityMove--;
-        if (isPassivityMove <= 0)
-        {
+        PFunc.Log("OnCancelLock",isPassivityMove);
+        //if (isPassivityMove <= 0)
+        //{
             isPassivityMove = 0;
             OnChangeState(true);
-        }
+        //}
+    }
+    public void OnCancelHangSelf()
+    {
+        if (ItemManager.Instance.lockPlayer) return;
+        OnCancelLock();
 
         if (HangSelf.Instance != null && HangSelf.Instance.lastPoint != null)
         {
@@ -768,5 +782,74 @@ public class PlayerModController : MonoBehaviour
         }
     }
 
+    public void OnTiggerJingli(bool show)
+    {
+        if (ItemManager.Instance.lockPlayer) return;
+        if(show)
+             animator.SetTrigger("Jingli");
+        else
+            animator.SetTrigger("EndJingli");
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision == null) return;
+
+        if (collision.CompareTag("Meteorite"))
+        {
+            OnBreakPlayer(false);
+        }
+        if (collision.CompareTag("ManayArrow"))
+        {
+            OnBreakPlayer(true);
+        }
+    }
+
+    public PlayerBreak playerBreak;
+
+    void OnBreakPlayer(bool rest)
+    {
+        if (ItemManager.Instance.lockPlayer) return;
+        playerController.isHit = true;
+        OnChangeState(false);
+        if(modSurrender) modSurrender.SetActive(false);
+        spriteTrans.gameObject.SetActive(false);
+        playerBreak.gameObject.SetActive(true);
+
+        StartCoroutine(OnBREAKPlayer(rest));
+    }
+    IEnumerator OnBREAKPlayer(bool rest)
+    {
+        yield return playerBreak.OnAddAllForceIE();
+        yield return new WaitForSeconds(0.5f);
+        if (rest) GameController.Instance.PlayerRestToSavePos(null);
+        yield return playerBreak.OnHuifuIE();
+        spriteTrans.gameObject.SetActive(true);
+        OnChangeState(true);
+        playerController.isHit = false;
+    }
+    public GameObject modSurrender;
+    public void OnSetModSprite(bool show)
+    {
+        modSurrender.SetActive(show);
+        if (show)
+        {
+            spriteTrans.gameObject.SetActive(false);
+            //playerController.isHit = true;
+            OnChangeState(false);
+        }
+        else
+        {
+            spriteTrans.gameObject.SetActive(true);
+            //playerController.isHit = false;
+            OnChangeState(true);
+        }
+    }
+    public void OnSetspriteTrans(bool show)
+    {
+        PFunc.Log(show, ItemManager.Instance.lockPlayer, CallManager.Instance.isBury);
+        if (show&&(ItemManager.Instance.lockPlayer || CallManager.Instance.isBury)) return;
+        if(spriteTrans) spriteTrans.gameObject.SetActive(show);
+    }
     #endregion
 }

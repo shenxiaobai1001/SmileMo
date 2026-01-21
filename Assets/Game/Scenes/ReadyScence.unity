@@ -732,19 +732,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 255097079197488312, guid: 49c0f662c1551434ea0ab230ebab6bc0, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 255097079197488312, guid: 49c0f662c1551434ea0ab230ebab6bc0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3647880878151067711, guid: 49c0f662c1551434ea0ab230ebab6bc0, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3647880878151067711, guid: 49c0f662c1551434ea0ab230ebab6bc0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5319574084591612356, guid: 49c0f662c1551434ea0ab230ebab6bc0, type: 3}
       propertyPath: m_Pivot.x
@@ -828,35 +828,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6407380978489888783, guid: 49c0f662c1551434ea0ab230ebab6bc0, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6407380978489888783, guid: 49c0f662c1551434ea0ab230ebab6bc0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6407380978489888783, guid: 49c0f662c1551434ea0ab230ebab6bc0, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6634951195827381608, guid: 49c0f662c1551434ea0ab230ebab6bc0, type: 3}
       propertyPath: m_Name
       value: UISystem
       objectReference: {fileID: 0}
-    - target: {fileID: 6634951195827381608, guid: 49c0f662c1551434ea0ab230ebab6bc0, type: 3}
-      propertyPath: m_IsActive
+    - target: {fileID: 7247154334985984365, guid: 49c0f662c1551434ea0ab230ebab6bc0, type: 3}
+      propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7247154334985984365, guid: 49c0f662c1551434ea0ab230ebab6bc0, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7247154334985984365, guid: 49c0f662c1551434ea0ab230ebab6bc0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7247154334985984365, guid: 49c0f662c1551434ea0ab230ebab6bc0, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -976,6 +972,7 @@ MonoBehaviour:
   maxAirWallHp: 0
   airWallHp: 0
   airWallContin: 0
+  scheduleDeviation: 0
 --- !u!4 &1823581770
 Transform:
   m_ObjectHideFlags: 0
@@ -1230,6 +1227,6 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 830682699}
+  - {fileID: 1823581770}
   - {fileID: 452041066}
   - {fileID: 2090908481}
-  - {fileID: 1823581770}

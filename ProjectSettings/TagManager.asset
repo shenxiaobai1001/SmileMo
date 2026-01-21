@@ -11,6 +11,8 @@ TagManager:
   - Monster
   - Boss
   - Arrow
+  - Meteorite
+  - ManayArrow
   layers:
   - Default
   - TransparentFX

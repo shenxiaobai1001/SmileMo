@@ -5,7 +5,11 @@ using System.Collections.Generic;
 public class Config
 {
     public static int ClearType=1;
- 
+    public static int chainCount=0;
+    public static int FlogCount;
+    public static string NameValue;
+    public static bool isSYSTEM = false;
+    public static bool isFileAdd = true;
 }
 
 public class ModData
@@ -51,6 +55,9 @@ public enum Events
     OnVideoPlayEnd,
     OnModVideoPlayEnd,
     AirWallStateChange,
+    OnJingLi,
+    OnLazzerHit,
+    OnPlayerNameChange,
 }
 
 public enum PlayerControState

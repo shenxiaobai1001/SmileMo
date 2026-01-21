@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class VideoManager : MonoBehaviour
 {
@@ -11,24 +12,28 @@ public class VideoManager : MonoBehaviour
     public DisplayUGUI candisplayUGUI;
     public Canvas mCanvas;
 
+    UnityAction callback = null;
     bool snakeScene = false;
-    void Start()
+    void Awake()
     {
         mainPlayer.Events.AddListener(OnVideoEvent);         // 订阅播放器本身提供的事件
         mCanvas.renderMode = RenderMode.ScreenSpaceCamera;
         mCanvas.worldCamera = Camera.main;
-        mCanvas.sortingLayerName = "Video";  // Sorting Layer 名称
-        mCanvas.sortingOrder = 0;         // Order in Layer
+        mCanvas.sortingLayerName = "Default";  // Sorting Layer 名称
+        mCanvas.sortingOrder = -20;         // Order in Layer
     }
 
     int videoType = 0;
-    public void OnPlayVideo(int type, string title, bool snake = true)
+    public void OnPlayVideo(int type, string title, bool snake = true, UnityAction callback=null,string layer= "Default",int sort=-20)
     {
         videoType = type;
         pathTitle = title;
         displayUGUI.gameObject.SetActive(videoType == 1);
         candisplayUGUI.gameObject.SetActive(videoType == 2);
         snakeScene = snake;
+        this.callback = callback;
+        mCanvas.sortingLayerName = layer;  // Sorting Layer 名称
+        mCanvas.sortingOrder = sort;         // Order in Layer
         OnBeginGetVideo();
     }
 
@@ -72,6 +77,8 @@ public class VideoManager : MonoBehaviour
         Sound.PauseOrPlayVolumeMusic(false);
         EventManager.Instance.SendMessage(Events.BeginSnakeMap, false);
         EventManager.Instance.SendMessage(Events.OnVideoPlayEnd);
+        if(callback!=null) callback.Invoke();
+        callback = null;
         mainPlayer.CloseMedia();
         SimplePool.Despawn(this.gameObject);
     }

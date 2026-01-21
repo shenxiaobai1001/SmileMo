@@ -28,8 +28,16 @@ public class HangSelf : MonoBehaviour
     private Tween swingTween;
     private void OnEnable()
     {
-        StartSwing();
-        Invoke("OnReadyDes",4.5f);
+        PlayerModController.Instance.OnHangSelf();
+        if (ItemManager.Instance.lockPlayer||CallManager.Instance.isBury)
+        {
+            OnReadyDes();
+        }
+        else
+        {
+            StartSwing();
+            Invoke("OnReadyDes", 4.5f);
+        }
     }
 
     public void StartSwing()

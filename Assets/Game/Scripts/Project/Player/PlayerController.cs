@@ -56,7 +56,10 @@ public class PlayerController : MonoBehaviour
     float stickFTime = 0;
     float brakeTime = 0;
     float damageTime = 0;
-    public bool isHit = false;
+    bool hit = false;
+    public bool isHit { get { return hit; }
+        set { Debug.Log("Ð´Èë¿ØÖÆ"+value);  hit=value; }
+    }
 
     public BoostImageContro boostImageContro;
     public PCteateHit pCteateHit;
@@ -72,6 +75,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
     }
+
 
     private void Start()
     {
@@ -128,6 +132,7 @@ public class PlayerController : MonoBehaviour
 
     void OnClickState()
     {
+        if (Config.isSYSTEM) return;
         if (Input.GetKeyDown(KeyCode.C))
         {
             EventManager.Instance.SendMessage(Events.PlayerRestToSavePos);

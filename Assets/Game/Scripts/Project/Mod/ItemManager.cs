@@ -1,10 +1,8 @@
+
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Video;
-using static UnityEngine.Rendering.DebugUI;
+using UnityEngine.SocialPlatforms;
 
 public class ItemManager : MonoBehaviour
 {
@@ -24,6 +22,7 @@ public class ItemManager : MonoBehaviour
     public GameObject RainBowCat;
     public GameObject BoomGrandema;
     public GameObject blackHand;
+    public GameObject chenGuoHan;
 
     private void Awake()
     {
@@ -156,6 +155,18 @@ public class ItemManager : MonoBehaviour
         GameObject obj = SimplePool.Spawn(Electricity, transform.position, Quaternion.identity);
         obj.transform.SetParent(transform);
         PlayerModController.Instance.TriggerModMove(MoveDirection.Left, 0.3f, 1);
+        EventManager.Instance.SendMessage(Events.OnLazzerHit);
+        bool protect = ModSystemController.Instance.Protecket;
+        if (protect) return;
+        if (!ChainPlayer.Instance|| !ChainPlayer.Instance.gameObject.activeSelf) return;
+        Config.chainCount += 2;
+    }
+    public GameObject paperMoney;
+    public void OnCreatePaperMoney()
+    {
+        //Sound.PlaySound("Sound/Mod/dianji");
+        GameObject obj = SimplePool.Spawn(paperMoney, transform.position, Quaternion.identity);
+        obj.transform.SetParent(transform);
     }
 
     public bool rainBow = false;
@@ -326,6 +337,7 @@ public class ItemManager : MonoBehaviour
         obj.SetActive(true);
         
     }
+
     public GameObject Huoquan;
     public void OnCreateHuoquan()
     {
@@ -376,6 +388,78 @@ public class ItemManager : MonoBehaviour
         obj.transform.SetParent(transform);
         Sound.PlaySound("Sound/Mod/hangself");
         isHang = true;
-        PlayerModController.Instance.OnHangSelf();
+
+    }
+
+    public void OnCreateChenGuoHan()
+    {
+        PFunc.Log("ÎÚÑ»×ø·É»ú",chenGuoHan);
+        Sound.PlaySound("Sound/Mod/wuya");
+        Vector3 vectorPlayer = PlayerController.Instance.transform.position;
+        GameObject obj = SimplePool.Spawn(chenGuoHan, vectorPlayer, Quaternion.identity);
+        ChenGuoHan chen= obj.GetComponent<ChenGuoHan>();
+        obj.transform.SetParent(transform);
+        obj.SetActive(true);
+        chen.OnStartMove();
+    }
+
+    public GameObject manayArrow;
+    public void OnCreateManayArrow()
+    {
+        PFunc.Log("OnCreateManayArrow", chenGuoHan);
+        //Sound.PlaySound("Sound/Mod/daodan");
+        Vector3 vectorPlayer = PlayerController.Instance.transform.position;
+        Vector2 createPos = new Vector2(vectorPlayer.x,-10);
+        GameObject obj = SimplePool.Spawn(manayArrow, createPos, Quaternion.identity);
+        //ManyArrow manayArrow1 = obj.GetComponent<ManyArrow>();
+        obj.transform.SetParent(transform);
+        obj.SetActive(true);
+    }
+
+    public bool lockPlayer = false;
+    public GameObject chainPlayer;
+    public void OnCreateChainPlayer()
+    {
+        PlayerController.Instance.isHit = true;
+        lockPlayer = true;
+
+        Sound.PlaySound("Sound/Mod/lock");
+        Vector3 createPos = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
+        GameObject obj = SimplePool.Spawn(chainPlayer, createPos, Quaternion.identity);
+        obj.transform.SetParent(transform);
+        obj.SetActive(true);
+        UIChain.Instance.OnStartMove();
+        bool protect = ModSystemController.Instance.Protecket;
+        if(!protect)
+        {
+            Config.chainCount += 20;
+        }
+    }
+
+    public GameObject yiku;
+    public void OnCreateMangSeng()
+    {
+        Vector3 vectorPlayer = PlayerController.Instance.transform.position;
+        bool mangleft = UnityEngine.Random.Range(0, 2) == 0;
+        int xx = mangleft ? -15 : 15;
+        Vector3 createPos = new Vector3(vectorPlayer.x + xx, vectorPlayer.y + 10, 0);
+        GameObject obj = SimplePool.Spawn(yiku, createPos, Quaternion.identity);
+        obj.transform.SetParent(transform);
+        obj.SetActive(true);
+        Sound.PlaySound("Sound/Mod/mangseng");
+        MangSeng mangSeng = obj.GetComponent<MangSeng>();
+        mangSeng.StartMove(mangleft);
+    }
+    public GameObject FlogPlayer;
+    public void OnCreateFlog()
+    {
+        PlayerController.Instance.isHit = true;
+        lockPlayer = true;
+        //Sound.PlaySound("Sound/Mod/lock");
+        Vector3 createPos = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
+        GameObject obj = SimplePool.Spawn(FlogPlayer, createPos, Quaternion.identity);
+        obj.transform.SetParent(transform);
+        obj.SetActive(true);
+        UIFlog.Instance.OnStartMove();
     }
 }

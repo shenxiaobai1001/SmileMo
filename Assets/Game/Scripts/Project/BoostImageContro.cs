@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class BoostImageContro : MonoBehaviour
 {
     public Image targetImage;          // 目标Image组件
+    public Text tx_name;
     public float reductionDuration = 50;    // 填充减少总时间
     public float recoveryDuration = 2f;    // 填充恢复总时间
 
@@ -20,8 +21,17 @@ public class BoostImageContro : MonoBehaviour
     {
         if (targetImage) targetImage.gameObject.SetActive(false);
         remainingTime = reductionDuration; // 初始满时间
+        EventManager.Instance.AddListener(Events.OnPlayerNameChange, OnChangeName);
+        OnChangeName(null);
     }
-
+    void OnChangeName(object msg)
+    {
+        tx_name.text = Config.NameValue;
+    }
+    private void OnDestroy()
+    {
+        EventManager.Instance.RemoveListener(Events.OnPlayerNameChange, OnChangeName);
+    }
     // 开始减少填充和时间
     public void StartReduction()
     {

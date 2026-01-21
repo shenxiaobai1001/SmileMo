@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ModVideoPlayerController : MonoBehaviour
 {
@@ -27,11 +28,11 @@ public class ModVideoPlayerController : MonoBehaviour
         EventManager.Instance.AddListener(Events.OnModVideoPlayEnd, OnVideoPlayEnd);
     }
 
-    public void OnCreateModVideoPlayer(Vector3 offset, Vector3 scale, string path, string layer = "Video",  bool snake = false)
+    public void OnCreateModVideoPlayer(Vector3 offset, Vector3 scale, string path, string layer = "Video",  bool snake = false, UnityAction callback = null)
     {
         GameObject vplayerObj = SimplePool.Spawn(ModVideoPlayer, transform.position, Quaternion.identity);
         ModVideoPlayer vplayer = vplayerObj.GetComponent<ModVideoPlayer>();
-        vplayer.OnPlayVideo(offset, scale,path, layer,snake);
+        vplayer.OnPlayVideo(offset, scale,path, layer,snake, callback );
         vplayerObj.transform.SetParent(this.transform);
         IsPlaying = true;
     }
