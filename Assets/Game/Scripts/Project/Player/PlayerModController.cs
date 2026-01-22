@@ -620,10 +620,9 @@ public class PlayerModController : MonoBehaviour
 
     public void OnChangeState(bool open)
     {
-
         PFunc.Log(open, ItemManager.Instance.lockPlayer, CallManager.Instance.isBury);
         if (open && (ItemManager.Instance.lockPlayer || CallManager.Instance.isBury)) return;
-        PlayerController.Instance.isHit = !open;
+
         box.enabled = open;
         Center.SetActive(open);
         if (playerController != null)
@@ -634,6 +633,8 @@ public class PlayerModController : MonoBehaviour
         {
             PlayerController.Instance.OnRest();
         }
+        PlayerController.Instance.isHit = !open;
+        PFunc.Log("OnChangeState", PlayerController.Instance.isHit);
     }
 
     public void OnClickToCreateTomaTo()
@@ -794,7 +795,8 @@ public class PlayerModController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision == null) return;
-
+        bool protect = ModSystemController.Instance.Protecket;
+        if (protect) return;
         if (collision.CompareTag("Meteorite"))
         {
             OnBreakPlayer(false);
@@ -831,6 +833,8 @@ public class PlayerModController : MonoBehaviour
     public GameObject modSurrender;
     public void OnSetModSprite(bool show)
     {
+        if ((ItemManager.Instance.lockPlayer || CallManager.Instance.isBury)) return;
+        if (show&&ModSystemController.Instance.Protecket) return;
         modSurrender.SetActive(show);
         if (show)
         {

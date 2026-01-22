@@ -361,7 +361,7 @@ public class CallManager : MonoBehaviour
         VideoManager videoManager = obj.GetComponent<VideoManager>();
         obj.transform.SetParent(transform);
         obj.SetActive(true);
-        videoManager.OnPlayVideo(2, $"MOD/kufen", false, OnCloseKufen, "Default",-22);
+        videoManager.OnPlayVideo(2, $"MOD/kufen", false, OnCloseKufen, "Default",-18);
         ItemManager.Instance.OnCreatePaperMoney();
         PlayerModController.Instance.OnChangeState(false);
         PlayerModController.Instance.OnSetspriteTrans(false);

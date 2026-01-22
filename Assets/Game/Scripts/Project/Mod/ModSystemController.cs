@@ -156,6 +156,7 @@ public class ModSystemController : MonoBehaviour
 
     public void OnPlayMenace()
     {
+
         int number = Random.Range(1, 39);
         ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(-0.5f, 0.4f, 0), Vector3.one,  $"MOD/Question/{number}","Video",false, OnCloseMence);
         PlayerModController.Instance.OnSetModSprite(true);

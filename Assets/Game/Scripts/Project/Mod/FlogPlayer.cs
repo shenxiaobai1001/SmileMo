@@ -42,7 +42,7 @@ public class FlogPlayer : MonoBehaviour
     {
         if (checkFlogTime)
         {
-            if (!hasChangePlaySpeed  &&Config.FlogCount>10) {
+            if (!hasChangePlaySpeed  && Config.FlogCount>10) {
                 animator.speed = 4;
                 hasChangePlaySpeed = true;
             }
@@ -70,7 +70,6 @@ public class FlogPlayer : MonoBehaviour
     public void OnClose()
     {
         ItemManager.Instance.lockPlayer = false;
-        PlayerController.Instance.isHit = false;
         PlayerModController.Instance.OnSetspriteTrans(true);
         PlayerModController.Instance.OnChangeState(true);
         checkFlogTime = false;
