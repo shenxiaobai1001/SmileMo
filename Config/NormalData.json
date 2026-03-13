@@ -1,7 +1,7 @@
 {
     "NormalConfigs": [
         {
-            "CallName": "大兵报道",
+            "CallName": "传送第七关",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -105,7 +105,7 @@
             "Delay": 0.0
         },
         {
-            "CallName": "无敌护盾",
+            "CallName": "麒麟臂",
             "Type": "礼物",
             "Message": "",
             "Tip": "",

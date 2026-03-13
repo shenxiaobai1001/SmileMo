@@ -450,6 +450,7 @@ public class ItemManager : MonoBehaviour
         MangSeng mangSeng = obj.GetComponent<MangSeng>();
         mangSeng.StartMove(mangleft);
     }
+
     public GameObject FlogPlayer;
     public void OnCreateFlog()
     {
