@@ -26,12 +26,12 @@ public class BarrageRopeSkip : BarrageFuncBase
         {
             case BarrageState.Ready:
             case BarrageState.Underway:
-                if (Input.GetKey(KeyCode.X) && !autoJump)
+                if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.J) && !autoJump)
                 {
                     animator.speed = 4;
                     autoJump = true;
                 }
-                if (Input.GetKeyUp(KeyCode.X))
+                if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.J))
                 {
                     animator.speed = 2;
                     autoJump = false;

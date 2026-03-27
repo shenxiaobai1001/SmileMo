@@ -100,7 +100,7 @@ public class GreenTurtle : MonoBehaviour
 
     public void OnToShell()
     {
-
+        Sound.PlaySound("Sound/Mod/smb_stomp");
         moveDirection = 0;
         velocity = Vector2.zero;
         currentState = TurtleState.ShellStatic;

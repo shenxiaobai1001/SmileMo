@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bc1d43eddc802444b370d981bdafe99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  invokeTime: 30
+  invokeTime: 150
   toPool: 1
 --- !u!60 &3763690799973751497
 PolygonCollider2D:

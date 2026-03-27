@@ -1,7 +1,7 @@
 {
     "NormalConfigs": [
         {
-            "CallName": "打电话",
+            "CallName": "跳绳",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -21,7 +21,7 @@
             "Type": "礼物",
             "Message": "",
             "Tip": "",
-            "Count": 1,
+            "Count": 50,
             "Delay": 0.0
         },
         {

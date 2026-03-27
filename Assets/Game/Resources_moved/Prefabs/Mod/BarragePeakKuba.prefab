@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7653295885582816382}
   - component: {fileID: 3208647214937561875}
-  - component: {fileID: 780854880503672544}
-  m_Layer: 0
+  - component: {fileID: 3321411244078651084}
+  - component: {fileID: 7040464752469597656}
+  m_Layer: 6
   m_Name: PeakKuba
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64,7 +65,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
---- !u!114 &780854880503672544
+--- !u!114 &3321411244078651084
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -73,16 +74,57 @@ MonoBehaviour:
   m_GameObject: {fileID: 389167608216869660}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8b26e97061799e44b313174fde26fae, type: 3}
+  m_Script: {fileID: 11500000, guid: 587de57cc0f99d3498e7bd10ae62419b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  kubaPos: {fileID: 8836357576455228479}
-  kubaCreateos: {fileID: 1291479223419267553}
-  KUBA: {fileID: 4853005227574493765, guid: a37468dd52f591c40b913b571eeaeeae, type: 3}
-  uiNumber: {fileID: 7042927694017281773}
   target: {fileID: 0}
   offset: {x: 0, y: 1, z: 0}
   minY: -2
+--- !u!61 &7040464752469597656
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389167608216869660}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.04}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 2.1, y: 0.6}
+  m_EdgeRadius: 0
 --- !u!1 &776195555234226512
 GameObject:
   m_ObjectHideFlags: 0
@@ -93,10 +135,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2280395261353320855}
   - component: {fileID: 6511237276916242036}
-  - component: {fileID: 1869586005156642400}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square (2)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -168,51 +209,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &1869586005156642400
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 776195555234226512}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.6666667, y: 0.6666667}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.7, y: 0.7}
-  m_EdgeRadius: 0
 --- !u!1 &1327352681662763070
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,7 +218,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6433889892851662157}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: center
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -263,7 +259,7 @@ GameObject:
   - component: {fileID: 7732118798750795827}
   - component: {fileID: 1835269670482433066}
   - component: {fileID: 3709460428840011799}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: tx_succ
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -356,7 +352,7 @@ GameObject:
   m_Component:
   - component: {fileID: 352805786415316510}
   - component: {fileID: 3773292655463343307}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BarragePeakKuba
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -411,7 +407,7 @@ GameObject:
   - component: {fileID: 3275160104129393441}
   - component: {fileID: 9104558078767195885}
   - component: {fileID: 1815384651105292868}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -505,7 +501,7 @@ GameObject:
   - component: {fileID: 4400171819712742998}
   - component: {fileID: 3380237328832937542}
   - component: {fileID: 4671493598900637655}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: UIPeakKuba
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -587,7 +583,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1291479223419267553}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -619,7 +615,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2045800603992143488}
   - component: {fileID: 2531228997467673034}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Animations
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -704,9 +700,10 @@ GameObject:
   - component: {fileID: 8836357576455228479}
   - component: {fileID: 8891900204157859772}
   - component: {fileID: 2683462613960683627}
-  m_Layer: 0
+  - component: {fileID: 2180473719354151417}
+  m_Layer: 6
   m_Name: Square (1)
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -780,7 +777,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.17378503}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -791,8 +788,24 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.7, y: 0.7}
+  m_Size: {x: 0.7, y: 0.35243}
   m_EdgeRadius: 0
+--- !u!114 &2180473719354151417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8760289811203317520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8b26e97061799e44b313174fde26fae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kubaPos: {fileID: 8836357576455228479}
+  kubaCreateos: {fileID: 1291479223419267553}
+  KUBA: {fileID: 4853005227574493765, guid: a37468dd52f591c40b913b571eeaeeae, type: 3}
+  uiNumber: {fileID: 7042927694017281773}
 --- !u!1 &8800278528091434022
 GameObject:
   m_ObjectHideFlags: 0
@@ -803,10 +816,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4374656107269535189}
   - component: {fileID: 4963715695746400134}
-  - component: {fileID: 5326839007075162799}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -878,51 +890,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &5326839007075162799
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8800278528091434022}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.6666667, y: 0.6666667}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.7, y: 0.7}
-  m_EdgeRadius: 0
 --- !u!1 &8800529691024597255
 GameObject:
   m_ObjectHideFlags: 0
@@ -935,7 +902,7 @@ GameObject:
   - component: {fileID: 4676358859943613977}
   - component: {fileID: 6632618844301613192}
   - component: {fileID: 5746362420808051101}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: tx_number
   m_TagString: Untagged
   m_Icon: {fileID: 0}

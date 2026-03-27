@@ -589,7 +589,88 @@ public class PlayerModController : MonoBehaviour
                 transform.position = new Vector3(transform.position.x, playerY);
             }
         }
+
+        if (Input.GetKey(KeyCode.X))
+        {
+            OnJumpAutoKu();
+        }
+        else
+        {
+            // 松开Z键时停止动画
+            isJumpAutoKuActive = false;
+        }
+
+        // 如果正在执行跳跃动画，更新位置
+        if (isJumpAutoKuActive)
+        {
+            UpdateJumpAutoKuMovement();
+        }
+
     }
+    private float originalY; // 记录原始Y轴位置
+    private float timer = 0f; // 计时器
+    private float moveSpeed = 20; // 上下移动速度
+    private bool isJumpAutoKuActive = false; // 是否正在执行跳跃动画
+    private float lastYOffset = 0f; // 记录上一帧的Y轴偏移
+    private bool hasTriggeredJump = false; // 标记是否已触发跳跃动画
+    private float jumpTriggerThreshold = 0.1f; // 触发跳跃的阈值
+    public void OnJumpAutoKu()
+    {
+        if (!playerController.playerCheckGround.isGround) return;
+
+        // 如果还没有开始跳跃动画，记录原始位置
+        if (!isJumpAutoKuActive)
+        {
+
+            originalY = transform.position.y;
+            timer = 0f;
+            isJumpAutoKuActive = true;
+        }
+    }
+
+    private void UpdateJumpAutoKuMovement()
+    {
+        // 更新时间
+        timer += Time.deltaTime;
+
+        // 使用PingPong函数在0到2.5之间来回移动
+        float yOffset = Mathf.PingPong(timer * moveSpeed, 1);
+
+        // 计算新位置
+        Vector3 newPosition = new Vector3(
+            transform.position.x,
+            originalY + yOffset,
+            transform.position.z
+        );
+
+        // 更新物体位置
+        transform.position = newPosition;
+
+        // 检查是否在上升
+        if (yOffset > lastYOffset)
+        {
+            rigidbody.velocity = Vector2.zero;
+            // 如果是上升阶段，并且超过阈值，触发跳跃动画
+            if (yOffset > jumpTriggerThreshold && !hasTriggeredJump)
+            {
+                if (animator != null)
+                {
+                    Sound.PlaySound("Sound/PlayerJump");
+                    animator.SetBool("Jump", true);
+                    hasTriggeredJump = true; // 设置标记，避免在一轮中重复触发
+                }
+            }
+        }
+        else
+        {
+            // 下降阶段或持平阶段，重置标记
+            hasTriggeredJump = false;
+        }
+
+        // 记录当前偏移值，用于下一帧比较
+        lastYOffset = yOffset;
+    }
+
 
     IEnumerator OnCheckGround()
     {

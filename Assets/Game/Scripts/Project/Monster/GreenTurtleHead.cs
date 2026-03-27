@@ -9,7 +9,6 @@ public class GreenTurtleHead : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision == null) return;
-        PFunc.Log("GreenTurtleHead", collision.gameObject.tag);
         if (collision.gameObject.CompareTag("PlayerFoot"))
         {
             greenTurtle.OnToShell();

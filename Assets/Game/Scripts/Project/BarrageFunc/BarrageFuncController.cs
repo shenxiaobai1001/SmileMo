@@ -71,9 +71,6 @@ public class BarrageFuncController : MonoBehaviour
             barraegExecutType = BarraegExecutType.ReadyExecut,
         };
 
-        PFunc.Log("´¥·¢µ¯Ä»¹¦ÄÜ", value.callName, OnCheckHighGroupFunc(data), 
-            OnCheckHighLevelFunc(data), OnCheckQueueLevel(data));
-
         if ((OnCheckHighGroupFunc(data) || OnCheckHighLevelFunc(data) || OnCheckQueueLevel(data))
             && data.queuestate == 0)
         {

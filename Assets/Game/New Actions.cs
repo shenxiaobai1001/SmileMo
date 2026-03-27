@@ -170,6 +170,17 @@ public partial class @NewActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""f276e5ce-8885-4f4e-9f4c-0e080c8407b5"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": ""Hold(duration=0.025,pressPoint=0.025)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""0defbde7-60a2-491c-8679-2224bb8d7c07"",
                     ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
