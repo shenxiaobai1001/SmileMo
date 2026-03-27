@@ -1,0 +1,22 @@
+{
+    "LottoryConfigs": [
+        {
+            "Title": "长春市",
+            "Type": "礼物",
+            "Message": "测试1111",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0,
+            "LotteryCount": "4个",
+            "avatarPath": "",
+            "LotteryItem": [
+                {
+                    "lotteryName": "测试盲盒1",
+                    "type": 1,
+                    "callName": "测试盲盒1",
+                    "count": 1
+                }
+            ]
+        }
+    ]
+}

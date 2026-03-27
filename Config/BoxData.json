@@ -1,67 +1,18 @@
 {
     "BoxConfigs": [
         {
-            "BoxName": "测试盲盒",
+            "BoxName": "测试盲盒1",
             "Type": "礼物",
             "Message": "玫瑰",
             "Tip": "",
-            "Count": 2,
-            "Delay": 2.0,
-            "videoName": "关注盲盒",
+            "Count": 1,
+            "Delay": 0.0,
+            "videoName": "空",
             "Calls": [
+                "麒麟臂",
                 "天残脚",
-                "麒麟臂"
+                "天残脚"
             ]
-        },
-        {
-            "BoxName": "",
-            "Type": "",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0,
-            "videoName": "",
-            "Calls": []
-        },
-        {
-            "BoxName": "",
-            "Type": "",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0,
-            "videoName": "",
-            "Calls": []
-        },
-        {
-            "BoxName": "",
-            "Type": "",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0,
-            "videoName": "",
-            "Calls": []
-        },
-        {
-            "BoxName": "",
-            "Type": "",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0,
-            "videoName": "",
-            "Calls": []
-        },
-        {
-            "BoxName": "",
-            "Type": "",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0,
-            "videoName": "",
-            "Calls": []
         }
     ]
 }
