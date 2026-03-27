@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,6 +43,27 @@ public class BarrageBase : MonoBehaviour
     private readonly Dictionary<string, Queue<SpecialBoxRequest>> _specialQueues = new Dictionary<string, Queue<SpecialBoxRequest>>();
     private readonly HashSet<string> _specialRunning = new HashSet<string>();
 
+    // 抽奖配置串行队列
+    private class LotteryRequest
+    {
+        public BarrageController controller;
+        public BarrageLotterySetting lottery;
+        public string user;
+        public string avatar;
+        public int giftCount;
+    }
+
+    private readonly Dictionary<string, Queue<LotteryRequest>> _lotteryQueues = new Dictionary<string, Queue<LotteryRequest>>();
+    private readonly HashSet<string> _lotteryRunning = new HashSet<string>();
+
+    // 当前正在显示的抽奖转盘UI（用于串行等待，避免重叠弹出）
+    private readonly Dictionary<string, GameObject> _lotteryActiveUiRoot = new Dictionary<string, GameObject>();
+
+    private static string MakeKey(BarrageLotterySetting lottery)
+    {
+        return $"{lottery.Type}|{lottery.Message}|{lottery.Title}";
+    }
+
     private static string MakeKey(BarrageBoxSetting box)
     {
         return $"{box.Type}|{box.Message}|{box.BoxName}";
@@ -50,6 +71,32 @@ public class BarrageBase : MonoBehaviour
     private static string MakeKey(BarrageSpecialBoxSetting box)
     {
         return $"{box.Type}|{box.Message}|{box.BoxName}";
+    }
+
+    public void HandleLottery(string json)
+    {
+        BarrageData info = JsonUtility.FromJson<BarrageData>(json);
+        string user = info.name;
+        string avatar = info.userAvatar;
+        string message = info.message;
+        int giftCount = Mathf.Max(1, info.num);
+
+        var barrageConfigs = FindAnyObjectByType<BarrageController>();
+        if (barrageConfigs == null)
+        {
+            Debug.LogWarning("未找到 BarrageController 配置，忽略抽奖事件");
+            return;
+        }
+
+        if (barrageConfigs.barrageLotterySettings == null) return;
+        foreach (var config in barrageConfigs.barrageLotterySettings)
+        {
+            if (config == null) continue;
+            if (config.Type == info.Type && config.Message == message)
+            {
+                EnqueueLottery(barrageConfigs, config, user, avatar, giftCount);
+            }
+        }
     }
 
 
@@ -91,6 +138,18 @@ public class BarrageBase : MonoBehaviour
                 EnqueueSpecialBox(barrageConfigs, config, user, avatar, 1);
             }
         }
+
+        // 抽奖触发逻辑
+        if (barrageConfigs.barrageLotterySettings != null)
+        {
+            foreach (var config in barrageConfigs.barrageLotterySettings)
+            {
+                if (config != null && config.Type == "关注")
+                {
+                    EnqueueLottery(barrageConfigs, config, user, avatar, 1);
+                }
+            }
+        }
     }
 
     public void HandleBarrage(string json)
@@ -130,6 +189,18 @@ public class BarrageBase : MonoBehaviour
             if (config.Type == "弹幕" && config.Message == content)
             {
                 EnqueueSpecialBox(barrageConfigs, config, user, avatar, 1);
+            }
+        }
+
+        // 抽奖触发逻辑
+        if (barrageConfigs.barrageLotterySettings != null)
+        {
+            foreach (var config in barrageConfigs.barrageLotterySettings)
+            {
+                if (config != null && config.Type == "弹幕" && config.Message == content)
+                {
+                    EnqueueLottery(barrageConfigs, config, user, avatar, 1);
+                }
             }
         }
     }
@@ -174,6 +245,18 @@ public class BarrageBase : MonoBehaviour
                 EnqueueSpecialBox(barrageConfigs, config, user, avatar, giftCount);
             }
         }
+
+        // 抽奖触发逻辑
+        if (barrageConfigs.barrageLotterySettings != null)
+        {
+            foreach (var config in barrageConfigs.barrageLotterySettings)
+            {
+                if (config != null && config.Type == "礼物" && config.Message == giftName)
+                {
+                    EnqueueLottery(barrageConfigs, config, user, avatar, giftCount);
+                }
+            }
+        }
     }
 
     public void HandleJoin(string json)
@@ -214,9 +297,21 @@ public class BarrageBase : MonoBehaviour
                 EnqueueSpecialBox(barrageConfigs, config, user, avatar, 1);
             }
         }
+
+        // 抽奖触发逻辑
+        if (barrageConfigs.barrageLotterySettings != null)
+        {
+            foreach (var config in barrageConfigs.barrageLotterySettings)
+            {
+                if (config != null && config.Type == "进入")
+                {
+                    EnqueueLottery(barrageConfigs, config, user, avatar, 1);
+                }
+            }
+        }
     }
 
-    public void handleLike(string json)
+    public void HandleLike(string json)
     {
         BarrageData info = JsonUtility.FromJson<BarrageData>(json);
         string user = info.name;
@@ -264,6 +359,109 @@ public class BarrageBase : MonoBehaviour
             if (config.Type == "点赞" && likeCount[user] > int.Parse(config.Message))
             {
                 EnqueueSpecialBox(barrageConfigs, config, user, avatar, 1);
+            }
+        }
+
+        // 抽奖触发逻辑（点赞按阈值触发时一并触发）
+        if (barrageConfigs.barrageLotterySettings != null)
+        {
+            foreach (var config in barrageConfigs.barrageLotterySettings)
+            {
+                if (config != null && config.Type == "点赞" && likeCount[user] > int.Parse(config.Message))
+                {
+                    EnqueueLottery(barrageConfigs, config, user, avatar, 1);
+                }
+            }
+        }
+    }
+
+    private void EnqueueLottery(BarrageController controller, BarrageLotterySetting lottery, string user, string avatar, int giftCount)
+    {
+        if (lottery == null) return;
+        string key = MakeKey(lottery);
+        if (!_lotteryQueues.TryGetValue(key, out var q))
+        {
+            q = new Queue<LotteryRequest>();
+            _lotteryQueues[key] = q;
+        }
+        q.Enqueue(new LotteryRequest { controller = controller, lottery = lottery, user = user, avatar = avatar, giftCount = Mathf.Max(1, giftCount) });
+        if (!_lotteryRunning.Contains(key))
+        {
+            _lotteryRunning.Add(key);
+            StartCoroutine(ProcessLotteryQueue(key));
+        }
+    }
+
+    private IEnumerator ProcessLotteryQueue(string key)
+    {
+        var q = _lotteryQueues[key];
+        while (q.Count > 0)
+        {
+            var req = q.Dequeue();
+            yield return PlayLotteryThenExecute(req.controller, req.lottery, req.user, req.avatar, req.giftCount);
+            if (q.Count > 0 && req.lottery != null && req.lottery.Delay > 0f)
+            {
+                yield return new WaitForSeconds(req.lottery.Delay);
+            }
+        }
+        _lotteryRunning.Remove(key);
+    }
+
+    private IEnumerator PlayLotteryThenExecute(BarrageController controller, BarrageLotterySetting lottery, string user, string avatar, int giftCount)
+    {
+        if (controller == null || lottery == null) yield break;
+        int cycles = Mathf.Max(1, giftCount) * Mathf.Max(1, lottery.Count);
+        for (int i = 0; i < cycles; i++)
+        {
+            // 抽奖 UI + 动画 + 在 Lottery 内执行结果
+            Lottery lotteryComp = null;
+            try
+            {
+                int idx = controller.barrageLotterySettings != null ? controller.barrageLotterySettings.IndexOf(lottery) : -1;
+                if (idx >= 0 && controller.content != null && idx < controller.content.transform.childCount)
+                {
+                    lotteryComp = controller.content.transform.GetChild(idx).GetComponent<Lottery>();
+                }
+            }
+            catch { }
+
+            if (lotteryComp == null)
+            {
+                lotteryComp = FindAnyObjectByType<Lottery>();
+            }
+            if (lotteryComp == null)
+            {
+                Debug.LogWarning("未找到 Lottery 组件，无法触发抽奖");
+                yield break;
+            }
+
+            // 串行：等待本轮转盘结束（UI root 被 Destroy）后再进入下一轮
+            string key = MakeKey(lottery);
+            GameObject uiRoot = null;
+            if (_lotteryActiveUiRoot.TryGetValue(key, out var existing) && existing != null)
+            {
+                // 如果因为某种原因还残留着上一次 UI，则等待其销毁
+                while (existing != null)
+                {
+                    yield return null;
+                }
+            }
+
+            // StartLotteryUI 修改为返回本次创建的 UI root（如果返回 null 则退化为只按 Delay 等待）
+            uiRoot = lotteryComp.StartLotteryUI();
+            _lotteryActiveUiRoot[key] = uiRoot;
+
+            if (uiRoot != null)
+            {
+                while (uiRoot != null)
+                {
+                    yield return null;
+                }
+            }
+
+            if (lottery.Delay > 0f && i < cycles - 1)
+            {
+                yield return new WaitForSeconds(lottery.Delay);
             }
         }
     }
