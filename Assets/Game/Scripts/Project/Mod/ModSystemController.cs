@@ -86,11 +86,7 @@ public class ModSystemController : MonoBehaviour
     public void OnSetPlayerProtecket(int giftCount, int times, float delay)
     {
         ProtecketTime = giftCount * times * 5;
-        if (ItemManager.Instance.isHang)
-        {
-            PlayerModController.Instance.OnCancelHangSelf();
-        }
-        //  Sound.PlaySound("Sound/Mod/Freeze");
+
         if (!Protecket)
         {
             Protecket = true;
@@ -138,7 +134,95 @@ public class ModSystemController : MonoBehaviour
         obj.transform.parent = transform;
         obj.SetActive(true);
     }
-
+    string nullRope = "Rope/Null";
+    string getRope = "Rope/Get";
+    public void OnCreateRopeVideoPlayer(BarrageValue barrageFuncData, int callIndex)
+    {
+        int index = Random.Range(0, 12);
+        bool getduck = index >= 2;
+        string title = getduck ? getRope : nullRope;
+        int duckPath = 0;
+        switch (index)
+        {
+            case 0:
+                duckPath = 1;
+                break;
+            case 1:
+                duckPath = 2;
+                break;
+            case 2:
+                duckPath = 5;
+                break;
+            case 3:
+                duckPath = 10;
+                break;
+            case 4:
+                duckPath = 20;
+                break;
+            case 5:
+                duckPath = 30;
+                break;
+            case 6:
+                duckPath = 40;
+                break;
+            case 7:
+                duckPath = 49;
+                break;
+            case 8:
+                duckPath = 60;
+                break;
+            case 9:
+                duckPath = 80;
+                break;
+            case 10:
+                duckPath = 88;
+                break;
+            case 11:
+                duckPath = 100;
+                break;
+        }
+        string path = $"{title}/{duckPath}";
+        ModVideoPlayerController.Instance.OnCreateNFllowModVideoPlayer(Vector3.zero, new Vector3(0.5f, 0.5f, 1),  path, 
+            "Video", false, () => { OnBeginCreateRote(barrageFuncData, callIndex, duckPath); });
+    }
+    void OnBeginCreateRote(BarrageValue barrageFuncData, int index, int count)
+    {
+        BarrageFuncCreater.Instance.OnCreateRopeSkip(barrageFuncData, index, count);
+    }
+    string minEgg = "Egg/Min";
+    string addEgg = "Egg/Add";
+    int[] eggLenth = new int[] { 20, 30, 50, 88, 100, 500, 700, 2000 };
+    public void OnCreateAddEggVideoPlayer(BarrageValue barrageFuncData, int callIndex)
+    {
+        int index = Random.Range(0, 8);
+        int eggcount = eggLenth[index];
+        string path = $"{addEgg}/{eggcount}";
+        PFunc.Log(index, eggcount, path);
+        ModVideoPlayerController.Instance.OnCreateNFllowModVideoPlayer(Vector3.zero, new Vector3(0.5f, 0.5f, 1), path,
+            "Video", false, () => { OnBeginCreateAddEgg(barrageFuncData, callIndex, eggcount); });
+    }
+    public void OnCreateMinEggVideoPlayer(BarrageValue barrageFuncData, int callIndex)
+    {
+        int index = Random.Range(0, 8);
+        int eggcount = eggLenth[index];
+        string path = $"{minEgg}/{eggcount}";
+        ModVideoPlayerController.Instance.OnCreateNFllowModVideoPlayer(Vector3.zero, new Vector3(0.5f, 0.5f, 1), path,
+            "Video", false, () => { OnBeginCreateAddEgg(barrageFuncData, callIndex, -eggcount); });
+    }
+    void OnBeginCreateAddEgg(BarrageValue barrageFuncData, int index, int count)
+    {
+        Config.eggCount += count;
+        if (count > 0) {
+            if (Config.eggCount > 0)
+                BarrageFuncCreater.Instance.OnCreateEgg(barrageFuncData, index);
+        }
+        else
+        {
+            if (Config.eggCount < 0) Config.eggCount = 0;
+            EventManager.Instance.SendMessage(Events.OnBarryExecutEnd, index);
+        }
+     
+    }
     void OnCloseDabeita()
     {
         isDabeita = false;  
@@ -156,9 +240,9 @@ public class ModSystemController : MonoBehaviour
 
     public void OnPlayMenace()
     {
-
         int number = Random.Range(1, 39);
-        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(-0.5f, 0.4f, 0), Vector3.one,  $"MOD/Question/{number}","Video",false, OnCloseMence);
+        ModVideoPlayerController.Instance.OnCreateModVideoPlayer(new Vector3(-0.5f, 0.4f, 0), 
+            Vector3.one,  $"MOD/Question/{number}","Video",false, OnCloseMence);
         PlayerModController.Instance.OnSetModSprite(true);
     }
 

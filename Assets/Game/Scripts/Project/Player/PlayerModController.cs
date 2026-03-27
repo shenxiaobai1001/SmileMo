@@ -88,7 +88,7 @@ public class PlayerModController : MonoBehaviour
     // 状态控制
     private int isPassivityMove = 0;
     private bool isGMControl = false;
-    private float playerY => GameController.Instance?.gameLevel == 7 ? 190 : 5;
+    public float playerY => GameController.Instance?.gameLevel == 7 ? 190 : 5;
 
     // 音效数组
     private string[] gaiYas = new string[7] { "bishi", "chaodan", "huotui", "mifan", "jidan", "jirou", "mifen" };
@@ -159,21 +159,10 @@ public class PlayerModController : MonoBehaviour
     /// </summary>
     public void TriggerModMove(MoveDirection direction, float moveTime, int boomType, MoveType moveType = MoveType.Normal, bool rotate = false)
     {
-        // 检查保护状态
-        bool protect = ModSystemController.Instance.Protecket;
-        if (protect) return;
-
-        //if (CallManager.Instance.isBury) return;
-
-        //if (ItemManager.Instance.lockPlayer) return;
         // 播放爆炸特效
         PlayBoomEffect(boomType);
-
-        // 取消挂起状态
-        if (ItemManager.Instance != null && ItemManager.Instance.isHang)
-        {
-            OnCancelHangSelf();
-        }
+        // 检查保护状态
+        if (BarrageFuncController.Instance.OnCheckHasHighControl()) return;
 
         // 重置移动完全结束标志
         isMoveCompletelyEnded = false;
@@ -266,10 +255,7 @@ public class PlayerModController : MonoBehaviour
                 // 执行移动
                 if (currentMove.IsActive)
                 {
-                    // 检查保护状态
-                    bool protect = ModSystemController.Instance.Protecket;
-                    PFunc.Log(protect, ItemManager.Instance.lockPlayer, CallManager.Instance.isBury);
-                    if (!protect && !ItemManager.Instance.lockPlayer && !CallManager.Instance.isBury)
+                    if (!BarrageFuncController.Instance.OnCheckHasHighControl())
                     {
                         if (!isKinematic)
                         {
@@ -288,9 +274,6 @@ public class PlayerModController : MonoBehaviour
 
                     // 减少所有移动时间
                     ReduceAllMoveTimes(Time.deltaTime);
-
-                    PFunc.Log("减少所有移动时间", Time.time, lastNormalMoveTime,(Time.time - lastNormalMoveTime), (lastAddTime + 0.1f), currentMove.type, ModVideoPlayerController.Instance.IsPlaying);
-
                     if (Time.time - lastNormalMoveTime > (lastAddTime + 0.1f)
                         && (currentMove.type == MoveType.Normal|| currentMove.type == MoveType.NormalDuiKang)
                         && !ModVideoPlayerController.Instance.IsPlaying)
@@ -307,7 +290,6 @@ public class PlayerModController : MonoBehaviour
                 // 没有活动移动，检查是否在等待结束
                 if (isWaitingToEnd)
                 {
-                    PFunc.Log("检查是否等待了1秒", waitStartTime  ,lastAddTime, (waitStartTime-Time.time ), (lastAddTime + 0.1f));
                     // 检查是否等待了1秒
                     if (waitStartTime  >= (lastAddTime + 0.1f))
                     {
@@ -342,8 +324,7 @@ public class PlayerModController : MonoBehaviour
     void OnDeepMove()
     {
         if (!currentMove.IsActive) return;
-        bool protect = ModSystemController.Instance.Protecket;
-        if (protect) return;
+        if (BarrageFuncController.Instance.OnCheckHasHighControl()) return;
 
         if (SystemController.Instance.airWallContin)
         {
@@ -482,6 +463,12 @@ public class PlayerModController : MonoBehaviour
                 MovePlayer(moveDir * moveSpeed);
                 break;
         }
+
+        if (currentMove.rotate)
+        {
+            spriteTrans.Rotate(new Vector3(0, 0, 360) * 10 * Time.deltaTime);
+        }
+
     }
     float airMintime = 0.1f;
     float airtime = 0;
@@ -618,11 +605,9 @@ public class PlayerModController : MonoBehaviour
 
     bool isKinematic = false;
 
-    public void OnChangeState(bool open)
+    public void OnChangeState(bool open, bool lockP = false, bool hide = true, bool surrender = false)
     {
-        PFunc.Log(open, ItemManager.Instance.lockPlayer, CallManager.Instance.isBury);
-        if (open && (ItemManager.Instance.lockPlayer || CallManager.Instance.isBury)) return;
-
+        PFunc.Log("OnChangeState", open, hide);
         box.enabled = open;
         Center.SetActive(open);
         if (playerController != null)
@@ -633,8 +618,11 @@ public class PlayerModController : MonoBehaviour
         {
             PlayerController.Instance.OnRest();
         }
+        spriteTrans.transform.localEulerAngles = Vector3.zero;
         PlayerController.Instance.isHit = !open;
-        PFunc.Log("OnChangeState", PlayerController.Instance.isHit);
+        spriteTrans.gameObject.SetActive(hide);
+        modSurrender.SetActive(surrender);
+        Config.LockPlayer = lockP;
     }
 
     public void OnClickToCreateTomaTo()
@@ -745,43 +733,6 @@ public class PlayerModController : MonoBehaviour
         fastSpeedTime = 0;
     }
 
-    public void OnHangSelf()
-    {
-        OnChangeState(false);
-        if (playerController != null)
-        {
-            playerController.isHit = true;
-        }
-        spriteTrans.gameObject.SetActive(false);
-        isPassivityMove++;
-    }
-    public void OnCancelLock()
-    {
-        if (ItemManager.Instance.lockPlayer) return;
-        spriteTrans.gameObject.SetActive(true);
-        isPassivityMove--;
-        PFunc.Log("OnCancelLock",isPassivityMove);
-        //if (isPassivityMove <= 0)
-        //{
-            isPassivityMove = 0;
-            OnChangeState(true);
-        //}
-    }
-    public void OnCancelHangSelf()
-    {
-        if (ItemManager.Instance.lockPlayer) return;
-        OnCancelLock();
-
-        if (HangSelf.Instance != null && HangSelf.Instance.lastPoint != null)
-        {
-            Vector3 vector = HangSelf.Instance.lastPoint.transform.position;
-            if (vector != Vector3.zero)
-            {
-                transform.position = vector;
-            }
-            HangSelf.Instance.OnBreakeHang();
-        }
-    }
 
     public void OnTiggerJingli(bool show)
     {
@@ -808,10 +759,9 @@ public class PlayerModController : MonoBehaviour
     }
 
     public PlayerBreak playerBreak;
-
     void OnBreakPlayer(bool rest)
     {
-        if (ItemManager.Instance.lockPlayer) return;
+        if (BarrageFuncController.Instance.OnCheckHasHighControl()) return;
         playerController.isHit = true;
         OnChangeState(false);
         if(modSurrender) modSurrender.SetActive(false);
@@ -826,33 +776,21 @@ public class PlayerModController : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         if (rest) GameController.Instance.PlayerRestToSavePos(null);
         yield return playerBreak.OnHuifuIE();
-        spriteTrans.gameObject.SetActive(true);
-        OnChangeState(true);
-        playerController.isHit = false;
-    }
-    public GameObject modSurrender;
-    public void OnSetModSprite(bool show)
-    {
-        if ((ItemManager.Instance.lockPlayer || CallManager.Instance.isBury)) return;
-        if (show&&ModSystemController.Instance.Protecket) return;
-        modSurrender.SetActive(show);
-        if (show)
+        if (!BarrageFuncController.Instance.OnCheckHasHighControl())
         {
-            spriteTrans.gameObject.SetActive(false);
-            //playerController.isHit = true;
-            OnChangeState(false);
-        }
-        else
-        {
-            spriteTrans.gameObject.SetActive(true);
-            //playerController.isHit = false;
             OnChangeState(true);
         }
     }
+
+    public GameObject modSurrender;
+    public void OnSetModSprite(bool show)
+    {
+        modSurrender.SetActive(show);
+    }
     public void OnSetspriteTrans(bool show)
     {
-        PFunc.Log(show, ItemManager.Instance.lockPlayer, CallManager.Instance.isBury);
-        if (show&&(ItemManager.Instance.lockPlayer || CallManager.Instance.isBury)) return;
+        PFunc.Log(show, ItemManager.Instance.lockPlayer);
+        if (show&&(ItemManager.Instance.lockPlayer)) return;
         if(spriteTrans) spriteTrans.gameObject.SetActive(show);
     }
     #endregion

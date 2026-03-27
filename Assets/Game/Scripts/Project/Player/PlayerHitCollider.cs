@@ -42,7 +42,7 @@ public class PlayerHitCollider : MonoBehaviour
             Sound.PlaySound("Sound/PlayerHit");
             if (controller) controller.HandleHorHitCollision();
         }
-        else if (collision.gameObject.CompareTag("VecHit") || collision.gameObject.CompareTag("Monster") && !controller.isCheckVec)
+        else if (collision.gameObject.CompareTag("VecHit") || collision.gameObject.CompareTag("Monster") || collision.gameObject.CompareTag("MoveShell") && !controller.isCheckVec)
         {
             Sound.PlaySound("Sound/PlayerHit");
             if (controller) controller.isCheckVec = true;

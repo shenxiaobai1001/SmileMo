@@ -57,9 +57,11 @@ public class CatFowlloer : MonoBehaviour
         while (atkTargets.Count>0) {
             GameObject atkTarget = atkTargets[0];
             MonsterBase monsterBase = atkTarget.GetComponent<MonsterBase>();
-            yield return ATKATK(monsterBase ,monsterBase.curHP);
+            if (monsterBase != null) 
+                yield return ATKATK(monsterBase ,monsterBase.curHP);
            if(atkTargets.Count > 0&& atkTargets.Contains(atkTarget)) 
                 atkTargets.Remove(atkTarget);
+             yield return null;
         }
         isAtk = false;
     }

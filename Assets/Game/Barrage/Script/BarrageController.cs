@@ -66,7 +66,15 @@ public class BarrageSpecialWrapper
 {
     public List<BarrageSpecialBoxSetting> SpecialConfigs;
 }
-
+public class ActionTask
+{
+    public string user;
+    public string avatar;
+    public string callName;
+    public int giftCount;
+    public int times;
+    public float delay;
+}
 public class BarrageController : MonoBehaviour
 {
     public static BarrageController Instance { get; set; }
@@ -89,15 +97,7 @@ public class BarrageController : MonoBehaviour
     public List<BarrageSpecialBoxSetting> barrageSpecialBoxSetting = new List<BarrageSpecialBoxSetting>();
     public bool isInit;
 
-    private class ActionTask
-    {
-        public string user;
-        public string avatar;
-        public string callName;
-        public int giftCount;
-        public int times;
-        public float delay;
-    }
+
 
     private readonly Dictionary<string, Queue<ActionTask>> _queues = new Dictionary<string, Queue<ActionTask>>();
     private readonly Dictionary<string, Coroutine> _runners = new Dictionary<string, Coroutine>();
@@ -182,26 +182,28 @@ public class BarrageController : MonoBehaviour
     {
         if(task.callName!= "美女盲盒")
              PlayerAutomaticSystem.Instance.OnStopAutomatic();
+        BarrageFuncController.Instance.OnAddReadyFunc(task);
+        return;
         switch (task.callName)
         {
             case "砸鸭子":
-                CallManager.Instance.OnCreateDuckVideoPlayer();
+                //CallManager.Instance.OnCreateDuckVideoPlayer();
                 break;
-            case "左边砸平底锅":
-                ItemManager.Instance.OnCreatePDG(task.callName);
-                break;
-            case "右边砸平底锅":
-                ItemManager.Instance.OnCreatePDG(task.callName);
-                break;
-            case "视角反转":
-                ModSystemController.Instance.OnSetRerverseCamera();
-                break;
-            case "冰冻":
-                ItemManager.Instance.OnSetPlayerFreeze();
-                break;
-            case "无敌护盾":
-                ModSystemController.Instance.OnSetPlayerProtecket(task.giftCount, task.times, task.delay);
-                break;
+            //case "左边砸平底锅":
+            //    ItemManager.Instance.OnCreatePDG(task.callName);
+            //    break;
+            //case "右边砸平底锅":
+            //    ItemManager.Instance.OnCreatePDG(task.callName);
+            //    break;
+            //case "视角反转":
+            //    ModSystemController.Instance.OnSetRerverseCamera();
+            //    break;
+            //case "冰冻":
+            //    ItemManager.Instance.OnSetPlayerFreeze();
+            //    break;
+            //case "无敌护盾":
+            //    ModSystemController.Instance.OnSetPlayerProtecket(task.giftCount, task.times, task.delay);
+            //    break;
             case "左正蹬":
                 ItemManager.Instance.OnLeftLegKick();
                 break;
@@ -317,7 +319,7 @@ public class BarrageController : MonoBehaviour
                 CallManager.Instance.OnCreateVideoPlayer("动感DJ", 2);
                 break;
             case "上吊":
-                ItemManager.Instance.OnCreateHangSelf();
+               // ItemManager.Instance.OnCreateHangSelf();
                 break;
             case "加一万米":
                 Sound.PlaySound("Sound/Mod/AddTen");
@@ -337,7 +339,7 @@ public class BarrageController : MonoBehaviour
                 ModSystemController.Instance.OnPlayMenace();
                 break;
             case "埋坟":
-                CallManager.Instance.OnKuFen();
+                //CallManager.Instance.OnKuFen();
                 break;
             case "万剑齐发":
                 ItemManager.Instance.OnCreateManayArrow();
@@ -349,80 +351,80 @@ public class BarrageController : MonoBehaviour
                 ItemManager.Instance.OnCreateMangSeng();
                 break;
             case "打板子":
-                CallManager.Instance.OnCreateFlog();
+                //CallManager.Instance.OnCreateFlog();
                 break;
             case "帅哥盲盒":
                 CallManager.Instance.OnCreateManVideoPlayer();
                 break;
-            case "抓（1）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true,1);
-                break;
-            case "抓（2）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 2);
-                break;
-            case "抓（11）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 11);
-                break;
-            case "抓（15）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 15);
-                break;
-            case "抓（20）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 20);
-                break;
-            case "抓（40）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 40);
-                break;
-            case "抓（50）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 50);
-                break;
-            case "抓（80）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 80);
-                break;
-            case "抓（100）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 100);
-                break;
-            case "抓（200）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 200);
-                break;
-            case "抓（300）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 300);
-                break;
-            case "抓（500）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 500);
-                break;
-            case "抓（1000）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 1000);
-                break;
-            case "抓（2000）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 2000);
-                break;
-            case "抓（3000）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 3000);
-                break;
-            case "抓（4000）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 4000);
-                break;
-            case "抓（5000）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 5000);
-                break;
-            case "抓（6000）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 6000);
-                break;
-            case "抓（7000）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 7000);
-                break;
-            case "抓（8000）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 8000);
-                break;
-            case "抓（9000）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 9000);
-                break;
-            case "抓（10000）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(true, 10000);
-                break;
-            case "没（随机）":
-                CallManager.Instance.OnCreateDuckVideoPlayer(false, 1);
-                break;
+            //case "抓（1）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true,1);
+            //    break;
+            //case "抓（2）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 2);
+            //    break;
+            //case "抓（11）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 11);
+            //    break;
+            //case "抓（15）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 15);
+            //    break;
+            //case "抓（20）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 20);
+            //    break;
+            //case "抓（40）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 40);
+            //    break;
+            //case "抓（50）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 50);
+            //    break;
+            //case "抓（80）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 80);
+            //    break;
+            //case "抓（100）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 100);
+            //    break;
+            //case "抓（200）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 200);
+            //    break;
+            //case "抓（300）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 300);
+            //    break;
+            //case "抓（500）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 500);
+            //    break;
+            //case "抓（1000）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 1000);
+            //    break;
+            //case "抓（2000）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 2000);
+            //    break;
+            //case "抓（3000）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 3000);
+            //    break;
+            //case "抓（4000）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 4000);
+            //    break;
+            //case "抓（5000）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 5000);
+            //    break;
+            //case "抓（6000）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 6000);
+            //    break;
+            //case "抓（7000）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 7000);
+            //    break;
+            //case "抓（8000）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 8000);
+            //    break;
+            //case "抓（9000）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 9000);
+            //    break;
+            //case "抓（10000）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(true, 10000);
+            //    break;
+            //case "没（随机）":
+            //    CallManager.Instance.OnCreateDuckVideoPlayer(false, 1);
+            //    break;
         }
     }
 
@@ -759,7 +761,7 @@ public class BarrageController : MonoBehaviour
             switch (callName)
             {
                 case "砸鸭子":
-                    CallManager.Instance.OnCreateDuckVideoPlayer();
+                    //CallManager.Instance.OnCreateDuckVideoPlayer();
                     break;
                 case "左边砸平底锅":
                     ItemManager.Instance.OnCreatePDG(callName);
@@ -891,7 +893,7 @@ public class BarrageController : MonoBehaviour
                     CallManager.Instance.OnCreateVideoPlayer("动感DJ", 2);
                     break;
                 case "上吊":
-                    ItemManager.Instance.OnCreateHangSelf();
+                   // ItemManager.Instance.OnCreateHangSelf();
                     break;
                 case "加一万米":
                     SystemController.Instance.scheduleDeviation += 10000;

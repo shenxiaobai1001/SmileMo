@@ -12,7 +12,7 @@ public class CameraFollowXOnly : MonoBehaviour
     {
         if (target != null)
         {
-            if (ItemManager.Instance.lockPlayer) return;
+            if (Config.LockPlayer) return;
             bool flowY = GameController.Instance.gameLevel == 7;
 
            float ypos = flowY ? target.position.y: yPosition;

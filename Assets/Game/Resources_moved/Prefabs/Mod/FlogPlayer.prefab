@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4656827009804365959}
   - component: {fileID: 2199036549229859158}
   - component: {fileID: 7956629197366141979}
-  - component: {fileID: 6785614166022278265}
   m_Layer: 0
   m_Name: FlogPlayer
   m_TagString: Untagged
@@ -108,22 +107,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &6785614166022278265
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6830380396871471771}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2c5770f8ad1a894e9b0f33ed4b43783, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animator: {fileID: 7956629197366141979}
-  flogEffet: {fileID: 1368727947356026266, guid: 2c08390f4ac61004098e37efab8528a1, type: 3}
-  smokePos: {fileID: 7044461007768596905}
-  checkFlogTime: 0
 --- !u!1 &7844284187247573700
 GameObject:
   m_ObjectHideFlags: 0

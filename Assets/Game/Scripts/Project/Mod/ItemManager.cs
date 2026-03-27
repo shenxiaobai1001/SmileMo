@@ -1,8 +1,6 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
 
 public class ItemManager : MonoBehaviour
 {
@@ -114,6 +112,7 @@ public class ItemManager : MonoBehaviour
         }
             
     }
+
     void OnReadyFreeze()
     {
         PlayerController.Instance.isHit = true;
@@ -121,6 +120,7 @@ public class ItemManager : MonoBehaviour
         iceObject = Instantiate(Ice);
         StartCoroutine(OnChecklayerFreeze());
     }
+
     IEnumerator OnChecklayerFreeze()
     {
         while (FreezeTime > 0)
@@ -158,7 +158,7 @@ public class ItemManager : MonoBehaviour
         EventManager.Instance.SendMessage(Events.OnLazzerHit);
         bool protect = ModSystemController.Instance.Protecket;
         if (protect) return;
-        if (!ChainPlayer.Instance|| !ChainPlayer.Instance.gameObject.activeSelf) return;
+        if (!BarrageFuncController.Instance.OnCheckBarrageFuncByName("À¯¡¥")) return;
         Config.chainCount += 2;
     }
     public GameObject paperMoney;
@@ -335,7 +335,7 @@ public class ItemManager : MonoBehaviour
         GameObject obj = SimplePool.Spawn(tksobj, PlayerController.Instance.transform.position, Quaternion.identity);
         obj.transform.SetParent(transform);
         obj.SetActive(true);
-        
+
     }
 
     public GameObject Huoquan;
@@ -375,20 +375,6 @@ public class ItemManager : MonoBehaviour
         GameObject obj = SimplePool.Spawn(goback, PlayerController.Instance.transform.position, Quaternion.identity);
         obj.transform.SetParent(transform);
         obj.SetActive(true);
-    }
-
-    public GameObject HangSelf;
-    public bool isHang = false;
-    public void OnCreateHangSelf()
-    {
-        PFunc.Log("…œµı");
-        Vector3 vectorPlayer = PlayerController.Instance.transform.position;
-        Vector3 createPos = new Vector3(vectorPlayer.x, 0);
-        GameObject obj = SimplePool.Spawn(HangSelf, createPos, Quaternion.identity);
-        obj.transform.SetParent(transform);
-        Sound.PlaySound("Sound/Mod/hangself");
-        isHang = true;
-
     }
 
     public void OnCreateChenGuoHan()
@@ -451,16 +437,12 @@ public class ItemManager : MonoBehaviour
         mangSeng.StartMove(mangleft);
     }
 
-    public GameObject FlogPlayer;
-    public void OnCreateFlog()
+
+    public GameObject phone;
+    public void OnCreatePhoneg()
     {
-        PlayerController.Instance.isHit = true;
-        lockPlayer = true;
-        //Sound.PlaySound("Sound/Mod/lock");
-        Vector3 createPos = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
-        GameObject obj = SimplePool.Spawn(FlogPlayer, createPos, Quaternion.identity);
-        obj.transform.SetParent(transform);
+        GameObject obj = SimplePool.Spawn(phone, Vector3.zero, Quaternion.identity);
+        obj.transform.SetParent(Camera.main.transform);
         obj.SetActive(true);
-        UIFlog.Instance.OnStartMove();
     }
 }

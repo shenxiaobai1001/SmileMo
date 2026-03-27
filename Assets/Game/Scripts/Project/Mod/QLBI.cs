@@ -24,6 +24,7 @@ public class QLBI : MonoBehaviour
         time = 0;
         transform.localPosition = startPos;
         transform.DOLocalMove(Vector3.zero, 0.2f).OnComplete(() => { OnBeginCreateBoom(); });
+
     }
 
     void OnBeginCreateBoom()

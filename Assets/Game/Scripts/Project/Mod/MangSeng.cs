@@ -46,14 +46,11 @@ public class MangSeng : MonoBehaviour
         if (Vector3.Distance(transform.position, playerTarget.position) < 1.5f)
         {
             kickPlayer = false;
-            if (ItemManager.Instance.lockPlayer)
+            if (BarrageFuncController.Instance.OnCheckBarrageFuncByName("ËøÁ´"))
             {
-                bool protect = ModSystemController.Instance.Protecket;
-                if(!protect)
-                    Config.chainCount += 2;
-                ChainPlayer.Instance.transform.DOShakePosition(0.5f, 0.2f).SetEase(Ease.OutQuad).OnComplete(() => {
-                ChainPlayer.Instance.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0); });
+                Config.chainCount+=2;
             }
+            EventManager.Instance.SendMessage(Events.HangSelfByKick, isLeft);
             MoveDirection x =isLeft ? MoveDirection.Right : MoveDirection.Left;   
             PlayerModController.Instance.TriggerModMove(x, 0.25f, 1);
             OnClose();

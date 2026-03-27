@@ -148,3 +148,19 @@ MonoBehaviour:
         FilterRuleName: CollectAll
         AssetTags: 
         UserData: 
+      - CollectPath: Assets/Game/Resources_video/Rope
+        CollectorGUID: bafb6f20fd473824abb9fd2262761e07
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackVideoFile
+        FilterRuleName: CollectAll
+        AssetTags: 
+        UserData: 
+      - CollectPath: Assets/Game/Resources_video/Egg
+        CollectorGUID: db8a6d7c897732542b3fa3e7cf2e61ae
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackVideoFile
+        FilterRuleName: CollectAll
+        AssetTags: 
+        UserData: 

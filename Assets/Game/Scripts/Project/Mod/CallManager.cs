@@ -1,4 +1,5 @@
 using DG.Tweening;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -79,7 +80,7 @@ public class CallManager : MonoBehaviour
         videoType = 1;
     }
     Queue<int> onCreate=new Queue<int>();
-    public void OnCreateDuckVideoPlayer()
+    public void OnCreateDuckVideoPlayer(int callindex)
     {
         boxIndex = 0;
         int index = Random.Range(0, 150);
@@ -175,9 +176,10 @@ public class CallManager : MonoBehaviour
         duckPath = getduck ? duckPath : 0;
         onCreate.Enqueue(duckPath);
         videoType = 2;
+        EventManager.Instance.SendMessage(Events.OnBarryExecutEnd, callindex);
     }
 
-    public void OnCreateDuckVideoPlayer(bool getduck1 ,int Count)
+    public void OnCreateDuckVideoPlayer(bool getduck1 ,int Count,int callindex)
     {
         boxIndex = 0;
         int index = Random.Range(0, 150);
@@ -198,9 +200,10 @@ public class CallManager : MonoBehaviour
         duckPath = getduck ? duckPath : 0;
         onCreate.Enqueue(duckPath);
         videoType = 2;
+        EventManager.Instance.SendMessage(Events.OnBarryExecutEnd, callindex);
     }
 
-    public void OnCreateFlog()
+    public void OnCreateFlog(BarrageValue barrageFuncData, int callIndex)
     {
         boxIndex = 0;
         int index = Random.Range(0, 9);
@@ -242,17 +245,14 @@ public class CallManager : MonoBehaviour
         VideoManager videoManager = obj.GetComponent<VideoManager>();
         obj.transform.SetParent(transform);
         obj.SetActive(true);
-        videoManager.OnPlayVideo(2, path, false);
-        Debug.Log(path);
-  
-        Invoke("OnShowFlog",1);
+        videoManager.OnPlayVideo(2, path, false, () => { OnShowFlog(barrageFuncData,index); });
         bool protect = ModSystemController.Instance.Protecket;
         if (protect) return;
         Config.FlogCount += duckPath;
     }
-    void OnShowFlog()
+    void OnShowFlog(BarrageValue barrageFuncData, int callIndex)
     {
-        ItemManager.Instance.OnCreateFlog();
+        BarrageFuncCreater.Instance.OnCreateFlogPlayer(barrageFuncData, callIndex);
     }
     void OnBeginCreateDuck(object msg)
     {
@@ -353,25 +353,20 @@ public class CallManager : MonoBehaviour
         if (tweenCamera != null) tweenCamera.Kill();
         if (tweenPlayer != null) tweenPlayer.Kill();
     }
-    public bool isBury = false;
-    public void OnKuFen()
+
+    public void OnKuFen(int index)
     {
-        PFunc.Log("¿Þ·Ø");
         GameObject obj = SimplePool.Spawn(videoPlayer, PlayerController.Instance.transform.position, Quaternion.identity);
         VideoManager videoManager = obj.GetComponent<VideoManager>();
         obj.transform.SetParent(transform);
         obj.SetActive(true);
-        videoManager.OnPlayVideo(2, $"MOD/kufen", false, OnCloseKufen, "Default",-18);
+        videoManager.OnPlayVideo(2, $"MOD/kufen", false, () => { OnCloseKufen(index); }, "Default",-18);
         ItemManager.Instance.OnCreatePaperMoney();
-        PlayerModController.Instance.OnChangeState(false);
-        PlayerModController.Instance.OnSetspriteTrans(false);
-        isBury = true;
+        PlayerModController.Instance.OnChangeState(false, false);
     }
-    void OnCloseKufen()
+    void OnCloseKufen(int index)
     {
-        PFunc.Log("¿Þ·Ø½áÊø");
-        isBury = false;
-        PlayerModController.Instance.OnSetspriteTrans(true);
         PlayerModController.Instance.OnChangeState(true);
+        EventManager.Instance.SendMessage(Events.OnBarryExecutEnd, index);
     }
 }

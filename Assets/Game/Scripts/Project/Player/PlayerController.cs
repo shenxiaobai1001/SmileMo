@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
     float damageTime = 0;
     bool hit = false;
     public bool isHit { get { return hit; }
-        set { Debug.Log("写入控制"+value);  hit=value; }
+        set {/* Debug.Log("写入控制"+value);*/  hit=value; }
     }
 
     public BoostImageContro boostImageContro;
@@ -75,7 +75,6 @@ public class PlayerController : MonoBehaviour
             return;
         }
     }
-
 
     private void Start()
     {
@@ -637,7 +636,6 @@ public class PlayerController : MonoBehaviour
                 break;
             case PlayerControState.CJump://松开跳跃
                 playerCheckGround.gameObject.SetActive(true);
-                PFunc.Log("松开跳跃", pLState);
                 if (pLState != PLState.LStick && pLState != PLState.RStick)
                 {
                     if (animator)
@@ -730,7 +728,6 @@ public class PlayerController : MonoBehaviour
                 switch (pLState)
                 {
                     case PLState.Stick:
-                        PFunc.Log("LStickJump", playerControState);
                         if (spriteTrans.localScale.x == 1)
                         {
                             spriteTrans.localScale = new Vector3(-1, 1, 1);
@@ -768,7 +765,6 @@ public class PlayerController : MonoBehaviour
                 }
             break;
             case PlayerControState.Boost:
-                PFunc.Log("按下冲刺",boostImageContro.targetImage.fillAmount);
                 if (boostImageContro.targetImage.fillAmount <=0) return;
                 if (animator)
                 {
@@ -1524,7 +1520,6 @@ public class PlayerController : MonoBehaviour
         spriteTrans.localScale = isFip ? new Vector3(-1, 1, 0) : new Vector3(1, 1, 0);
         if (isHit)
             return; 
-        PFunc.Log("进入被攻击状态",isFip);
         playerCheckHit.isHit = true;
         isHit = true;
         if (animator)
@@ -1671,7 +1666,7 @@ public class PlayerController : MonoBehaviour
 
         return isVelocityNearlyZero && isAngularVelocityNearlyZero;
     }
-    public void OnArrowUp()
+    public void OnArrowUp(float value=15)
     {
         if (isHit) return;
         currentSpeed = 0;
@@ -1686,7 +1681,7 @@ public class PlayerController : MonoBehaviour
         }
         rigidbody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
         rigidbody2D.velocity = new Vector2(0, 0); // 重置水平速度
-        Vector2 force = new Vector2(0, 15);
+        Vector2 force = new Vector2(0, value);
         rigidbody2D.AddForce(force, ForceMode2D.Impulse);
         pLState = PLState.Jump;
         boostImageContro.StartRecovery();

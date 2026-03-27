@@ -1,23 +1,7 @@
 {
     "NormalConfigs": [
         {
-            "CallName": "传送第七关",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 2.0
-        },
-        {
-            "CallName": "乌鸦坐飞机",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 4,
-            "Delay": 0.0
-        },
-        {
-            "CallName": "灵魂拷问",
+            "CallName": "打电话",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -25,7 +9,7 @@
             "Delay": 0.0
         },
         {
-            "CallName": "埋坟",
+            "CallName": "补蛋盲盒",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -33,7 +17,7 @@
             "Delay": 0.0
         },
         {
-            "CallName": "埋坟",
+            "CallName": "顶乌龟",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -41,55 +25,7 @@
             "Delay": 0.0
         },
         {
-            "CallName": "锁链",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0
-        },
-        {
-            "CallName": "电击",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 10,
-            "Delay": 1.0
-        },
-        {
-            "CallName": "一库",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 10,
-            "Delay": 1.0
-        },
-        {
-            "CallName": "打板子",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0
-        },
-        {
-            "CallName": "帅哥盲盒",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0
-        },
-        {
-            "CallName": "美女盲盒",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0
-        },
-        {
-            "CallName": "动感DJ",
+            "CallName": "减蛋盲盒",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -105,8 +41,80 @@
             "Delay": 0.0
         },
         {
+            "CallName": "反向大贝塔",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 10,
+            "Delay": 1.0
+        },
+        {
+            "CallName": "上吊",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "一库",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
             "CallName": "麒麟臂",
             "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "天残脚",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "埋坟",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "上吊",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "麒麟臂",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "打电话",
+            "Type": "",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "打电话",
+            "Type": "",
             "Message": "",
             "Tip": "",
             "Count": 1,

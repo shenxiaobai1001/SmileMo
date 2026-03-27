@@ -32,7 +32,15 @@ public class ModVideoPlayerController : MonoBehaviour
     {
         GameObject vplayerObj = SimplePool.Spawn(ModVideoPlayer, transform.position, Quaternion.identity);
         ModVideoPlayer vplayer = vplayerObj.GetComponent<ModVideoPlayer>();
-        vplayer.OnPlayVideo(offset, scale,path, layer,snake, callback );
+        vplayer.OnPlayVideo(offset, scale,path, layer,snake, callback ,true);
+        vplayerObj.transform.SetParent(this.transform);
+        IsPlaying = true;
+    }
+    public void OnCreateNFllowModVideoPlayer(Vector3 offset, Vector3 scale, string path, string layer = "Video", bool snake = false, UnityAction callback = null)
+    {
+        GameObject vplayerObj = SimplePool.Spawn(ModVideoPlayer, transform.position, Quaternion.identity);
+        ModVideoPlayer vplayer = vplayerObj.GetComponent<ModVideoPlayer>();
+        vplayer.OnPlayVideo(offset, scale, path, layer, snake, callback,false);
         vplayerObj.transform.SetParent(this.transform);
         IsPlaying = true;
     }

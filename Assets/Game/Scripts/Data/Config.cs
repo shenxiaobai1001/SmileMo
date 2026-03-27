@@ -10,11 +10,25 @@ public class Config
     public static string NameValue;
     public static bool isSYSTEM = false;
     public static bool isFileAdd = true;
+    public static bool LockPlayer=false;
+    public static int ropeCount = 0;
+    public static int succRopeCount = 0;
+    public static int missRopeCount = 0; 
+    public static int shineCount = 0;
+    public static int kubaCount = 0;
+    public static int hasKubaCount = 0;
+    public static int eggCount = 0;
+    public static int hasEggCount = 0;
+
 }
 
 public class ModData
 {
     public static bool modDao = false;
+    public static bool isProject =true;
+    public static float freezeTime = 0;
+    public static float protecketTime = 0;
+    public static int chainCount = 0;
 }
 
 // 移动方向
@@ -58,6 +72,9 @@ public enum Events
     OnJingLi,
     OnLazzerHit,
     OnPlayerNameChange,
+    OnBarryExecutEnd,
+    HangSelfByKick,
+    OnMangSengKick,
 }
 
 public enum PlayerControState

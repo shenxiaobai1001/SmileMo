@@ -365,7 +365,6 @@ public class RedMonsterController : MonsterBase
     private void OnPlayerDetected(GameObject player)
     {
         Sound.PlaySound("Sound/ChainSfx");
-        Debug.Log("¼ì²âµ½Player: " + player.name);
         if (animator) animator.SetTrigger("Drop");
         isFalling = true; // ¿ªÊ¼µôÂä×´Ì¬
     }

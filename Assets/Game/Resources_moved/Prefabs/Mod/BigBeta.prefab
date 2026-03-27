@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6200033053567817430}
   - component: {fileID: 4320762883725194694}
-  - component: {fileID: 6609879772820326936}
+  - component: {fileID: -7634954979352207338}
   m_Layer: 0
   m_Name: BigBeta
   m_TagString: Untagged
@@ -49,7 +49,7 @@ MonoBehaviour:
   offset: {x: 0, y: 1, z: 0}
   followSpeed: 5
   smoothFollow: 0
---- !u!114 &6609879772820326936
+--- !u!114 &-7634954979352207338
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -58,8 +58,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4487491551851418143}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88bf07b5a8c9acc47902087d7eb446c5, type: 3}
+  m_Script: {fileID: 11500000, guid: b2a8111ce6a47d944b15b6e9ab75df81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  invokeTime: 17.5
-  toPool: 1
+  barrageController: {fileID: 0}
+  barrageIndex: 0
+  isInit: 0

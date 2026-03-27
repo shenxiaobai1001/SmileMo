@@ -21,9 +21,10 @@ public class ModVideoPlayer : MonoBehaviour
     UnityAction callback = null;
     int videoType = 0;
     Vector3 scale= Vector3.one;
-    public void OnPlayVideo(Vector3 offset, Vector3 scale, string path, string layer = "Video", bool snake = false, UnityAction callback = null)
+    public void OnPlayVideo(Vector3 offset, Vector3 scale, string path, string layer = "Video", bool snake = false, UnityAction callback = null,bool Fllow=true)
     {
         PFunc.Log("OnPlayVideo", path, layer);
+        objFllow.enabled = Fllow;
         objFllow.offset = offset;
         center.transform.localScale = scale;
         pathTitle = path;

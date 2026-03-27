@@ -13,6 +13,13 @@ TagManager:
   - Arrow
   - Meteorite
   - ManayArrow
+  - KoopaShell
+  - Koopa
+  - EnemyHead
+  - EnemyBody
+  - PlayerFoot
+  - MoveShell
+  - RopeGround
   layers:
   - Default
   - TransparentFX
@@ -27,9 +34,9 @@ TagManager:
   - PlayerHit
   - RedMonster
   - ModCreate
-  - 
-  - 
-  - 
+  - Koopa
+  - KoopaBody
+  - Egg
   - 
   - 
   - 
