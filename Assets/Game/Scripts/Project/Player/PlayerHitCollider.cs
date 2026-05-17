@@ -8,12 +8,15 @@ public class PlayerHitCollider : MonoBehaviour
     public BoostImageContro boostContro;
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("OnArrowUp1:"+ collision.gameObject.tag);
         if (collision.gameObject.CompareTag("Arrow"))
         {
+            Debug.Log("OnArrowUp2:" + collision);
             Sound.PlaySound("Sound/distorKick");
             var arrow = collision.gameObject.GetComponent<Arrow>();
             if (arrow != null)
             {
+                Debug.Log("OnArrowUp3:" + arrow);
                 switch (arrow.arrowType)
                 {
                     case Arrow.ArrowType.UpArrow:

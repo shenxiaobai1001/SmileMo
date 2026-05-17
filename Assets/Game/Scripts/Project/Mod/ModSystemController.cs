@@ -194,21 +194,59 @@ public class ModSystemController : MonoBehaviour
     int[] eggLenth = new int[] { 20, 30, 50, 88, 100, 500, 700, 2000 };
     public void OnCreateAddEggVideoPlayer(BarrageValue barrageFuncData, int callIndex)
     {
-        int index = Random.Range(0, 8);
-        int eggcount = eggLenth[index];
-        string path = $"{addEgg}/{eggcount}";
-        PFunc.Log(index, eggcount, path);
+        int index = OnGetEggCount();
+        string path = $"{addEgg}/{index}";
+        PFunc.Log(index, path);
         ModVideoPlayerController.Instance.OnCreateNFllowModVideoPlayer(Vector3.zero, new Vector3(0.5f, 0.5f, 1), path,
-            "Video", false, () => { OnBeginCreateAddEgg(barrageFuncData, callIndex, eggcount); });
+            "Video", false, () => { OnBeginCreateAddEgg(barrageFuncData, callIndex, index); });
     }
     public void OnCreateMinEggVideoPlayer(BarrageValue barrageFuncData, int callIndex)
     {
-        int index = Random.Range(0, 8);
-        int eggcount = eggLenth[index];
-        string path = $"{minEgg}/{eggcount}";
+        int index = OnGetEggCount();
+        string path = $"{minEgg}/{index}";
         ModVideoPlayerController.Instance.OnCreateNFllowModVideoPlayer(Vector3.zero, new Vector3(0.5f, 0.5f, 1), path,
-            "Video", false, () => { OnBeginCreateAddEgg(barrageFuncData, callIndex, -eggcount); });
+            "Video", false, () => { OnBeginCreateAddEgg(barrageFuncData, callIndex, -index); });
     }
+    int OnGetEggCount()
+    {
+        int value = 20;
+        int index = UnityEngine.Random.Range(0, 39);
+
+        if (index >= 0 && index < 4)
+        {
+            value = 20;
+        }
+        else if (index >= 4 && index < 9)
+        {
+            value = 30;
+        }
+        else if (index >= 9 && index < 17)
+        {
+            value = 50;
+        }
+        else if (index >= 17 && index < 24)
+        {
+            value = 88;
+        }
+        else if (index >= 24 && index < 30)
+        {
+            value = 100;
+        }
+        else if (index >= 30 && index < 33)
+        {
+            value = 500;
+        }
+        else if (index >= 33 && index < 36)
+        {
+            value = 700;
+        }
+        else if (index >= 36 && index < 39)
+        {
+            value = 2000;
+        }
+        return value;
+    }
+
     void OnBeginCreateAddEgg(BarrageValue barrageFuncData, int index, int count)
     {
         Config.eggCount += count;
@@ -221,8 +259,8 @@ public class ModSystemController : MonoBehaviour
             if (Config.eggCount < 0) Config.eggCount = 0;
             EventManager.Instance.SendMessage(Events.OnBarryExecutEnd, index);
         }
-     
     }
+
     void OnCloseDabeita()
     {
         isDabeita = false;  

@@ -1,7 +1,7 @@
 {
     "NormalConfigs": [
         {
-            "CallName": "跳绳",
+            "CallName": "减蛋盲盒",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -17,11 +17,11 @@
             "Delay": 0.0
         },
         {
-            "CallName": "顶乌龟",
+            "CallName": "跳绳",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
-            "Count": 50,
+            "Count": 1,
             "Delay": 0.0
         },
         {
@@ -45,7 +45,7 @@
             "Type": "礼物",
             "Message": "",
             "Tip": "",
-            "Count": 10,
+            "Count": 1,
             "Delay": 1.0
         },
         {
@@ -81,7 +81,7 @@
             "Delay": 0.0
         },
         {
-            "CallName": "埋坟",
+            "CallName": "一阳指",
             "Type": "礼物",
             "Message": "",
             "Tip": "",

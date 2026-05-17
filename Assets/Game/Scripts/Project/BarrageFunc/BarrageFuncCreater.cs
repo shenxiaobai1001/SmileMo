@@ -111,7 +111,7 @@ public class BarrageFuncCreater : MonoBehaviour
         }
         else
         {
-            InstantiateBarrageFunc(barrageChickenEgg, barrageFuncData, index);
+            InstantiateBarrageFunc(barrageChickenEgg, barrageFuncData, index, barrageFuncData.name);
         }
     }
     public void OnCreateShoe(BarrageValue barrageFuncData, int index)
@@ -191,6 +191,9 @@ public class BarrageFuncCreater : MonoBehaviour
                 break;
             case "¶¥ÎÚ¹ê":
                 createPos = new Vector3(vectorPlayer.x, 4);
+                break;
+            case "²¹µ°Ã¤ºÐ":
+                createPos = vectorPlayer;
                 break;
         }
         return createPos;

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6646726372621533909}
   - component: {fileID: -8438496957451754197}
   - component: {fileID: 3763690799973751497}
+  - component: {fileID: -3089959761830609307}
   m_Layer: 15
   m_Name: Egg
   m_TagString: Untagged
@@ -126,7 +127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bc1d43eddc802444b370d981bdafe99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  invokeTime: 150
+  invokeTime: 30
   toPool: 1
 --- !u!60 &3763690799973751497
 PolygonCollider2D:
@@ -182,3 +183,15 @@ PolygonCollider2D:
       - {x: 0.11360143, y: 0.06519796}
       - {x: 0.048211906, y: 0.1586845}
   m_UseDelaunayMesh: 0
+--- !u!114 &-3089959761830609307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4915573029263863807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 639bb30075f68c4479062e065f6e0b4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

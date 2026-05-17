@@ -133,7 +133,7 @@ public class BarrageRopeSkip : BarrageFuncBase
          && !OnCheckHasLevel()
          && !BarrageFuncController.Instance.OnCheckHighLevelFunc(barrageData.barrageFuncData))
         {
-            PlayerModController.Instance.OnChangeState(true);
+            PlayerModController.Instance.OnChangeState(true,false,true);
         }
         SimplePool.Despawn(gameObject);
     }

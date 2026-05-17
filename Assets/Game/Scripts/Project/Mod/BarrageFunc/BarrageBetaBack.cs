@@ -9,7 +9,7 @@ public class BarrageBetaBack : BarrageFuncBase
     Vector3 moveDir;
     private void Awake()
     {
-        moveDir = new Vector3(1, 0.3f)*20;
+        moveDir = new Vector3(-1, 0.3f)*20;
     }
     public override void OnStart(BarrageValue barrageFuncData, int index)//¿ªÊ¼Ö´ÐÐ
     {
@@ -39,6 +39,7 @@ public class BarrageBetaBack : BarrageFuncBase
     }
     public override void OnClose()
     {
+        barrageData.BarrageState = BarrageState.Finsh;
         if (!barrageController.OnCheckHasHighControl()
          && !OnCheckHasLevel()
          && !BarrageFuncController.Instance.OnCheckHighLevelFunc(barrageData.barrageFuncData))

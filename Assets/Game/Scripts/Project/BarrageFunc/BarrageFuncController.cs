@@ -257,7 +257,7 @@ public class BarrageFuncController : MonoBehaviour
     public bool OnCheckQueueLevel(BarrageFuncData data)
     {
         bool isHigh = false;
-        if (data.queue == 1)
+        if (data.queue != 0)
         {
             List<KeyValuePair<int, BarrageValue>> copy;
             lock (_lockExecutFunc)
@@ -266,8 +266,20 @@ public class BarrageFuncController : MonoBehaviour
             }
             foreach (var kvp in copy)
             {
-                isHigh = kvp.Value.barrageFuncData.name == data.name;
-                if (isHigh) break;
+                if (kvp.Value.barrageFuncData.name == data.name)
+                {
+                    if (data.queue == 1)
+                    {
+                        isHigh = true;
+                        break;
+                    }
+
+                    if (data.queue == 2 && kvp.Value.BarrageState == BarrageState.Tigger)
+                    {
+                        isHigh = true;
+                        break;
+                    }
+                }
             }
         }
         // PFunc.Log("OnCheckQueueLevel", data.name, isHigh);

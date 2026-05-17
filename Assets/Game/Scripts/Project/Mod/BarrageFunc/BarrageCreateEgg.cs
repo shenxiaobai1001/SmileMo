@@ -89,12 +89,17 @@ public class BarrageCreateEgg : BarrageFuncBase
 
     void OnCreateEgg()
     {
+        OnCreateEggG();
+        OnCreateEggG();
+    }
+    void OnCreateEggG()
+    {
         Config.eggCount--;
         Config.hasEggCount++;
         Sound.PlaySound("Sound/Mod/Egg");
         rb.velocity = Vector2.zero;
         rb.AddForce(new Vector3(0, 2), ForceMode2D.Impulse);
-       GameObject egg=  SimplePool.Spawn(eggObj, eggPos.position, Quaternion.identity);
+        GameObject egg = SimplePool.Spawn(eggObj, eggPos.position, Quaternion.identity);
         egg.transform.SetParent(MeshCreateController.Instance.transform);
         egg.SetActive(true);
         if (tx_hasgg) tx_hasgg.transform.DOScale(1.1f, 0.025f).SetLoops(2, LoopType.Yoyo).OnComplete(() =>
@@ -106,6 +111,7 @@ public class BarrageCreateEgg : BarrageFuncBase
     public override void OnPause()
     {
         base.OnPause();
+        animator.SetBool("Egg", false);
         spriteRenderer.enabled = false;
         uiObj.gameObject.SetActive(false);
     }
@@ -115,6 +121,10 @@ public class BarrageCreateEgg : BarrageFuncBase
         base.OnContinue();
         spriteRenderer.enabled = true;
         uiObj.gameObject.SetActive(true);
+        if (!OnCheckHasLevel())
+        {
+            PlayerModController.Instance.OnChangeState(false, false, false);
+        }
     }
 
     public override void OnClose()

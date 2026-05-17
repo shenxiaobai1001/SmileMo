@@ -1668,7 +1668,9 @@ public class PlayerController : MonoBehaviour
     }
     public void OnArrowUp(float value=15)
     {
+        Debug.Log("OnArrowUp1");
         if (isHit) return;
+        Debug.Log("OnArrowUp2");
         currentSpeed = 0;
         moveVec = Vector2.zero;
         if (animator)
